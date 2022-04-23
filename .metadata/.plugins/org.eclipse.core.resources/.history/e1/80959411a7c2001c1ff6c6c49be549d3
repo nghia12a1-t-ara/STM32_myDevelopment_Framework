@@ -1,0 +1,11 @@
+#ifndef _DMA_H_
+#define _DMA_H_
+
+#include "DMA_Base.h"
+
+/**
+ * Function Prototypes
+ */
+void DMA_Init(void);
+
+#endif	/* !(_DMA_H_) */

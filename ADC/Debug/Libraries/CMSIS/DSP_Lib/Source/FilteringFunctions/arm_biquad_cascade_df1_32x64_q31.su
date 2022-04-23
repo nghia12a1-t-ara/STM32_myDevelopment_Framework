@@ -1,0 +1,2 @@
+arm_math.h:451:25:mult32x64	40	static
+arm_biquad_cascade_df1_32x64_q31.c:179:6:arm_biquad_cas_df1_32x64_q31	336	static

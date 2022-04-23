@@ -1,0 +1,13 @@
+#ifndef _STD_TYPES_H_
+#define _STD_TYPES_H_
+
+#include <stddef.h>
+#include <stdint.h>
+
+#define __vo		volatile
+#define __io		volatile
+#define __i			volatile
+#define __o			volatile
+#define __weak 		__attribute__((weak))
+
+#endif	/* !(_STD_TYPES_H_) */

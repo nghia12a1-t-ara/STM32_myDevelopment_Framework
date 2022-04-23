@@ -1,0 +1,28 @@
+09:17:36 **** Incremental Build of configuration Debug for project DMA_MemtoMem ****
+make -j4 all 
+arm-none-eabi-gcc "D:/STM32/STM32_SourceCode/Register Programming/STM32F4_Drivers/DMA/src/DMA.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -I"D:/STM32/STM32_SourceCode/Register Programming/STM32F4_Drivers/Clock/inc" -I"D:/STM32/STM32_SourceCode/Register Programming/STM32F4_Drivers/Common/inc" -I"D:/STM32/STM32_SourceCode/Register Programming/STM32F4_Drivers/DMA/inc" -I"D:/STM32/STM32_SourceCode/Register Programming/DMA_MemtoMem/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"DMA/src/DMA.d" -MT"DMA/src/DMA.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "DMA/src/DMA.o"
+D:/STM32/STM32_SourceCode/Register Programming/STM32F4_Drivers/DMA/src/DMA.c: In function 'DMA2_Stream0_IRQHandler':
+D:/STM32/STM32_SourceCode/Register Programming/STM32F4_Drivers/DMA/src/DMA.c:51:6: warning: variable 'a' set but not used [-Wunused-but-set-variable]
+   51 |  int a = 1;
+      |      ^
+arm-none-eabi-gcc -o "DMA_MemtoMem.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\STM32\STM32_SourceCode\Register Programming\DMA_MemtoMem\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DMA_MemtoMem.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: DMA_MemtoMem.elf
+ 
+arm-none-eabi-objdump -h -S  DMA_MemtoMem.elf  > "DMA_MemtoMem.list"
+arm-none-eabi-objcopy  -O binary  DMA_MemtoMem.elf  "DMA_MemtoMem.bin"
+arm-none-eabi-size   DMA_MemtoMem.elf 
+   text	   data	    bss	    dec	    hex	filename
+    852	      8	   1568	   2428	    97c	DMA_MemtoMem.elf
+Finished building: default.size.stdout
+ 
+Finished building: DMA_MemtoMem.bin
+Finished building: DMA_MemtoMem.list
+ 
+ 
+09:17:41 **** Incremental Build of configuration Debug for project DMA_MemtoMem ****
+make -j4 all 
+arm-none-eabi-size   DMA_MemtoMem.elf 
+   text	   data	    bss	    dec	    hex	filename
+    852	      8	   1568	   2428	    97c	DMA_MemtoMem.elf
+Finished building: default.size.stdout
+ 

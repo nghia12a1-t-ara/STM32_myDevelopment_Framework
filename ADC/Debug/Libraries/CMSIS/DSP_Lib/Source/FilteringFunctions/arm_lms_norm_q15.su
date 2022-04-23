@@ -1,0 +1,2 @@
+arm_math.h:545:28:arm_recip_q15	64	static,ignoring_inline_asm
+arm_lms_norm_q15.c:74:6:arm_lms_norm_q15	232	static,ignoring_inline_asm

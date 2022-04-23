@@ -1,0 +1,25 @@
+
+#include "DMA.h"
+
+void DMA_Init(void)
+{
+	// 1. Enable DMA1 Clock
+	DMA1_PCLK_EN();
+
+	// 2. Enable DMA Interrupts
+	DMA1-
+
+	// 3. Set the Data Direction
+	   // Read From Memory
+	   // Read From Peripheral
+	
+	// 4. Enable the circular mode (CIRC)
+
+	// 5. Enable the Memory Increment (MINC)
+
+	// 6. Set the Peripheral data size (PSIZE)
+
+	// 7. Set the Memory data size (MSIZE)
+
+	// 8. Set the Priority Level
+}
