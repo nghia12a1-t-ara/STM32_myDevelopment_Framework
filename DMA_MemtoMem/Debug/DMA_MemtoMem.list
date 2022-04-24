@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0001035c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000048e  00000000  00000000  0001038c  2**0
+ 12 .debug_info   0000047c  00000000  00000000  0001038c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00000159  00000000  00000000  0001081a  2**0
+ 13 .debug_abbrev 00000148  00000000  00000000  00010808  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000078  00000000  00000000  00010978  2**3
+ 14 .debug_aranges 00000078  00000000  00000000  00010950  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000050  00000000  00000000  000109f0  2**3
+ 15 .debug_ranges 00000050  00000000  00000000  000109c8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000001fe  00000000  00000000  00010a40  2**0
+ 16 .debug_macro  0000020a  00000000  00000000  00010a18  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00000a35  00000000  00000000  00010c3e  2**0
+ 17 .debug_line   00000a1d  00000000  00000000  00010c22  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00005f3d  00000000  00000000  00011673  2**0
+ 18 .debug_str    00005f5b  00000000  00000000  0001163f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  000175b0  2**0
+ 19 .comment      00000053  00000000  00000000  0001759a  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000000d8  00000000  00000000  00017604  2**2
+ 20 .debug_frame  000000d0  00000000  00000000  000175f0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -81,147 +81,141 @@ Disassembly of section .text:
 #include "DMA.h"
 #include "stm32f4xx.h"
 
-void DMA_Init(void)
+void DMA_Init (void)
 {
  80001d4:	b480      	push	{r7}
  80001d6:	af00      	add	r7, sp, #0
-	// 1. Enable DMA2 Clock
+	// Clock
 	DMA2_PCLK_EN();
- 80001d8:	4b17      	ldr	r3, [pc, #92]	; (8000238 <DMA_Init+0x64>)
+ 80001d8:	4b11      	ldr	r3, [pc, #68]	; (8000220 <DMA_Init+0x4c>)
  80001da:	6b1b      	ldr	r3, [r3, #48]	; 0x30
- 80001dc:	4a16      	ldr	r2, [pc, #88]	; (8000238 <DMA_Init+0x64>)
+ 80001dc:	4a10      	ldr	r2, [pc, #64]	; (8000220 <DMA_Init+0x4c>)
  80001de:	f443 0380 	orr.w	r3, r3, #4194304	; 0x400000
  80001e2:	6313      	str	r3, [r2, #48]	; 0x30
-	//DMA2->Stream[0].CR |= (1 << 2) | (1 << 3) | (1 << 4);
 
-	// 3. Set the Data Direction
-	   // Read From Memory
-	   // Read From Peripheral
+	// SElect Channel
+	// Default Channel 0
+
+	// Data Direction	 - Mem to Mem
 	DMA2->Stream[0].CR |= (1 << 7);
- 80001e4:	4b15      	ldr	r3, [pc, #84]	; (800023c <DMA_Init+0x68>)
+ 80001e4:	4b0f      	ldr	r3, [pc, #60]	; (8000224 <DMA_Init+0x50>)
  80001e6:	691b      	ldr	r3, [r3, #16]
- 80001e8:	4a14      	ldr	r2, [pc, #80]	; (800023c <DMA_Init+0x68>)
+ 80001e8:	4a0e      	ldr	r2, [pc, #56]	; (8000224 <DMA_Init+0x50>)
  80001ea:	f043 0380 	orr.w	r3, r3, #128	; 0x80
  80001ee:	6113      	str	r3, [r2, #16]
 	DMA2->Stream[0].CR &= ~(1 << 6);
- 80001f0:	4b12      	ldr	r3, [pc, #72]	; (800023c <DMA_Init+0x68>)
+ 80001f0:	4b0c      	ldr	r3, [pc, #48]	; (8000224 <DMA_Init+0x50>)
  80001f2:	691b      	ldr	r3, [r3, #16]
- 80001f4:	4a11      	ldr	r2, [pc, #68]	; (800023c <DMA_Init+0x68>)
+ 80001f4:	4a0b      	ldr	r2, [pc, #44]	; (8000224 <DMA_Init+0x50>)
  80001f6:	f023 0340 	bic.w	r3, r3, #64	; 0x40
  80001fa:	6113      	str	r3, [r2, #16]
-	
-	// 4. Enable the circular mode (CIRC)
-	//DMA2->Stream[0].CR |= (1 << 8);
 
-	// 5. Enable the Memory Increment (MINC)
-	DMA2->Stream[0].CR |= (1 << 10);
- 80001fc:	4b0f      	ldr	r3, [pc, #60]	; (800023c <DMA_Init+0x68>)
+	//INcrement
+	DMA2->Stream[0].CR |= (1 << 10) | (1 << 9);
+ 80001fc:	4b09      	ldr	r3, [pc, #36]	; (8000224 <DMA_Init+0x50>)
  80001fe:	691b      	ldr	r3, [r3, #16]
- 8000200:	4a0e      	ldr	r2, [pc, #56]	; (800023c <DMA_Init+0x68>)
- 8000202:	f443 6380 	orr.w	r3, r3, #1024	; 0x400
+ 8000200:	4a08      	ldr	r2, [pc, #32]	; (8000224 <DMA_Init+0x50>)
+ 8000202:	f443 63c0 	orr.w	r3, r3, #1536	; 0x600
  8000206:	6113      	str	r3, [r2, #16]
-	DMA2->Stream[0].CR |= (1 << 9);
- 8000208:	4b0c      	ldr	r3, [pc, #48]	; (800023c <DMA_Init+0x68>)
- 800020a:	691b      	ldr	r3, [r3, #16]
- 800020c:	4a0b      	ldr	r2, [pc, #44]	; (800023c <DMA_Init+0x68>)
- 800020e:	f443 7300 	orr.w	r3, r3, #512	; 0x200
- 8000212:	6113      	str	r3, [r2, #16]
 
-	// 6. Set the Memory/Peripheral data size (PSIZE) - 8 bit for Mem/Per
 	DMA2->Stream[0].CR &= ~(0xF << 11);
- 8000214:	4b09      	ldr	r3, [pc, #36]	; (800023c <DMA_Init+0x68>)
- 8000216:	691b      	ldr	r3, [r3, #16]
- 8000218:	4a08      	ldr	r2, [pc, #32]	; (800023c <DMA_Init+0x68>)
- 800021a:	f423 43f0 	bic.w	r3, r3, #30720	; 0x7800
- 800021e:	6113      	str	r3, [r2, #16]
-
-	// 8. Set the Priority Level
-	DMA2->Stream[0].CR &= ~(0x3 << 16);
- 8000220:	4b06      	ldr	r3, [pc, #24]	; (800023c <DMA_Init+0x68>)
- 8000222:	691b      	ldr	r3, [r3, #16]
- 8000224:	4a05      	ldr	r2, [pc, #20]	; (800023c <DMA_Init+0x68>)
- 8000226:	f423 3340 	bic.w	r3, r3, #196608	; 0x30000
- 800022a:	6113      	str	r3, [r2, #16]
+ 8000208:	4b06      	ldr	r3, [pc, #24]	; (8000224 <DMA_Init+0x50>)
+ 800020a:	691b      	ldr	r3, [r3, #16]
+ 800020c:	4a05      	ldr	r2, [pc, #20]	; (8000224 <DMA_Init+0x50>)
+ 800020e:	f423 43f0 	bic.w	r3, r3, #30720	; 0x7800
+ 8000212:	6113      	str	r3, [r2, #16]
 }
- 800022c:	bf00      	nop
- 800022e:	46bd      	mov	sp, r7
- 8000230:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8000234:	4770      	bx	lr
- 8000236:	bf00      	nop
- 8000238:	40023800 	.word	0x40023800
- 800023c:	40026400 	.word	0x40026400
+ 8000214:	bf00      	nop
+ 8000216:	46bd      	mov	sp, r7
+ 8000218:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800021c:	4770      	bx	lr
+ 800021e:	bf00      	nop
+ 8000220:	40023800 	.word	0x40023800
+ 8000224:	40026400 	.word	0x40026400
 
-08000240 <DMA_Config>:
+08000228 <DMA_Config>:
 
 void DMA_Config (uint32_t srcAdd, uint32_t destAdd, uint16_t datasize)
 {
- 8000240:	b480      	push	{r7}
- 8000242:	b085      	sub	sp, #20
- 8000244:	af00      	add	r7, sp, #0
- 8000246:	60f8      	str	r0, [r7, #12]
- 8000248:	60b9      	str	r1, [r7, #8]
- 800024a:	4613      	mov	r3, r2
- 800024c:	80fb      	strh	r3, [r7, #6]
-
-	// 1. Set the data size in NDTR Register
+ 8000228:	b480      	push	{r7}
+ 800022a:	b085      	sub	sp, #20
+ 800022c:	af00      	add	r7, sp, #0
+ 800022e:	60f8      	str	r0, [r7, #12]
+ 8000230:	60b9      	str	r1, [r7, #8]
+ 8000232:	4613      	mov	r3, r2
+ 8000234:	80fb      	strh	r3, [r7, #6]
 	DMA2->Stream[0].NDTR = datasize;
- 800024e:	4a0a      	ldr	r2, [pc, #40]	; (8000278 <DMA_Config+0x38>)
- 8000250:	88fb      	ldrh	r3, [r7, #6]
- 8000252:	6153      	str	r3, [r2, #20]
+ 8000236:	4a07      	ldr	r2, [pc, #28]	; (8000254 <DMA_Config+0x2c>)
+ 8000238:	88fb      	ldrh	r3, [r7, #6]
+ 800023a:	6153      	str	r3, [r2, #20]
 
-	// 2. Set the  peripheral address in PAR Register
 	DMA2->Stream[0].PAR = srcAdd;
- 8000254:	4a08      	ldr	r2, [pc, #32]	; (8000278 <DMA_Config+0x38>)
- 8000256:	68fb      	ldr	r3, [r7, #12]
- 8000258:	6193      	str	r3, [r2, #24]
+ 800023c:	4a05      	ldr	r2, [pc, #20]	; (8000254 <DMA_Config+0x2c>)
+ 800023e:	68fb      	ldr	r3, [r7, #12]
+ 8000240:	6193      	str	r3, [r2, #24]
 
-	// 3. Set the  Memory address in MAR Register
 	DMA2->Stream[0].M0AR = destAdd;
- 800025a:	4a07      	ldr	r2, [pc, #28]	; (8000278 <DMA_Config+0x38>)
- 800025c:	68bb      	ldr	r3, [r7, #8]
- 800025e:	61d3      	str	r3, [r2, #28]
-
-	// 4. Enable the DMA2
-	DMA2->Stream[0].CR |= (1 << 0);
- 8000260:	4b05      	ldr	r3, [pc, #20]	; (8000278 <DMA_Config+0x38>)
- 8000262:	691b      	ldr	r3, [r3, #16]
- 8000264:	4a04      	ldr	r2, [pc, #16]	; (8000278 <DMA_Config+0x38>)
- 8000266:	f043 0301 	orr.w	r3, r3, #1
- 800026a:	6113      	str	r3, [r2, #16]
+ 8000242:	4a04      	ldr	r2, [pc, #16]	; (8000254 <DMA_Config+0x2c>)
+ 8000244:	68bb      	ldr	r3, [r7, #8]
+ 8000246:	61d3      	str	r3, [r2, #28]
 }
- 800026c:	bf00      	nop
- 800026e:	3714      	adds	r7, #20
- 8000270:	46bd      	mov	sp, r7
- 8000272:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8000276:	4770      	bx	lr
- 8000278:	40026400 	.word	0x40026400
+ 8000248:	bf00      	nop
+ 800024a:	3714      	adds	r7, #20
+ 800024c:	46bd      	mov	sp, r7
+ 800024e:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000252:	4770      	bx	lr
+ 8000254:	40026400 	.word	0x40026400
 
-0800027c <main>:
-#include "stm32f4xx.h"
-#include "DMA.h"
-#include "stm32f4xx_rcc_driver.h"
+08000258 <Start_Transfer>:
+
+void Start_Transfer (void)
+{
+ 8000258:	b480      	push	{r7}
+ 800025a:	af00      	add	r7, sp, #0
+	DMA2->Stream[0].CR |= (1 << 0);
+ 800025c:	4b05      	ldr	r3, [pc, #20]	; (8000274 <Start_Transfer+0x1c>)
+ 800025e:	691b      	ldr	r3, [r3, #16]
+ 8000260:	4a04      	ldr	r2, [pc, #16]	; (8000274 <Start_Transfer+0x1c>)
+ 8000262:	f043 0301 	orr.w	r3, r3, #1
+ 8000266:	6113      	str	r3, [r2, #16]
+}
+ 8000268:	bf00      	nop
+ 800026a:	46bd      	mov	sp, r7
+ 800026c:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000270:	4770      	bx	lr
+ 8000272:	bf00      	nop
+ 8000274:	40026400 	.word	0x40026400
+
+08000278 <main>:
+
+#define SRCADDR		0x20016000
+#define DESTADDR	0x20017000
 
 int main(void)
 {
- 800027c:	b580      	push	{r7, lr}
- 800027e:	af00      	add	r7, sp, #0
+ 8000278:	b580      	push	{r7, lr}
+ 800027a:	af00      	add	r7, sp, #0
+
 	DMA_Init();
- 8000280:	f7ff ffa8 	bl	80001d4 <DMA_Init>
+ 800027c:	f7ff ffaa 	bl	80001d4 <DMA_Init>
 
-	*(uint32_t *)(0x20016000) = 0xA5A5A5A5;
- 8000284:	4b04      	ldr	r3, [pc, #16]	; (8000298 <main+0x1c>)
- 8000286:	f04f 32a5 	mov.w	r2, #2779096485	; 0xa5a5a5a5
- 800028a:	601a      	str	r2, [r3, #0]
+	*(uint32_t *)SRCADDR = 0xA5A5A5A5;
+ 8000280:	4b05      	ldr	r3, [pc, #20]	; (8000298 <main+0x20>)
+ 8000282:	f04f 32a5 	mov.w	r2, #2779096485	; 0xa5a5a5a5
+ 8000286:	601a      	str	r2, [r3, #0]
 
-	DMA_Config(0x20016000, 0x20017000, 4);
- 800028c:	2204      	movs	r2, #4
- 800028e:	4903      	ldr	r1, [pc, #12]	; (800029c <main+0x20>)
- 8000290:	4801      	ldr	r0, [pc, #4]	; (8000298 <main+0x1c>)
- 8000292:	f7ff ffd5 	bl	8000240 <DMA_Config>
+	DMA_Config(SRCADDR, DESTADDR, 4);
+ 8000288:	2204      	movs	r2, #4
+ 800028a:	4904      	ldr	r1, [pc, #16]	; (800029c <main+0x24>)
+ 800028c:	4802      	ldr	r0, [pc, #8]	; (8000298 <main+0x20>)
+ 800028e:	f7ff ffcb 	bl	8000228 <DMA_Config>
+
+	Start_Transfer();
+ 8000292:	f7ff ffe1 	bl	8000258 <Start_Transfer>
 
     /* Loop forever */
 	for(;;);
- 8000296:	e7fe      	b.n	8000296 <main+0x1a>
+ 8000296:	e7fe      	b.n	8000296 <main+0x1e>
  8000298:	20016000 	.word	0x20016000
  800029c:	20017000 	.word	0x20017000
 
@@ -302,7 +296,7 @@ LoopFillZerobss:
  80002ce:	f000 f811 	bl	80002f4 <__libc_init_array>
 /* Call the application's entry point.*/
   bl main
- 80002d2:	f7ff ffd3 	bl	800027c <main>
+ 80002d2:	f7ff ffd1 	bl	8000278 <main>
 
 080002d6 <LoopForever>:
 

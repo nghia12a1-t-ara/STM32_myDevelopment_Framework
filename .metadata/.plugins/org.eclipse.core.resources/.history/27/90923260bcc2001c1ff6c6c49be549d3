@@ -1,0 +1,29 @@
+
+#include "DMA.h"
+#include "stm32f4xx.h"
+
+void DMA_Init (void)
+{
+	// Clock
+	DMA2_PCLK_EN();
+
+	// SElect Channel
+	// Default Channel 0
+
+	// Data Direction	 - Mem to Mem
+	DMA2->Stream[0].CR |= (1 << 7);
+	DMA2->Stream[0].CR &= ~(1 << 6);
+
+	//INcrement
+	DMA2->Stream[0].CR |= (1 <<< 10) | (1 << 9);
+
+	DMA2->Stream[0].CR &= ~(0xF << 11);
+}
+
+void DMA_Config (uint32_t srcAdd, uint32_t destAdd, uint16_t datasize)
+{
+	DMA2->Stream[0].
+}
+
+void Start_Transfer (void);
+

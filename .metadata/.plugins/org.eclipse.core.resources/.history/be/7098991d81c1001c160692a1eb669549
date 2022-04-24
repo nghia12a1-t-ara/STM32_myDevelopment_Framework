@@ -1,7 +1,0 @@
-
-#include "DMA.h"
-
-void DMA_Init(void)
-{
-	
-}

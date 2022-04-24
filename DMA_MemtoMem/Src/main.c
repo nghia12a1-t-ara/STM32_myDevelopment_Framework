@@ -22,13 +22,19 @@
 #include "DMA.h"
 #include "stm32f4xx_rcc_driver.h"
 
+#define SRCADDR		0x20016000
+#define DESTADDR	0x20017000
+
 int main(void)
 {
+
 	DMA_Init();
 
-	*(uint32_t *)(0x20016000) = 0xA5A5A5A5;
+	*(uint32_t *)SRCADDR = 0xA5A5A5A5;
 
-	DMA_Config(0x20016000, 0x20017000, 4);
+	DMA_Config(SRCADDR, DESTADDR, 4);
+
+	Start_Transfer();
 
     /* Loop forever */
 	for(;;);
