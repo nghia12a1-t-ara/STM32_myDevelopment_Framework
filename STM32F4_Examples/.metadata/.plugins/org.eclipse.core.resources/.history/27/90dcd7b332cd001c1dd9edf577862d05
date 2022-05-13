@@ -1,0 +1,22 @@
+/*
+ * GPIO_REG.c
+ *
+ *  Created on: May 6, 2022
+ *      Author: Admin
+ */
+
+#include "GPIO_REG.h"
+
+void GPIO_Init(void)
+{
+	/* PC13 as INPUT pullup mode */
+	RCC->AHB1 |= (1 << 2);
+	PC->PU |= (1 << 26);
+
+	/* PA5 as OUTPUT Push-Pull mode */
+	RCC->AHB1 |= (1 << 0);
+	PA->MODE |= (1 << 10);
+	PA->TYPE &= ~(1 << LED_GREEN);
+	PA->SPEED |= (1 << 10);
+}
+

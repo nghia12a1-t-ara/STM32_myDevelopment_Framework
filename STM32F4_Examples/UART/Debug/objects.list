@@ -1,0 +1,7 @@
+"./CLOCK_REG/CLOCK_REG.o"
+"./GPIO_REG/GPIO_REG.o"
+"./Src/main.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Startup/startup_stm32f401retx.o"
+"./UART_REG/UART_REG.o"

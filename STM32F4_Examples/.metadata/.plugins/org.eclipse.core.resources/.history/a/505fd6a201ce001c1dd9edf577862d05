@@ -1,0 +1,18 @@
+/*
+ * GPIO_REG.c
+ *
+ *  Created on: May 6, 2022
+ *      Author: Admin
+ */
+
+#include "GPIO_REG.h"
+#include "CLOCK_REG.h"
+
+void GPIOC_UART6_Setup(void)
+{
+	GPIOC_PCLK_EN();
+
+	GPIOC->MODER |= (0x2 << 12);
+
+	GPIOC->OTYPER &= ~(1 << 6);
+}

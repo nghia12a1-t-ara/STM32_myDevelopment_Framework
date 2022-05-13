@@ -1,0 +1,30 @@
+
+#include "UART_REG.h"
+#include "GPIO_REG.h"
+#include "CLOCK_REG.h"
+
+
+void UART_Init(uint_8 Mode)
+{
+	uint32_t usartdiv;
+	uint32_t F_Mass, F_Frac;
+
+	USART6_PCLK_EN();
+
+	GPIOC_UART6_Setup();
+
+	UART6->CR1 |= Mode;
+
+	UART6->CR1 &= ~(1 << 12);
+
+	/* PCLK = 16MHz
+	 * Baudrate = 9600
+	 * OVER8 = 0 -> sample 16 */
+	usartdiv =
+
+
+}
+
+
+void UART_SendData(uint8_t * pTXBuffer, uint32_t Len);
+void UART_ReceiveData(uint_t * pRXBuffer, uint32_t Len);

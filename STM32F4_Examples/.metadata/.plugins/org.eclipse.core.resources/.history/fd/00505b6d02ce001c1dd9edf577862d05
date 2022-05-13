@@ -1,0 +1,35 @@
+/*
+ * UART_REG.h
+ *
+ *  Created on: May 6, 2022
+ *      Author: Admin
+ */
+
+#ifndef UART_REG_H_
+#define UART_REG_H_
+
+#include <stdint.h>
+
+/*
+ * peripheral register definition structure for USART
+ */
+typedef struct
+{
+	volatile uint32_t SR;         /*!< Address offset: 0x00 */
+	volatile uint32_t DR;         /*!< Address offset: 0x04 */
+	volatile uint32_t BRR;        /*!< Address offset: 0x08 */
+	volatile uint32_t CR1;        /*!< Address offset: 0x0C */
+	volatile uint32_t CR2;        /*!< Address offset: 0x10 */
+	volatile uint32_t CR3;        /*!< Address offset: 0x14 */
+	volatile uint32_t GTPR;       /*!< Address offset: 0x18 */
+} USART_Types;
+
+#define UART6_BASEADDR					(0x40011400UL)
+#define UART6							((USART_Types *)UART6_BASEADDR)
+
+
+/* Function Prototypes */
+void UART_Init(uint_8 Mode);
+
+
+#endif /* UART_REG_H_ */

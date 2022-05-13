@@ -1,0 +1,10 @@
+22:39:06 **** Incremental Build of configuration Debug for project FLASH_Register_Example ****
+make -j4 all 
+arm-none-eabi-size   FLASH_Register_Example.elf 
+   text	   data	    bss	    dec	    hex	filename
+    936	      8	   1568	   2512	    9d0	FLASH_Register_Example.elf
+Finished building: default.size.stdout
+ 
+
+22:39:06 Build Finished. 0 errors, 0 warnings. (took 452ms)
+

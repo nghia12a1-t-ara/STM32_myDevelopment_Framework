@@ -1,0 +1,3 @@
+../UART_REG/UART_REG.c:12:6:UART_Init	32	static
+../UART_REG/UART_REG.c:49:6:UART_SendData	24	static
+../UART_REG/UART_REG.c:67:7:UART_ReceiveData	24	static

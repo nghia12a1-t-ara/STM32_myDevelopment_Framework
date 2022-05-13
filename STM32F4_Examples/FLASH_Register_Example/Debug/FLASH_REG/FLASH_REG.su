@@ -1,0 +1,4 @@
+../FLASH_REG/FLASH_REG.c:3:6:Flash_Unlock	4	static
+../FLASH_REG/FLASH_REG.c:12:6:Flash_Lock	4	static
+../FLASH_REG/FLASH_REG.c:17:6:Flash_EraseSector	16	static
+../FLASH_REG/FLASH_REG.c:34:6:Flash_ProgramWord	16	static

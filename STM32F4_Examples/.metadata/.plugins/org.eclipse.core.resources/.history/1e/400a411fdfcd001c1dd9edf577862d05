@@ -1,0 +1,22 @@
+/*
+ * GPIO_REG.c
+ *
+ *  Created on: May 6, 2022
+ *      Author: Admin
+ */
+
+#include "GPIO_REG.h"
+#include "CLOCK_REG.h"
+
+void GPIOC6_UART6_Setup(void)
+{
+	GPIOC_PCLK_EN();
+
+	/* PC6 as AF mode - USART6 RX */
+	GPIOC->MODER |= (0x2 << 12);
+	GPIOC->OTYPER &= ~(1 << 6);
+	GPIOC->OSPEEDR |= (0x2 << 12);
+	GPIOC->PUPDR |= (0x1 << 12);
+
+	GPIOC->AFR[0] |= (0x8 << 24);
+}

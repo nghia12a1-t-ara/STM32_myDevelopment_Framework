@@ -1,3 +1,0 @@
-DMA.c:5:6:DMA_Init	4	static
-DMA.c:23:6:DMA_Config	24	static
-DMA.c:32:6:Start_Transfer	4	static

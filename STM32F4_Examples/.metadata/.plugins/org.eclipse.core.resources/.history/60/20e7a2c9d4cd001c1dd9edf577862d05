@@ -1,0 +1,80 @@
+/*
+ * UART_REG.c
+ *
+ *  Created on: May 6, 2022
+ *      Author: Admin
+ */
+
+#include "UART_REG.h"
+#include "CLOCK_REG.h"
+#include "GPIO_REG.h"
+
+void USART_Init(uint8_t MODE)
+{
+	uint32_t usartdiv;
+	uint32_t M_part, F_part;
+
+	GPIOC6_UART6_Setup();
+
+	/* Enable Clock for UART1 */
+	USART1_PCLK_EN();
+
+	/* Enable TX-Master or RX-Slave */
+	UART1->CR1 |= (1 << MODE);
+
+	/* bit M - 8 bits Data */
+	UART1->CR1 &= ~(1 << 12);
+
+	/* Implement the code to enable the parity control */
+	UART1->CR1 &= ~( 1 << 10);
+
+	/* Setup Baudrate - 9600, CLK = 8MHz
+	 * Mantissa =
+	 * Fraction = */
+	/* OVER8 = 0 -> Oversampling by 16 */
+	UART1->CR1 &= ~(1 << 15);
+
+	usartdiv = ((25 * 8000000) / (4 * 9600));
+	M_part = usartdiv / 100;
+	F_part = (usartdiv - (M_part * 100));
+	F_part = ((( F_part * 16)+ 50) / 100) & ((uint8_t)0x0F);
+
+	UART1->BRR |= F_part;
+	UART1->BRR |= (M_part << 4);
+
+	/* bit UE - Enable UART */
+	UART1->CR1 |= (1 << 13);
+}
+
+void USART_SendData(uint8_t *pTxBuffer, uint32_t Len)
+{
+	for(uint32_t i = 0 ; i < Len; i++)
+	{
+		/* Wait until TXE flag is set in the SR */
+		while ( (UART1->SR & (1 << 7) ) == 0 );
+
+		/* 8bit data transfer */
+		UART1->DR |= (uint8_t)(*pTxBuffer  & (uint8_t)0xFF);
+
+		/* Increment the buffer address */
+		pTxBuffer++;
+	}
+
+	/* Wait till TC flag is set in the SR */
+	while ( (UART1->SR & (1 << 6) ) == 0 );
+}
+
+void  USART_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
+{
+	for(uint32_t i = 0 ; i < Len; i++)
+	{
+		/* Wait until RXNE flag is set in the SR */
+		while ( (UART1->SR & (1 << 5) ) == 0 );
+
+		/* Read 8bit data receive from Data Register */
+		*pRxBuffer = (uint8_t)(UART1->DR & (uint8_t)0xFF);
+
+		/* Increment the buffer address */
+		pRxBuffer++;
+	}
+}

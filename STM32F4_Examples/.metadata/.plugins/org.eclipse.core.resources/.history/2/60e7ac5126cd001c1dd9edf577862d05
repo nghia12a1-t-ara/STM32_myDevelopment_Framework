@@ -1,0 +1,55 @@
+/*
+ * UART_REG.h
+ *
+ *  Created on: May 6, 2022
+ *      Author: Admin
+ */
+
+#ifndef UART_REG_H_
+#define UART_REG_H_
+
+/*
+ * peripheral register definition structure for USART
+ */
+typedef struct
+{
+	__vo uint32 SR;         /*!< TODO,     										Address offset: 0x00 */
+	__vo uint32 DR;         /*!< TODO,     										Address offset: 0x04 */
+	__vo uint32 BRR;        /*!< TODO,     										Address offset: 0x08 */
+	__vo uint32 CR1;        /*!< TODO,     										Address offset: 0x0C */
+	__vo uint32 CR2;        /*!< TODO,     										Address offset: 0x10 */
+	__vo uint32 CR3;        /*!< TODO,     										Address offset: 0x14 */
+	__vo uint32 GTPR;       /*!< TODO,     										Address offset: 0x18 */
+} USART_Types;
+
+
+/*
+ * Base addresses of peripherals which are hanging on APB1 bus
+ * TODO : Complete for all other peripherals
+ */
+#define USART2_BASEADDR					(APB1PERIPH_BASEADDR + 0x4400)
+#define USART3_BASEADDR					(APB1PERIPH_BASEADDR + 0x4800)
+#define UART4_BASEADDR					(APB1PERIPH_BASEADDR + 0x4C00)
+#define UART5_BASEADDR					(APB1PERIPH_BASEADDR + 0x5000)
+
+#define USART2  						((USART_Types*)USART2_BASEADDR)
+#define USART3  						((USART_Types*)USART3_BASEADDR)
+#define UART4  							((USART_Types*)UART4_BASEADDR)
+#define UART5  							((USART_Types*)UART5_BASEADDR)
+
+/*
+ * Base addresses of peripherals which are hanging on APB2 bus
+ * TODO : Complete for all other peripherals
+ */
+#define USART1_BASEADDR					(APB2PERIPH_BASEADDR + 0x1000)
+#define USART6_BASEADDR					(APB2PERIPH_BASEADDR + 0x1400)
+
+#define USART1  						((USART_Types*)USART1_BASEADDR)
+#define USART6  						((USART_Types*)USART6_BASEADDR)
+
+
+void USART_Init(void);
+void USART_SendData(uint8 *pTxBuffer, uint32 Len);
+void  USART_ReceiveData(uint8 *pRxBuffer, uint32 Len);
+
+#endif /* UART_REG_H_ */
