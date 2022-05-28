@@ -42,5 +42,6 @@ void GPIOA_UART1_Setup(void);
 void UART_Init(uint8_t MODE);
 void UART_SendData(uint8_t *pTxBuffer, uint32_t Len);
 void  UART_ReceiveData(uint8_t *pRxBuffer, uint32_t Len);
+void UART6_ReceiveINT_Setup(void);
 
 #endif /* UART_REG_H_ */

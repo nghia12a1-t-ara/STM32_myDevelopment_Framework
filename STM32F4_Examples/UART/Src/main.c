@@ -19,21 +19,22 @@
 #include <stdint.h>
 #include "UART_REG.h"
 
+volatile uint8_t pRxBuffer = 'A';
 
 int main(void)
 {
-	uint8_t pRxBuffer[8];
+	int32_t i = 5000000;
 
 	UART_Init(UART_MODE_SLAVE|(UART_MODE_MASTER));
 
-	UART_SendData("ABCD", 5);
-
-	UART_SendData("123456789", 10);
+	UART6_ReceiveINT_Setup();
 
     /* Loop forever */
 	for(;;)
 	{
-		UART_ReceiveData(&pRxBuffer, 8);
+		i = 500000;
+		UART_SendData(&pRxBuffer, 1);
+		while( i-- );
 	}
 }
 

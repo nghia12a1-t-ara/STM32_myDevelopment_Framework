@@ -1,10 +1,10 @@
-22:47:26 **** Incremental Build of configuration Debug for project UART_Register_Example ****
+22:32:36 **** Incremental Build of configuration Debug for project UART_Register_Example ****
 make -j4 all 
 arm-none-eabi-size   UART_Register_Example.elf 
    text	   data	    bss	    dec	    hex	filename
-   1236	      8	   1568	   2812	    afc	UART_Register_Example.elf
+   1280	     12	   1564	   2856	    b28	UART_Register_Example.elf
 Finished building: default.size.stdout
  
 
-22:47:26 Build Finished. 0 errors, 0 warnings. (took 277ms)
+22:32:37 Build Finished. 0 errors, 0 warnings. (took 443ms)
 

@@ -1,14 +1,36 @@
-22:47:19 **** Incremental Build of configuration Debug for project UART_Register_Example ****
+22:29:17 **** Incremental Build of configuration Debug for project UART_Register_Example ****
 make -j4 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -I"D:/STM32/STM32_SourceCode/STM32_Programming/STM32F4_Examples/UART/NVIC_REG" -I"D:/STM32/STM32_SourceCode/STM32_Programming/STM32F4_Examples/UART/GPIO_REG" -I"D:/STM32/STM32_SourceCode/STM32_Programming/STM32F4_Examples/UART/CLOCK_REG" -I"D:/STM32/STM32_SourceCode/STM32_Programming/STM32F4_Examples/UART/UART_REG" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+../Src/main.c: In function 'main':
+../Src/main.c:36:17: warning: passing argument 1 of 'UART_SendData' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   36 |   UART_SendData(&pRxBuffer, 1);
+      |                 ^~~~~~~~~~
+In file included from ../Src/main.c:20:
+D:/STM32/STM32_SourceCode/STM32_Programming/STM32F4_Examples/UART/UART_REG/UART_REG.h:43:29: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'volatile uint8_t *' {aka 'volatile unsigned char *'}
+   43 | void UART_SendData(uint8_t *pTxBuffer, uint32_t Len);
+      |                    ~~~~~~~~~^~~~~~~~~
+arm-none-eabi-gcc -o "UART_Register_Example.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\STM32\STM32_SourceCode\STM32_Programming\STM32F4_Examples\UART\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="UART_Register_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: UART_Register_Example.elf
+ 
 arm-none-eabi-size   UART_Register_Example.elf 
+arm-none-eabi-objdump -h -S  UART_Register_Example.elf  > "UART_Register_Example.list"
    text	   data	    bss	    dec	    hex	filename
-   1236	      8	   1568	   2812	    afc	UART_Register_Example.elf
+   1280	     12	   1564	   2856	    b28	UART_Register_Example.elf
 Finished building: default.size.stdout
  
-22:47:26 **** Incremental Build of configuration Debug for project UART_Register_Example ****
+Finished building: UART_Register_Example.list
+ 
+22:29:33 **** Incremental Build of configuration Debug for project UART_Register_Example ****
 make -j4 all 
 arm-none-eabi-size   UART_Register_Example.elf 
    text	   data	    bss	    dec	    hex	filename
-   1236	      8	   1568	   2812	    afc	UART_Register_Example.elf
+   1280	     12	   1564	   2856	    b28	UART_Register_Example.elf
+Finished building: default.size.stdout
+ 
+22:32:36 **** Incremental Build of configuration Debug for project UART_Register_Example ****
+make -j4 all 
+arm-none-eabi-size   UART_Register_Example.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1280	     12	   1564	   2856	    b28	UART_Register_Example.elf
 Finished building: default.size.stdout
  

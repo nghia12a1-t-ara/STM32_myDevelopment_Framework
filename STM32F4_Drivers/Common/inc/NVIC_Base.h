@@ -47,15 +47,6 @@ typedef struct
 } EXTI_Types;
 
 /*
- * Base addresses of peripherals which are hanging on APB2 bus
- * TODO : Complete for all other peripherals
- */
-#define EXTI_BASEADDR				(APB2PERIPH_BASEADDR + 0x3C00)
-#define EXTI						((EXTI_Types*)EXTI_BASEADDR)
-
-
-
-/*
  * macros for all the possible priority levels
  */
 #define NVIC_IRQ_PRI0    	0

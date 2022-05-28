@@ -1,5 +1,6 @@
 "./CLOCK_REG/CLOCK_REG.o"
 "./GPIO_REG/GPIO_REG.o"
+"./NVIC_REG/NVIC_REG.o"
 "./Src/main.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"

@@ -12,6 +12,7 @@ RM := rm -rf
 -include UART_REG/subdir.mk
 -include Startup/subdir.mk
 -include Src/subdir.mk
+-include NVIC_REG/subdir.mk
 -include GPIO_REG/subdir.mk
 -include CLOCK_REG/subdir.mk
 -include objects.mk

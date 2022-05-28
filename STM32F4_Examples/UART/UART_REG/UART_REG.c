@@ -8,6 +8,9 @@
 #include "UART_REG.h"
 #include "CLOCK_REG.h"
 #include "GPIO_REG.h"
+#include "NVIC_REG.h"
+
+extern uint8_t pRxBuffer;
 
 void UART_Init(uint8_t MODE)
 {
@@ -42,6 +45,9 @@ void UART_Init(uint8_t MODE)
 	UART6->BRR |= F_part;
 	UART6->BRR |= (M_part << 4);
 
+	/* Enable RX Interrupt */
+	UART6->CR1 |= (1 << 5);
+
 	/* bit UE - Enable UART */
 	UART6->CR1 |= (1 << 13);
 }
@@ -64,7 +70,7 @@ void UART_SendData(uint8_t *pTxBuffer, uint32_t Len)
 	while ( (UART6->SR & (1 << 6) ) == 0 );
 }
 
-void  UART_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
+void UART_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
 {
 	for(uint32_t i = 0 ; i < Len; i++)
 	{
@@ -78,3 +84,29 @@ void  UART_ReceiveData(uint8_t *pRxBuffer, uint32_t Len)
 		pRxBuffer++;
 	}
 }
+
+void UART6_ReceiveINT_Setup(void)
+{
+	/* Enable USART Interrupt, IRQ_Number = 71 */
+	*NVIC_ISER2 |= (1 << 8);
+
+	*NVIC_ICPR2 |= (1 << 8);
+
+	__asm volatile("cpsie i");
+}
+
+void USART6_IRQHandler(void)
+{
+	if ( (UART6->SR & (1 << 5) ) == 0 )
+	{
+		pRxBuffer = (uint8_t)(UART6->DR & (uint8_t)0xFF);
+	}
+
+	UART6->SR &= ~(1 << 5);
+	*NVIC_ICPR2 |= (1 << 8);
+}
+
+
+
+
+

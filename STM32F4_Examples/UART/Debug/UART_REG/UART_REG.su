@@ -1,3 +1,5 @@
-../UART_REG/UART_REG.c:12:6:UART_Init	32	static
-../UART_REG/UART_REG.c:49:6:UART_SendData	24	static
-../UART_REG/UART_REG.c:67:7:UART_ReceiveData	24	static
+../UART_REG/UART_REG.c:15:6:UART_Init	32	static
+../UART_REG/UART_REG.c:55:6:UART_SendData	24	static
+../UART_REG/UART_REG.c:73:6:UART_ReceiveData	24	static
+../UART_REG/UART_REG.c:88:6:UART6_ReceiveINT_Setup	4	static,ignoring_inline_asm
+../UART_REG/UART_REG.c:98:6:USART6_IRQHandler	4	static

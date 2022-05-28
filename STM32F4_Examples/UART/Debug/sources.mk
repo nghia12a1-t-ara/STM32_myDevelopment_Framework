@@ -23,6 +23,7 @@ C_DEPS :=
 SUBDIRS := \
 CLOCK_REG \
 GPIO_REG \
+NVIC_REG \
 Src \
 Startup \
 UART_REG \
