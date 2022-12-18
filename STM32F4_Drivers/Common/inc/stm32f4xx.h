@@ -9,6 +9,8 @@
 #define INC_STM32F4XX_H_
 
 #include "Std_Types.h"
+#include "RCC_Base.h"
+#include "NVIC_Base.h"
 
 /**********************************START:Processor Specific Details **********************************/
 
@@ -33,5 +35,9 @@
 #define AHB1PERIPH_BASEADDR					0x40020000U
 #define AHB2PERIPH_BASEADDR					0x50000000U
 
+
+/************************************* Register Access ***********************************/
+#define REG_WRITE32(address,data)			*(uint32*)address=data
+#define REG_READ32(address)					*(uint32*)address
 
 #endif /* INC_STM32F4XX_H_ */

@@ -32,5 +32,7 @@ void DMA_Config (uint32 srcAdd, uint32 destAdd, uint16 datasize)
 void Start_Transfer (void)
 {
 	DMA2->Stream[0].CR |= (1 << 0);
+
+	while ( !(DMA2->LISR & (1 << 5)) );
 }
 

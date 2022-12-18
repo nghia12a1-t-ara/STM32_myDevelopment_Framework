@@ -7,6 +7,10 @@
 /*******************************************************************************
 * Definitions
 ******************************************************************************/
+typedef enum Boolean {
+	TRUE = 0x1U,
+	FALSE = 0x0U
+} Bool;
 #define TRUE 						(1U)
 #define FALSE 						(0U)
 #define QUEUE_EMPTY 				(0U)
@@ -24,8 +28,6 @@ typedef struct {
 ******************************************************************************/
 /* Initialize a Queue */
 // Queue_Types* createQueue(uint8_t Capacity);
-/* Push data to Queue */
-void Queue_Push(Queue_Types *Queue);
 /* Pop data from queue */
 void Queue_Pop(Queue_Types *Queue);
 /* Hadling push data in queue */

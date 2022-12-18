@@ -77,7 +77,7 @@ uint32 RCC_GetPCLK1Value(void)
  */
 uint32 RCC_GetPCLK2Value(void)
 {
-	uint32 SystemClock=0,tmp,pclk2;
+	uint32 SystemClock = 0, tmp = 0, pclk2 = 0;
 	uint8 clk_src = ( RCC->CFGR >> 2) & 0X3;
 
 	uint8 ahbp,apb2p;
@@ -112,7 +112,7 @@ uint32 RCC_GetPCLK2Value(void)
 	return pclk2;
 }
 
-uint32  RCC_GetPLLOutputClock()
+uint32 RCC_GetPLLOutputClock()
 {
 
 	return 0;

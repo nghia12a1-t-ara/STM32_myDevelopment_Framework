@@ -1,26 +1,40 @@
 #ifndef __NVIC_BASE_H_
 #define __NVIC_BASE_H_
 
-#include "stm32f4xx.h"
+#include "Std_Types.h"
 
-/*
- * ARM Cortex Mx Processor NVIC ISERx register Addresses
+/**
+  \ingroup    CMSIS_core_register
+  \defgroup   CMSIS_NVIC  Nested Vectored Interrupt Controller (NVIC)
+  \brief      Type definitions for the NVIC Registers
+  @{
  */
 
-#define NVIC_ISER0          ( (__vo uint32 *)0xE000E100 )
-#define NVIC_ISER1          ( (__vo uint32 *)0xE000E104 )
-#define NVIC_ISER2          ( (__vo uint32 *)0xE000E108 )
-#define NVIC_ISER3          ( (__vo uint32 *)0xE000E10c )
-
-
-/*
- * ARM Cortex Mx Processor NVIC ICERx register Addresses
+/**
+  \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
  */
-#define NVIC_ICER0 			((__vo uint32 *)0XE000E180)
-#define NVIC_ICER1			((__vo uint32 *)0XE000E184)
-#define NVIC_ICER2  		((__vo uint32 *)0XE000E188)
-#define NVIC_ICER3			((__vo uint32 *)0XE000E18C)
+typedef struct
+{
+  __IO uint32 ISER[8U];					/*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register */
+        uint32 RESERVED0[24U];
+  __IO uint32 ICER[8U];					/*!< Offset: 0x080 (R/W)  Interrupt Clear Enable Register */
+        uint32 RESERVED1[24U];
+  __IO uint32 ISPR[8U];					/*!< Offset: 0x100 (R/W)  Interrupt Set Pending Register */
+        uint32 RESERVED2[24U];
+  __IO uint32 ICPR[8U];					/*!< Offset: 0x180 (R/W)  Interrupt Clear Pending Register */
+        uint32 RESERVED3[24U];
+  __IO uint32 IABR[8U];					/*!< Offset: 0x200 (R/W)  Interrupt Active bit Register */
+        uint32 RESERVED4[56U];
+  __IO uint8  IP[240U];					/*!< Offset: 0x300 (R/W)  Interrupt Priority Register (8Bit wide) */
+        uint32_t RESERVED5[644U];
+  __O  uint32_t STIR;					/*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
+} NVIC_Types;
 
+/*!< NVIC Base Address */
+#define NVIC_BASE           (0xE000E100UL)
+
+/*!< NVIC configuration struct */
+#define NVIC                ((NVIC_Types *) NVIC_BASE)
 
 /*
  * ARM Cortex Mx Processor Priority Register Address Calculation

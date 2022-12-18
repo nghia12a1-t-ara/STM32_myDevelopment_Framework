@@ -20,10 +20,6 @@
     // return queue;
 // }
 
-/* Push data to Queue */
-void Queue_Push(Queue_Types *Queue)
-{
-}
 
 /* Pop data from queue */
 void Queue_Pop(Queue_Types *Queue)
@@ -32,7 +28,7 @@ void Queue_Pop(Queue_Types *Queue)
 	if(!Queue_IsEmpty(Queue))
 	{
 		/* Update Possitive Queue Values */
-		for (count = Queue->Front; count < Queue->Rear; count++)
+		for (count = Queue->Front; count <= Queue->Rear; count++)
 		{
 			Queue->QueueArr[(count - Queue->Front)] = Queue->QueueArr[count];
 		}
