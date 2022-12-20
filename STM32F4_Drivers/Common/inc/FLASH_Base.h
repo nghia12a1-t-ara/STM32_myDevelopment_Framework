@@ -1,3 +1,10 @@
+/**
+ * Filename		: FLASH_Base.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/12/22
+ * Brief		: Peripheral Access Layer for FLASH Driver
+ */
+ 
 #ifndef __FLASH_BASE_H_
 #define __FLASH_BASE_H_
 

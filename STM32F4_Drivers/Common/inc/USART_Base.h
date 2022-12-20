@@ -1,3 +1,10 @@
+/**
+ * Filename		: USART_Base.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/12/22
+ * Brief		: Peripheral Access Layer for USART Driver
+ */
+ 
 #ifndef __USART_BASE_H_
 #define __USART_BASE_H_
 
@@ -21,7 +28,7 @@ typedef struct
 	__vo uint32 CR2;        /*!< TODO,   Address offset: 0x10 */
 	__vo uint32 CR3;        /*!< TODO,   Address offset: 0x14 */
 	__vo uint32 GTPR;       /*!< TODO,   Address offset: 0x18 */
-} USART_Types;
+} USART_Type;
 
 
 /**
@@ -33,10 +40,10 @@ typedef struct
 #define UART4_BASEADDR					(APB1PERIPH_BASEADDR + 0x4C00)
 #define UART5_BASEADDR					(APB1PERIPH_BASEADDR + 0x5000)
 
-#define USART2  						((USART_Types*)USART2_BASEADDR)
-#define USART3  						((USART_Types*)USART3_BASEADDR)
-#define UART4  							((USART_Types*)UART4_BASEADDR)
-#define UART5  							((USART_Types*)UART5_BASEADDR)
+#define USART2  						((USART_Type*)USART2_BASEADDR)
+#define USART3  						((USART_Type*)USART3_BASEADDR)
+#define UART4  							((USART_Type*)UART4_BASEADDR)
+#define UART5  							((USART_Type*)UART5_BASEADDR)
 
 /**
  * Base addresses of peripherals which are hanging on APB2 bus
@@ -45,10 +52,10 @@ typedef struct
 #define USART1_BASEADDR					(APB2PERIPH_BASEADDR + 0x1000)
 #define USART6_BASEADDR					(APB2PERIPH_BASEADDR + 0x1400)
 
-#define USART1  						((USART_Types*)USART1_BASEADDR)
-#define USART6  						((USART_Types*)USART6_BASEADDR)
+#define USART1  						((USART_Type*)USART1_BASEADDR)
+#define USART6  						((USART_Type*)USART6_BASEADDR)
 
-#define USART_BASE_PTRS					{ (USART_Types*)0, USART1, USART2, USART3, UART4, UART5, USART6 }
+#define USART_BASE_PTRS					{ NULL_PTR, USART1, USART2, USART3, UART4, UART5, USART6 }
 
 /******************************************************************************************
  *Bit position definitions of USART peripheral
@@ -344,5 +351,7 @@ typedef struct
 #define USART_SR_CTS_WIDTH 					1u
 #define USART_SR_CTS(x) 					(((uint32_t)(((uint32_t)(x))<<USART_SR_CTS_SHIFT))&USART_SR_CTS_MASK)
 
+/* Mask for all Error Flags */
+#define USART_SR_REG_FLAGS_MASK				0x1FFu
 
 #endif	/* !(__USART_BASE_H_) */

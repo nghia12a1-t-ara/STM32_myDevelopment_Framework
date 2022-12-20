@@ -1,3 +1,10 @@
+/**
+ * Filename		: DMA_Base.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/12/22
+ * Brief		: Peripheral Access Layer for DMA Driver
+ */
+
 #ifndef __DMA_BASE_H
 #define __DMA_BASE_H
 

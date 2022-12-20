@@ -18,7 +18,7 @@
  * 			ENABLE or DISABLE macros
  * @reval	none
  */
-void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
+void GPIO_PeriClockControl(GPIO_Types *pGPIOx, uint8_t EnorDi)
 {
 	if (EnorDi == ENABLE)
 	{
@@ -153,7 +153,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
  * @param	GPIOx
  * @reval	none
  */
-void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
+void GPIO_DeInit(GPIO_Types *pGPIOx)
 {
 	if (pGPIOx == GPIOA)
 	{
@@ -188,7 +188,7 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
  * 			GPIO pin number
  * @reval	logic level of gpio pin
  */
-uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
+uint8_t GPIO_ReadFromInputPin(GPIO_Types *pGPIOx, uint8_t PinNumber)
 {
 	uint8_t value;
 
@@ -203,7 +203,7 @@ uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
  * @param	GPIO port number
  * @reval	value of gpio port
  */
-uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
+uint16_t GPIO_ReadFromInputPort(GPIO_Types *pGPIOx)
 {
 	uint16_t value;
 
@@ -220,7 +220,7 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
  * 			Value - logic level
  * @reval	none
  */
-void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value)
+void GPIO_WriteToOutputPin(GPIO_Types *pGPIOx, uint8_t PinNumber, uint8_t Value)
 {
 	if (Value == GPIO_PIN_SET)
 	{
@@ -240,7 +240,7 @@ void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Val
  * 			Value - logic level
  * @reval	none
  */
-void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
+void GPIO_WriteToOutputPort(GPIO_Types *pGPIOx, uint16_t Value)
 {
 	pGPIOx->ODR = Value;
 }
@@ -253,7 +253,7 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
  * 			Value - logic level
  * @reval	none
  */
-void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
+void GPIO_ToggleOutputPin(GPIO_Types *pGPIOx, uint8_t PinNumber)
 {
 	pGPIOx->ODR ^= (1 << PinNumber);	/* XOR logic to toggle logic level */
 }

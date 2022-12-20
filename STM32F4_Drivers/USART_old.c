@@ -258,7 +258,6 @@ void USART_PeriClockControl(USART_Type *pUSARTx, uint8 EnorDi)
 	{
 		//TODO
 	}
-
 }
 /*********************************************************************
  * @fn      		  - USART_GetFlagStatus

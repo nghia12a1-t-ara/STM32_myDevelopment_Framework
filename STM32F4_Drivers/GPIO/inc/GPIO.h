@@ -10,6 +10,7 @@
 
 #include "GPIO_Base.h"
 #include "GPIO_Types.h"
+#include "EXTI_Base.h"
 
 /******************************************************************************************
  *								APIs supported by this driver

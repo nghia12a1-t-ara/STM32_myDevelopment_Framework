@@ -1,57 +1,131 @@
-/*
- * STM32F4x_gpio_driver.h
- *
- *  Created on: 27-Nov-2018
- *      Author: kiran
+/**
+ * Filename		: USART.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/12/22
+ * Brief		: USART Function Prototypes
  */
 
 #ifndef __USART_H_
 #define __USART_H_
 
 #include "USART_Base.h"
-#include "USART_Type.h"
+#include "USART_Types.h"
 
 
 /******************************************************************************************
  *								APIs supported by this driver
  *		 For more information about the APIs check the function definitions
  ******************************************************************************************/
-/*
- * Peripheral Clock setup
+/*********************************************************************
+ * @fn      		  - USART_Init
+ *
+ * @brief             - Initialize USART Driver
+ *
+ * @param[in]         - Instance 	- USART Hardware Instance
+ * @param[in]         - UserConfig 	- USART User Configuration
+ *
+ * @return            -
+ *
+ * @Note              -
  */
-void USART_PeriClockControl(USART_Type *pUSARTx, uint8 EnOrDi);
+void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig);
 
-/*
- * Init and De-init
+/*********************************************************************
+ * @fn      		  - Usart_SyncSendData
+ *
+ * @brief             - Synchronus Send Data - Wait to send ok or timeout
+ *
+ * @param[in]         - Instance 	- USART Hardware Instance
+ * @param[in]         - TxBuff 		- Buffer to transmission
+ * @param[in]         - TxSize 		- Size of Buffer to transmission
+ * @param[in]         - Timeout 	- Timeout if data cannot transmit
+ *
+ * @return            - Usart_StatusType
+ *
+ * @Note              -
  */
-void USART_Init(USART_Type *pUSARTx, Usart_ConfigType * pUARTConfig);
-void USART_DeInit(USART_Type *pUSARTx);
+Usart_StatusType Usart_SyncSendData(const uint8 Instance,
+									const uint8 *TxBuff,
+									const uint32 TxSize,
+									const uint32 Timeout);
 
-/*
- * Data Send and Receive
+/*********************************************************************
+ * @fn      		  - Usart_AsyncSendData
+ *
+ * @brief             - Asynchronus Send Data - Send Data and no wait (Interrupt or DMA)
+ *
+ * @param[in]         - Instance 	- USART Hardware Instance
+ * @param[in]         - TxBuff 		- Buffer to transmission
+ * @param[in]         - TxSize 		- Size of Buffer to transmission
+ *
+ * @return            - Usart_StatusType
+ *
+ * @Note              -
  */
-void USART_SendData(USART_Type *pUSARTx, uint8 *pTxBuffer, uint32 Len);
-void  USART_ReceiveData(USART_Type *pUSARTx, uint8 *pRxBuffer, uint32 Len);
-uint8 USART_SendDataIT(USART_Type *pUSARTx, uint8 *pTxBuffer, uint32 Len);
-uint8 USART_ReceiveDataIT(USART_Type *pUSARTx, uint8 *pRxBuffer, uint32 Len);
-
-/*
- * IRQ Configuration and ISR handling
+Usart_StatusType Usart_AsyncSendData(const uint8 Instance,
+									const uint8 *TxBuff,
+									const uint32 TxSize);
+									
+/*********************************************************************
+ * @fn      		  - Usart_SyncReceiveData
+ *
+ * @brief             - Synchronus Receive Data - Wait to Receive ok or timeout
+ *
+ * @param[in]         - Instance 	- USART Hardware Instance
+ * @param[in]         - RxBuff 		- Buffer to Receive
+ * @param[in]         - RxSize 		- Size of Buffer to Receive
+ * @param[in]         - Timeout 	- Timeout if data cannot Receive
+ *
+ * @return            - Usart_StatusType
+ *
+ * @Note              -
  */
-void USART_IRQHandling(USART_Type *pUSARTx);
-
-/*
- * Other Peripheral Control APIs
+Usart_StatusType Usart_SyncReceiveData(const uint8 Instance,
+                                       uint8 *RxBuff,
+                                       const uint32 RxSize,
+                                       const uint32 Timeout);
+									   
+/*********************************************************************
+ * @fn      		  - Usart_AsyncReceiveData
+ *
+ * @brief             - Asynchronus Receive Data - Receive Data and no wait (Interrupt or DMA)
+ *
+ * @param[in]         - Instance 	- USART Hardware Instance
+ * @param[in]         - RxBuff 		- Buffer to Receive
+ * @param[in]         - RxSize 		- Size of Buffer to Receive
+ *
+ * @return            - Usart_StatusType
+ *
+ * @Note              -
  */
+Usart_StatusType Usart_AsyncReceiveData(const uint8 Instance,
+                                        uint8 * RxBuff,
+                                        const uint32 RxSize);
 
-uint8 USART_GetFlagStatus(USART_Type *pUSARTx, uint8 StatusFlagName);
-void USART_ClearFlag(USART_Type *pUSARTx, uint16 StatusFlagName);
-void USART_SetBaudRate(USART_Type *pUSARTx, uint32 BaudRate);
-
-/*
- * Application Callbacks
+/*********************************************************************
+ * @fn      		  - USART_SetBaudRate
+ *
+ * @brief             - Setting Baudrate for USART Driver
+ *
+ * @param[in]         - Instance - number of Hardware Instance
+ * @param[in]         - BaudRate
+ *
+ * @return            -
+ *
+ * @Note              -
  */
-void USART_ApplicationEventCallback(USART_Type *pUSARTx,uint8 ApEv);
+void Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate);
+
+/*******************************************************************************
+ *
+ * Function Name : Usart_IrqHandler
+ * Description   : Interrupt handler for USART.
+ * This handler uses the buffers stored in the Usart_StateStructureType structs to transfer
+ * data. This is not a public API as it is called by IRQ whenever an interrupt
+ * occurs.
+ *
+ *****************************************************************************/
+void Usart_IrqHandler(const uint8 Instance);
 
 
 #endif /* __USART_H_ */

@@ -19,11 +19,6 @@
    ---------------------------------------------------------------------------- */
 #include "Std_Types.h"
 
-/*!
- * @addtogroup SCB_Peripheral_Access_Layer SCB Peripheral Access Layer
- * @{
- */
-
 /** SCB - Size of Registers Arrays */
 #define SCB_ID_MMFR_COUNT                    4u
 #define SCB_ID_ISAR_COUNT                    5u
@@ -33,28 +28,28 @@
 /** SCB - Register Layout Typedef */
 typedef struct {
        uint8_t RESERVED_0[8];
-  __IO uint32_t ACTLR;                             /**< Auxiliary Control Register, offset: 0x8 */
+  __IO uint32_t ACTLR;                             	/**< Auxiliary Control Register, offset: 0x8 */
        uint8_t RESERVED_1[3316];
-  __I  uint32_t CPUID;                             /**< CPUID Base Register, offset: 0xD00 */
-  __IO uint32_t ICSR;                              /**< Interrupt Control and State Register, offset: 0xD04 */
-  __IO uint32_t VTOR;                              /**< Vector Table Offset Register, offset: 0xD08 */
-  __IO uint32_t AIRCR;                             /**< Application Interrupt and Reset Control Register, offset: 0xD0C */
-  __IO uint32_t SCR;                               /**< System Control Register, offset: 0xD10 */
-  __IO uint32_t CCR;                               /**< Configuration and Control Register, offset: 0xD14 */
-  __IO uint32_t SHPR1;                             /**< System Handler Priority Register 1, offset: 0xD18 */
-  __IO uint32_t SHPR2;                             /**< System Handler Priority Register 2, offset: 0xD1C */
-  __IO uint32_t SHPR3;                             /**< System Handler Priority Register 3, offset: 0xD20 */
-  __IO uint32_t SHCSR;                             /**< System Handler Control and State Register, offset: 0xD24 */
-  __IO uint32_t CFSR;                              /**< Configurable Fault Status Registers, offset: 0xD28 */
-  __IO uint32_t HFSR;                              /**< HardFault Status Register, offset: 0xD2C */
-  __IO uint32_t DFSR;                              /**< Debug Fault Status Register, offset: 0xD30 */
-  __IO uint32_t MMFAR;                             /**< Memanage Fault Address Register, offset: 0xD34 */
-  __IO uint32_t BFAR;                              /**< BusFault Address Registerd, offset: 0xD38 */
-  __IO uint32_t AFSR;                              /**< Auxiliary Fault Status Register, offset: 0xD3C */
-  __I  uint32_t ID_PFR0;                           /**< Processor Feature Register 0, offset: 0xD40 */
-  __I  uint32_t ID_PFR1;                           /**< Processor Feature Register 1, offset: 0xD44 */
-  __I  uint32_t ID_DFR0;                           /**< Debug Feature Register 0, offset: 0xD48 */
-  __I  uint32_t ID_AFR0;                           /**< Auxiliary Feature Register 0, offset: 0xD4C */
+  __I  uint32_t CPUID;                             	/**< CPUID Base Register, offset: 0xD00 */
+  __IO uint32_t ICSR;                              	/**< Interrupt Control and State Register, offset: 0xD04 */
+  __IO uint32_t VTOR;                              	/**< Vector Table Offset Register, offset: 0xD08 */
+  __IO uint32_t AIRCR;                             	/**< Application Interrupt and Reset Control Register, offset: 0xD0C */
+  __IO uint32_t SCR;                               	/**< System Control Register, offset: 0xD10 */
+  __IO uint32_t CCR;                               	/**< Configuration and Control Register, offset: 0xD14 */
+  __IO uint32_t SHP[3];                             /**< System Handler Priority Register 1, offset: 0xD18 */
+													/**< System Handler Priority Register 2, offset: 0xD1C */
+													/**< System Handler Priority Register 3, offset: 0xD20 */
+  __IO uint32_t SHCSR;                             	/**< System Handler Control and State Register, offset: 0xD24 */
+  __IO uint32_t CFSR;                              	/**< Configurable Fault Status Registers, offset: 0xD28 */
+  __IO uint32_t HFSR;                              	/**< HardFault Status Register, offset: 0xD2C */
+  __IO uint32_t DFSR;                              	/**< Debug Fault Status Register, offset: 0xD30 */
+  __IO uint32_t MMFAR;                             	/**< Memanage Fault Address Register, offset: 0xD34 */
+  __IO uint32_t BFAR;                              	/**< BusFault Address Registerd, offset: 0xD38 */
+  __IO uint32_t AFSR;                              	/**< Auxiliary Fault Status Register, offset: 0xD3C */
+  __I  uint32_t ID_PFR0;                           	/**< Processor Feature Register 0, offset: 0xD40 */
+  __I  uint32_t ID_PFR1;                           	/**< Processor Feature Register 1, offset: 0xD44 */
+  __I  uint32_t ID_DFR0;                           	/**< Debug Feature Register 0, offset: 0xD48 */
+  __I  uint32_t ID_AFR0;                           	/**< Auxiliary Feature Register 0, offset: 0xD4C */
   __I  uint32_t ID_MMFR[SCB_ID_MMFR_COUNT];    /**< Memory Model Feature Register 0..Memory Model Feature Register 3, array offset: 0xD50, array step: 0x4 */
   __I  uint32_t ID_ISAR[SCB_ID_ISAR_COUNT];    /**< Instruction Set Attributes Register 0..Instruction Set Attributes Register 4, array offset: 0xD60, array step: 0x4 */
        uint8_t RESERVED_2[4];
@@ -115,11 +110,6 @@ typedef struct {
 /* ----------------------------------------------------------------------------
    -- SCB Register Masks
    ---------------------------------------------------------------------------- */
-
-/*!
- * @addtogroup SCB_Register_Masks SCB Register Masks
- * @{
- */
 
 /* ACTLR Bit Fields */
 #define SCB_ACTLR_ACTLR_MASK                 0xFFFFFFFFu
@@ -392,13 +382,4 @@ typedef struct {
 #define SCB_ID_PFR0_ID_PFR0_WIDTH            32u
 #define SCB_ID_PFR0_ID_PFR0(x)               (((uint32_t)(((uint32_t)(x))<<SCB_ID_PFR0_ID_PFR0_SHIFT))&SCB_ID_PFR0_ID_PFR0_MASK)
 
-/*!
- * @}
- */ /* end of group SCB_Register_Masks */
-
-/*!
- * @}
- */ /* end of group SCB_Peripheral_Access_Layer */
-
 #endif  /* #if !defined(SCB_ADDRESS_H_) */
-

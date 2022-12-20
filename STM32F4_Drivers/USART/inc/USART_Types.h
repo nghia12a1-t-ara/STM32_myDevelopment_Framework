@@ -1,3 +1,10 @@
+/**
+ * Filename		: USART_Types.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/12/22
+ * Brief		: USART definitions and types
+ */
+ 
 #ifndef __USART_Type_H_
 #define __USART_Type_H_
 
@@ -12,6 +19,11 @@
 #define USART_9BITS_DATA_MASK				(uint16)0x01FFu
 #define USART_8BITS_DATA_MASK				(uint8)0xFFu
 #define USART_7BITS_DATA_MASK				(uint8)0x7Fu
+
+/* Default timeout is 100us */
+#ifndef USART_TIMEOUT_VALUE_US
+	#define USART_TIMEOUT_VALUE_US			100u
+#endif
 
 /*
  * Application states
@@ -50,19 +62,19 @@ typedef enum
  *Possible options for USART_Baud
  */
 typedef enum
-{ 
-	USART_STD_BAUD_1200		= 1200,
-	USART_STD_BAUD_2400		= 2400,
-	USART_STD_BAUD_9600		= 9600,
-	USART_STD_BAUD_19200 	= 19200,
-	USART_STD_BAUD_38400 	= 38400,
-	USART_STD_BAUD_57600 	= 57600,
-	USART_STD_BAUD_115200 	= 115200,
-	USART_STD_BAUD_230400 	= 230400,
-	USART_STD_BAUD_460800 	= 460800,
-	USART_STD_BAUD_921600 	= 921600,
-	USART_STD_BAUD_2M 		= 2000000,
-	USART_STD_BAUD_3M 		= 3000000
+{
+	USART_STD_BAUD_1200		= 1200ul,
+	USART_STD_BAUD_2400		= 2400ul,
+	USART_STD_BAUD_9600		= 9600ul,
+	USART_STD_BAUD_19200 	= 19200ul,
+	USART_STD_BAUD_38400 	= 38400ul,
+	USART_STD_BAUD_57600 	= 57600ul,
+	USART_STD_BAUD_115200 	= 115200ul,
+	USART_STD_BAUD_230400 	= 230400ul,
+	USART_STD_BAUD_460800 	= 460800ul,
+	USART_STD_BAUD_921600 	= 921600ul,
+	USART_STD_BAUD_2M 		= 2000000ul,
+	USART_STD_BAUD_3M 		= 3000000ul
 } Usart_BaudrateType;
 
 /*
@@ -105,11 +117,10 @@ typedef enum
  */
 typedef enum
 {
-	USART_EVENT_TX_CMPLT   	= 0U,
-	USART_EVENT_RX_CMPLT   	= 1U,
-	USART_EVENT_IDLE      	= 2U,
-	USART_EVENT_CTS       	= 3U,
-	USART_EVENT_PE        	= 4U
+    USART_EVENT_RX_FULL      = 0x00U,    	/**< @brief Rx buffer is full */
+    USART_EVENT_TX_EMPTY     = 0x01U,    	/**< @brief Tx buffer is empty */
+    USART_EVENT_END_TRANSFER = 0x02U,    	/**< @brief The current transfer is ending */
+    USART_EVENT_ERROR        = 0x03U,    	/**< @brief An error occured during transfer */
 } Usart_EventType;
 
 /**
@@ -132,7 +143,10 @@ typedef enum
     USART_STATUS_TIMEOUT                    = 0x03U,  		/**< @brief Timeout status */
     USART_STATUS_TX_UNDERRUN                = 0x04U,  		/**< @brief TX underrun error */
     USART_STATUS_RX_OVERRUN                 = 0x05U,  		/**< @brief RX overrun error */
-    USART_STATUS_DMA_ERROR                  = 0x06U  		/**< @brief DMA error */
+    USART_STATUS_FRAMING_ERROR              = 0x06U,  		/**< @brief Frame error */
+    USART_STATUS_PARITY_ERROR               = 0x07U,  		/**< @brief Parity error */
+    USART_STATUS_NOISE_ERROR               	= 0x07U,  		/**< @brief Noise error */
+    USART_STATUS_DMA_ERROR                  = 0x10U  		/**< @brief DMA error */
 } Usart_StatusType;
 
 /**

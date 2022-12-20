@@ -2,344 +2,134 @@
 #include "NVIC.h"
 
 /****************************************************************************/
-/****************************** GPIO INTERRUPT ******************************/
-/****************************************************************************/
-/*
- * @func	GPIO_IRQConfig
- * @brief	Configure the IRQ Number
- * @param	IRQ Number
- * 			IRQ Priority
- * 			EnorDi - ENABLE or DISABLE IRQ Number
- * @reval	none
- */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
-{
-	if (EnorDi == ENABLE)
-	{
-		if (IRQNumber <= 31)
-		{
-			/* Program ISER0 Register */
-			*NVIC_ISER0 |= (1 << IRQNumber);
-		}
-		else if (IRQNumber > 31 && IRQNumber < 64)	/* 32 to 63 */
-		{
-			/* Program ISER1 Register */
-			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
-		}
-		else if (IRQNumber >= 64 && IRQNumber < 96)	/* 64 to 95 */
-		{
-			/* Program ISER2 Register */
-			*NVIC_ISER3 |= (1 << (IRQNumber % 64));
-		}
-	}
-	else
-	{
-		if (IRQNumber <= 31)
-		{
-			/* Program ICER0 Register */
-			*NVIC_ICER0 |= (1 << IRQNumber);
-		}
-		else if (IRQNumber > 31 && IRQNumber < 64)	/* 32 to 63 */
-		{
-			/* Program ICER1 Register */
-			*NVIC_ICER1 |= (1 << (IRQNumber % 32));
-		}
-		else if (IRQNumber >= 64 && IRQNumber < 96)	/* 64 to 95 */
-		{
-			/* Program ICER2 Register */
-			*NVIC_ICER3 |= (1 << (IRQNumber % 64));
-		}
-	}
-}
-
-
-/*
- * @func	GPIO_IRQPriorityConfig
- * @brief	Configure the IRQ Priority
- * @param	IRQ Number
- * 			IRQ Priority
- * @reval	none
- */
-void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
-{
-	/* 1. First lets find out the ipr register */
-	uint8_t iprx = IRQNumber / 4;
-	uint8_t iprx_section = IRQNumber % 4;
-
-	uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
-	*(NVIC_PR_BASE_ADDR + (iprx * 4)) |= (IRQPriority << shift_amount);
-}
-
-
-/*
- * @func	GPIO_IRQHandling
- * @brief
- * @param	IRQ Number
- * @reval	none
- */
-void GPIO_IRQHandling(uint8_t PinNumber)
-{
-	/* Clear the EXTI PR (pending register) corresponding to the pin number */
-	if (EXTI->PR & (1 << PinNumber))
-	{
-		EXTI->PR |= (1 << PinNumber);	/* Clear PR bit */
-	}
-}
-
-
-/****************************************************************************/
-/******************************* SPI INTERRUPT ******************************/
-/****************************************************************************/
+/* ##########################   NVIC functions  #################################### */
 /**
- * @fn      		  - SPI_IRQInterruptConfig
- *
- * @brief             -
- *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
+  \ingroup  CMSIS_Core_FunctionInterface
+  \defgroup CMSIS_Core_NVICFunctions NVIC Functions
+  \brief    Functions that manage interrupts and exceptions via the NVIC.
+  @{
  */
-void SPI_IRQInterruptConfig(uint8 IRQNumber, uint8 EnorDi)
-{
-
-	if(EnorDi == ENABLE)
-	{
-		if(IRQNumber <= 31)
-		{
-			//program ISER0 register
-			*NVIC_ISER0 |= ( 1 << IRQNumber );
-
-		}else if(IRQNumber > 31 && IRQNumber < 64 ) //32 to 63
-		{
-			//program ISER1 register
-			*NVIC_ISER1 |= ( 1 << (IRQNumber % 32) );
-		}
-		else if(IRQNumber >= 64 && IRQNumber < 96 )
-		{
-			//program ISER2 register //64 to 95
-			*NVIC_ISER3 |= ( 1 << (IRQNumber % 64) );
-		}
-	}else
-	{
-		if(IRQNumber <= 31)
-		{
-			//program ICER0 register
-			*NVIC_ICER0 |= ( 1 << IRQNumber );
-		}else if(IRQNumber > 31 && IRQNumber < 64 )
-		{
-			//program ICER1 register
-			*NVIC_ICER1 |= ( 1 << (IRQNumber % 32) );
-		}
-		else if(IRQNumber >= 6 && IRQNumber < 96 )
-		{
-			//program ICER2 register
-			*NVIC_ICER3 |= ( 1 << (IRQNumber % 64) );
-		}
-	}
-
-}
-
-
-/*********************************************************************
- * @fn      		  - SPI_IRQPriorityConfig
- *
- * @brief             -
- *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
- */
-void SPI_IRQPriorityConfig(uint8 IRQNumber,uint32 IRQPriority)
-{
-	//1. first lets find out the ipr register
-	uint8 iprx = IRQNumber / 4;
-	uint8 iprx_section  = IRQNumber %4 ;
-
-	uint8 shift_amount = ( 8 * iprx_section) + ( 8 - NO_PR_BITS_IMPLEMENTED) ;
-
-	*(  NVIC_PR_BASE_ADDR + iprx ) |=  ( IRQPriority << shift_amount );
-
-}
-
-
-/****************************************************************************/
-/******************************* I2C INTERRUPT ******************************/
-/****************************************************************************/
-/**
- * @fn      		  - I2C_IRQInterruptConfig
- *
- * @brief             -
- *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
- */
-void I2C_IRQInterruptConfig(uint8 IRQNumber, uint8 EnorDi)
-{
-
-	if(EnorDi == ENABLE)
-	{
-		if(IRQNumber <= 31)
-		{
-			//program ISER0 register
-			*NVIC_ISER0 |= ( 1 << IRQNumber );
-
-		}else if(IRQNumber > 31 && IRQNumber < 64 ) //32 to 63
-		{
-			//program ISER1 register
-			*NVIC_ISER1 |= ( 1 << (IRQNumber % 32) );
-		}
-		else if(IRQNumber >= 64 && IRQNumber < 96 )
-		{
-			//program ISER2 register //64 to 95
-			*NVIC_ISER3 |= ( 1 << (IRQNumber % 64) );
-		}
-	}else
-	{
-		if(IRQNumber <= 31)
-		{
-			//program ICER0 register
-			*NVIC_ICER0 |= ( 1 << IRQNumber );
-		}else if(IRQNumber > 31 && IRQNumber < 64 )
-		{
-			//program ICER1 register
-			*NVIC_ICER1 |= ( 1 << (IRQNumber % 32) );
-		}
-		else if(IRQNumber >= 6 && IRQNumber < 96 )
-		{
-			//program ICER2 register
-			*NVIC_ICER3 |= ( 1 << (IRQNumber % 64) );
-		}
-	}
-
-}
-
-
-/*********************************************************************
- * @fn      		  - I2C_IRQPriorityConfig
- *
- * @brief             -
- *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
- */
-void I2C_IRQPriorityConfig(uint8 IRQNumber,uint32 IRQPriority)
-{
-	//1. first lets find out the ipr register
-	uint8 iprx = IRQNumber / 4;
-	uint8 iprx_section  = IRQNumber %4 ;
-
-	uint8 shift_amount = ( 8 * iprx_section) + ( 8 - NO_PR_BITS_IMPLEMENTED) ;
-
-	*(  NVIC_PR_BASE_ADDR + iprx ) |=  ( IRQPriority << shift_amount );
-
-}
-
-
-/****************************************************************************/
-/****************************** USART INTERRUPT *****************************/
-/****************************************************************************/
 
 /**
- * @fn      		  - USART_IRQInterruptConfig
- *
- * @brief             -
- *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
+  \brief   Enable External Interrupt
+  \details Enables a device-specific interrupt in the NVIC interrupt controller.
+  \param [in]      IRQn  External interrupt number. Value cannot be negative.
  */
-void USART_IRQInterruptConfig(uint8 IRQNumber, uint8 EnorDi)
+void NVIC_EnableIRQ(IRQn_Type IRQn)
 {
-
-	if ( EnorDi == ENABLE )
-	{
-		if ( IRQNumber <= 31 )
-		{
-			//program ISER0 register
-			*NVIC_ISER0 |= ( 1 << IRQNumber );
-
-		}
-		else if( IRQNumber > 31 && IRQNumber < 64 ) //32 to 63
-		{
-			//program ISER1 register
-			*NVIC_ISER1 |= ( 1 << (IRQNumber % 32) );
-		}
-		else if ( IRQNumber >= 64 && IRQNumber < 96 )
-		{
-			//program ISER2 register //64 to 95
-			*NVIC_ISER3 |= ( 1 << (IRQNumber % 64) );
-		}
-	}
-	else
-	{
-		if ( IRQNumber <= 31 )
-		{
-			//program ICER0 register
-			*NVIC_ICER0 |= ( 1 << IRQNumber );
-		}
-		else if ( (IRQNumber > 31) && (IRQNumber < 64) )
-		{
-			//program ICER1 register
-			*NVIC_ICER1 |= ( 1 << (IRQNumber % 32) );
-		}
-		else if ( (IRQNumber >= 6) && (IRQNumber < 96) )
-		{
-			//program ICER2 register
-			*NVIC_ICER3 |= ( 1 << (IRQNumber % 64) );
-		}
-	}
+  NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
 }
 
 
-/*********************************************************************
- * @fn      		  - USART_IRQPriorityConfig
- *
- * @brief             -
- *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
+/**
+  \brief   Disable External Interrupt
+  \details Disables a device-specific interrupt in the NVIC interrupt controller.
+  \param [in]      IRQn  External interrupt number. Value cannot be negative.
  */
-void USART_IRQPriorityConfig(uint8 IRQNumber,uint32 IRQPriority)
+void NVIC_DisableIRQ(IRQn_Type IRQn)
 {
-	//1. first lets find out the ipr register
-	uint8 iprx = IRQNumber / 4;
-	uint8 iprx_section  = IRQNumber %4 ;
+  NVIC->ICER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+}
 
-	uint8 shift_amount = ( 8 * iprx_section) + ( 8 - NO_PR_BITS_IMPLEMENTED) ;
 
-	*(  NVIC_PR_BASE_ADDR + iprx ) |=  ( IRQPriority << shift_amount );
+/**
+  \brief   Get Pending Interrupt
+  \details Reads the pending register in the NVIC and returns the pending bit for the specified interrupt.
+  \param [in]      IRQn  Interrupt number.
+  \return             0  Interrupt status is not pending.
+  \return             1  Interrupt status is pending.
+ */
+uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)
+{
+  return((uint32_t)(((NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
+}
+
+
+/**
+  \brief   Set Pending Interrupt
+  \details Sets the pending bit of an external interrupt.
+  \param [in]      IRQn  Interrupt number. Value cannot be negative.
+ */
+void NVIC_SetPendingIRQ(IRQn_Type IRQn)
+{
+  NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+}
+
+
+/**
+  \brief   Clear Pending Interrupt
+  \details Clears the pending bit of an external interrupt.
+  \param [in]      IRQn  External interrupt number. Value cannot be negative.
+ */
+void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
+{
+  NVIC->ICPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+}
+
+
+/**
+  \brief   Get Active Interrupt
+  \details Reads the active register in NVIC and returns the active bit.
+  \param [in]      IRQn  Interrupt number.
+  \return             0  Interrupt status is not active.
+  \return             1  Interrupt status is active.
+ */
+uint32_t NVIC_GetActive(IRQn_Type IRQn)
+{
+  return((uint32_t)(((NVIC->IABR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
+}
+
+
+/**
+  \brief   Set Interrupt Priority
+  \details Sets the priority of an interrupt.
+  \note    The priority cannot be set for every core interrupt.
+  \param [in]      IRQn  Interrupt number.
+  \param [in]  priority  Priority to set.
+ */
+void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
+{
+  if ((int32_t)(IRQn) < 0)
+  {
+    SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+  }
+  else
+  {
+    NVIC->IP[((uint32_t)(int32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+  }
+}
+
+
+/**
+  \brief   Get Interrupt Priority
+  \details Reads the priority of an interrupt.
+           The interrupt number can be positive to specify an external (device specific) interrupt,
+           or negative to specify an internal (core) interrupt.
+  \param [in]   IRQn  Interrupt number.
+  \return             Interrupt Priority.
+                      Value is aligned automatically to the implemented priority bits of the microcontroller.
+ */
+uint32_t NVIC_GetPriority(IRQn_Type IRQn)
+{
+
+  if ((int32_t)(IRQn) < 0)
+  {
+    return(((uint32_t)SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] >> (8U - __NVIC_PRIO_BITS)));
+  }
+  else
+  {
+    return(((uint32_t)NVIC->IP[((uint32_t)(int32_t)IRQn)]               >> (8U - __NVIC_PRIO_BITS)));
+  }
+}
+
+/**
+  \brief   Software Trigger Interrupt
+  \details Trigger a dummy interrupt by software
+  \param [in]      IRQn  Interrupt number.
+  \return          None
+ */
+void NVIC_TriggerInterrupt(IRQn_Type IRQn)
+{
+	NVIC->STIR = (IRQn & 0xFF);
 }
 
