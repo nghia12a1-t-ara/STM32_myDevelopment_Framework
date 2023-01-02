@@ -1,17 +1,16 @@
 /**
- * Filename		: USART_Types.h
+ * Filename		: USART_Type.h
  * Author		: Nghia Taarabt
  * Create Date 	: 18/12/22
  * Brief		: USART definitions and types
  */
  
-#ifndef __USART_Type_H_
-#define __USART_Type_H_
+#ifndef __USART_TYPE_H__
+#define __USART_TYPE_H__
 
-/*
+/**
  * USART flags
  */
-
 #define USART_FLAG_TXE 						( 1 << USART_SR_TXE )
 #define USART_FLAG_RXNE 					( 1 << USART_SR_RXNE )
 #define USART_FLAG_TC 						( 1 << USART_SR_TC )
@@ -20,12 +19,14 @@
 #define USART_8BITS_DATA_MASK				(uint8)0xFFu
 #define USART_7BITS_DATA_MASK				(uint8)0x7Fu
 
-/* Default timeout is 100us */
+/**
+ * Default timeout is 100us
+ */
 #ifndef USART_TIMEOUT_VALUE_US
 	#define USART_TIMEOUT_VALUE_US			100u
 #endif
 
-/*
+/**
  * Application states
  */
 #define USART_READY 	 					0U
@@ -36,80 +37,80 @@
 #define	USART_ERR_NE    					6U
 #define	USART_ERR_ORE    					7U
 
-/*
+/**
  *@USART_Mode
  *Possible options for USART_Mode
  */
 typedef enum
 {
-	USART_MODE_ONLY_TX 		= 0u,
-	USART_MODE_ONLY_RX		= 1u,
-	USART_MODE_TXRX			= 2u
+	USART_MODE_ONLY_TX 						= 0u,
+	USART_MODE_ONLY_RX						= 1u,
+	USART_MODE_TXRX							= 2u
 } Usart_TransferModeType;
 
-/*
+/**
  *@USART_WordLength
  *Possible options for USART_WordLength
  */
 typedef enum
 { 
-	USART_WORDLEN_8BITS 	= 0u,
-	USART_WORDLEN_9BITS		= 1u
+	USART_WORDLEN_8BITS 					= 0u,
+	USART_WORDLEN_9BITS						= 1u
 } Usart_WordLenType;
 
-/*
+/**
  *@USART_Baud
  *Possible options for USART_Baud
  */
 typedef enum
 {
-	USART_STD_BAUD_1200		= 1200ul,
-	USART_STD_BAUD_2400		= 2400ul,
-	USART_STD_BAUD_9600		= 9600ul,
-	USART_STD_BAUD_19200 	= 19200ul,
-	USART_STD_BAUD_38400 	= 38400ul,
-	USART_STD_BAUD_57600 	= 57600ul,
-	USART_STD_BAUD_115200 	= 115200ul,
-	USART_STD_BAUD_230400 	= 230400ul,
-	USART_STD_BAUD_460800 	= 460800ul,
-	USART_STD_BAUD_921600 	= 921600ul,
-	USART_STD_BAUD_2M 		= 2000000ul,
-	USART_STD_BAUD_3M 		= 3000000ul
+	USART_STD_BAUD_1200						= 1200ul,
+	USART_STD_BAUD_2400						= 2400ul,
+	USART_STD_BAUD_9600						= 9600ul,
+	USART_STD_BAUD_19200 					= 19200ul,
+	USART_STD_BAUD_38400 					= 38400ul,
+	USART_STD_BAUD_57600 					= 57600ul,
+	USART_STD_BAUD_115200 					= 115200ul,
+	USART_STD_BAUD_230400 					= 230400ul,
+	USART_STD_BAUD_460800 					= 460800ul,
+	USART_STD_BAUD_921600 					= 921600ul,
+	USART_STD_BAUD_2M 						= 2000000ul,
+	USART_STD_BAUD_3M 						= 3000000ul
 } Usart_BaudrateType;
 
-/*
- *@USART_ParityControl
- *Possible options for USART_ParityControl
+/**
+ * @USART_ParityControl
+ * Possible options for USART_ParityControl
  */
 typedef enum
 {
-	USART_PARITY_DISABLE 	= 0u,
-	USART_PARITY_EN_EVEN	= 1u,
-	USART_PARITY_EN_ODD		= 2u
+	USART_PARITY_DISABLE 					= 0u,
+	USART_PARITY_EN_EVEN					= 1u,
+	USART_PARITY_EN_ODD						= 2u
 } Usart_ParityType;
 
-/*
- *@USART_NoOfStopBits
- *Possible options for USART_NoOfStopBits
+/**
+ * @USART_NoOfStopBits
+ * Possible options for USART_NoOfStopBits
  */
 typedef enum
 {
-	USART_STOPBITS_1 		= 0u,
-	USART_STOPBITS_0_5		= 1u,
-	USART_STOPBITS_2		= 2u,
-	USART_STOPBITS_1_5		= 3u
+	USART_STOPBITS_1 						= 0u,
+	USART_STOPBITS_0_5						= 1u,
+	USART_STOPBITS_2						= 2u,
+	USART_STOPBITS_1_5						= 3u
 } Usart_StopBitsType;
 
-/*
- *@USART_HWFlowControl
- *Possible options for USART_HWFlowControl
+/**
+ * @USART_HWFlowControl
+ * Possible options for USART_HWFlowControl
  */
 typedef enum
 {
-	USART_HW_FLOW_CTRL_NONE 	= 0u,
-	USART_HW_FLOW_CTRL_CTS  	= 1u,
-	USART_HW_FLOW_CTRL_RTS		= 2u,
-	USART_HW_FLOW_CTRL_CTS_RTS	= 3u
+	USART_HW_FLOW_CTRL_NONE 				= 0u,
+	USART_HW_FLOW_CTRL_CTS  				= 1u,
+	USART_HW_FLOW_CTRL_RTS					= 2u,
+	USART_HW_FLOW_CTRL_CTS_RTS				= 3u
 } Usart_HardwareFlowType;
 
 /**
@@ -117,10 +118,10 @@ typedef enum
  */
 typedef enum
 {
-    USART_EVENT_RX_FULL      = 0x00U,    	/**< @brief Rx buffer is full */
-    USART_EVENT_TX_EMPTY     = 0x01U,    	/**< @brief Tx buffer is empty */
-    USART_EVENT_END_TRANSFER = 0x02U,    	/**< @brief The current transfer is ending */
-    USART_EVENT_ERROR        = 0x03U,    	/**< @brief An error occured during transfer */
+    USART_EVENT_RX_FULL      				= 0x00U,    	/**< @brief Rx buffer is full */
+    USART_EVENT_TX_EMPTY     				= 0x01U,    	/**< @brief Tx buffer is empty */
+    USART_EVENT_END_TRANSFER 				= 0x02U,    	/**< @brief The current transfer is ending */
+    USART_EVENT_ERROR        				= 0x03U,    	/**< @brief An error occured during transfer */
 } Usart_EventType;
 
 /**
@@ -128,12 +129,12 @@ typedef enum
  */
 typedef enum
 {
-    USART_USING_DMA         = 0U,    /**< @brief The driver will use DMA to perform UART transfer */
-    USART_USING_INTERRUPTS  = 1U     /**< @brief The driver will use interrupts to perform UART transfer */
+    USART_USING_DMA         				= 0U,    /**< @brief The driver will use DMA to perform UART transfer */
+    USART_USING_INTERRUPTS  				= 1U     /**< @brief The driver will use interrupts to perform UART transfer */
 } Usart_TransferType;
 
 /**
- * Driver status type.
+ * @brief Driver status type.
  * */
 typedef enum
 {
@@ -161,8 +162,8 @@ typedef void (*Usart_CallbackType)(const uint8 HwInstance,
 /****************************************************************************************/
 /******************************* Data Structure USART ***********************************/
 
-/*
- * Usart_StateRuntimeType - Runtime States of USART Driver
+/**
+ * @Usart_StateRuntimeType - Runtime States of USART Driver
  */
 typedef struct
 {
@@ -177,8 +178,8 @@ typedef struct
     volatile Usart_StatusType 		ReceiveStatus;      			/**< @brief Status of last driver receive operation */
 } Usart_StateRuntimeType;
 
-/*
- * Usart_UserConfigType - Used when Initialize USART Peripheral
+/**
+ * @Usart_UserConfigType - Used when Initialize USART Peripheral
  */
 typedef struct
 {
@@ -199,4 +200,4 @@ typedef struct
     Usart_StateRuntimeType 			* StateStruct;
 } Usart_UserConfigType;
 
-#endif 	/* !(__USART_Type_H_) */
+#endif 	/* !(__USART_TYPE_H__) */

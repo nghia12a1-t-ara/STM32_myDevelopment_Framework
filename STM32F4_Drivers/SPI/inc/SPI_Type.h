@@ -1,5 +1,5 @@
-#ifndef __SPI_TYPES_
-#define __SPI_TYPES_
+#ifndef __SPI_TYPE_H__
+#define __SPI_TYPE_H__
 
 /*
  *  Configuration structure for SPIx peripheral
@@ -21,7 +21,7 @@ typedef struct
  */
 typedef struct
 {
-	SPI_Types 	*pSPIx;   /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
+	SPI_Type 	*pSPIx;   /*!< This holds the base address of SPIx(x:0,1,2) peripheral >*/
 	SPI_Config_t 	SPIConfig;
 	uint8 		*pTxBuffer; /* !< To store the app. Tx buffer address > */
 	uint8 		*pRxBuffer;	/* !< To store the app. Rx buffer address > */
@@ -104,4 +104,4 @@ typedef struct
 #define SPI_BUSY_FLAG   				( 1 << SPI_SR_BSY)
 
 
-#endif 	/* !(__SPI_TYPES_) */
+#endif 	/* !(__SPI_TYPE_H__) */

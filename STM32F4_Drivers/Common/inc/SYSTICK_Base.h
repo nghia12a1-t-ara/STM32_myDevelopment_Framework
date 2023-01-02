@@ -9,7 +9,7 @@
 #if !defined(__SYSTICK_BASE_H__)  /* Check if memory map has not been already included */
 #define __SYSTICK_BASE_H__
 
-#include "Std_Types.h"
+#include "Std_Type.h"
 
 /* ----------------------------------------------------------------------------
    -- SysTick Peripheral Access Layer

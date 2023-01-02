@@ -15,14 +15,14 @@ typedef struct
 	__vo uint32 CMPCR;        /*!< TODO         								  Address offset: 0x20      */
 	uint32      RESERVED2[2];  /*!<                                             Reserved, 0x24-0x28 	    */
 	__vo uint32 CFGR;         /*!< TODO                                         Address offset: 0x2C   	*/
-} SYSCFG_Types;
+} SYSCFG_Type;
 
 /*
  * Base addresses of peripherals which are hanging on APB2 bus
  * TODO : Complete for all other peripherals
  */
 #define SYSCFG_BASEADDR					(APB2PERIPH_BASEADDR + 0x3800)
-#define SYSCFG							((SYSCFG_Types*)SYSCFG_BASEADDR)
+#define SYSCFG							((SYSCFG_Type*)SYSCFG_BASEADDR)
 
 
 #endif	/* !(__SYSCFG_BASE_H_) */

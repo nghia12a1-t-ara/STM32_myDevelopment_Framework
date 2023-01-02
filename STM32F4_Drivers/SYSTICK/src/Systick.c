@@ -11,8 +11,12 @@
 #define SYSTICK_DELTA_OUTER(high, low, max) 	((max) - ((high) - (low)))
 #define SYSTICK_DELTA_INNER(high, low) 			((high) - (low))
 #define SYSTICK_MAX 							(0xFFFFFFu)
+#define SYSTICK_MAX_DELAY 						(0xFFFFFFFFu)
 
 #define SYSTICK_OVERFLOWED(curr, ref) 			(curr > ref)
+
+__IO uint32 uwTick;
+Systick_FreqType uwTickFreq = SYSTICK_FREQ_DEFAULT;		/* 1KHz */
 
 /**
  * @fn		Systick_Init
@@ -65,7 +69,7 @@ uint32 Systick_GetElapsed(uint32 * const CurrentRef)
  */
 uint32 Systick_MicrosToTicks(uint32 Micros)
 {
-    uint64 interim;
+    uint64 interim = 0;
     uint32 ticks = 0u;
 
     /*interim = Micros * (uint64)OsIf_au32InternalFrequencies[CoreId];*/
@@ -73,4 +77,31 @@ uint32 Systick_MicrosToTicks(uint32 Micros)
     ticks = (uint32)(interim & 0xFFFFFFFFu);
 
     return ticks;
+}
+
+/**
+  * @brief Provides a tick value in millisecond.
+  * @retval tick value
+  */
+static uint32 Sys_GetTick(void)
+{
+  return uwTick;
+}
+
+/**
+ * @fn		Sys_Delay
+ * @brief	Custom Delay for Application
+ */
+void Sys_Delay(uint32 utime)
+{
+	uint32 tickstart = Sys_GetTick();
+	uint32 wait = utime;
+
+	/* Add a freq to guarantee minimum wait */
+	if (wait < SYSTICK_MAX_DELAY)
+	{
+		wait += (uint32)(uwTickFreq);
+	}
+
+	while((Sys_GetTick() - tickstart) < wait);
 }

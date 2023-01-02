@@ -17,7 +17,7 @@ typedef struct
 	__vo uint32 TXCRCR;     /*!< TODO,     										Address offset: 0x18 */
 	__vo uint32 I2SCFGR;    /*!< TODO,     										Address offset: 0x1C */
 	__vo uint32 I2SPR;      /*!< TODO,     										Address offset: 0x20 */
-} SPI_Types;
+} SPI_Type;
 
 /*
  * Base addresses of peripherals which are hanging on AHB1 bus
@@ -26,15 +26,15 @@ typedef struct
 #define SPI2_BASEADDR					(APB1PERIPH_BASEADDR + 0x3800)
 #define SPI3_BASEADDR					(APB1PERIPH_BASEADDR + 0x3C00)
 
-#define SPI2  							((SPI_Types*)SPI2_BASEADDR)
-#define SPI3  							((SPI_Types*)SPI3_BASEADDR)
+#define SPI2  							((SPI_Type*)SPI2_BASEADDR)
+#define SPI3  							((SPI_Type*)SPI3_BASEADDR)
 /*
  * Base addresses of peripherals which are hanging on APB2 bus
  * TODO : Complete for all other peripherals
  */
 #define SPI1_BASEADDR					(APB2PERIPH_BASEADDR + 0x3000)
 
-#define SPI1  							((SPI_Types*)SPI1_BASEADDR)
+#define SPI1  							((SPI_Type*)SPI1_BASEADDR)
 /******************************************************************************************
  *Bit position definitions of SPI peripheral
  ******************************************************************************************/

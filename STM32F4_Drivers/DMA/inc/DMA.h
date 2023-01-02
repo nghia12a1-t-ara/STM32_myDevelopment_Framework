@@ -2,7 +2,7 @@
 #define _DMA_H_
 
 #include "DMA_Base.h"
-#include "DMA_Types.h"
+#include "DMA_Type.h"
 
 /**
  * Function Prototypes

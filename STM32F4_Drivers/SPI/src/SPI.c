@@ -25,7 +25,7 @@ static void  spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle);
  * @Note              -
 
  */
-void SPI_PeriClockControl(SPI_Types *pSPIx, uint8 EnorDi)
+void SPI_PeriClockControl(SPI_Type *pSPIx, uint8 EnorDi)
 {
 
 	if(EnorDi == ENABLE)
@@ -126,12 +126,12 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
  * @Note              -
 
  */
-void SPI_DeInit(SPI_Types *pSPIx)
+void SPI_DeInit(SPI_Type *pSPIx)
 {
  //todo
 }
 
-uint8 SPI_GetFlagStatus(SPI_Types *pSPIx , uint32 FlagName)
+uint8 SPI_GetFlagStatus(SPI_Type *pSPIx , uint32 FlagName)
 {
 	if(pSPIx->SR & FlagName)
 	{
@@ -154,7 +154,7 @@ uint8 SPI_GetFlagStatus(SPI_Types *pSPIx , uint32 FlagName)
  * @Note              - This is blocking call
 
  */
-void SPI_SendData(SPI_Types *pSPIx,uint8 *pTxBuffer, uint32 Len)
+void SPI_SendData(SPI_Type *pSPIx,uint8 *pTxBuffer, uint32 Len)
 {
 	while(Len > 0)
 	{
@@ -195,7 +195,7 @@ void SPI_SendData(SPI_Types *pSPIx,uint8 *pTxBuffer, uint32 Len)
  * @Note              -
 
  */
-void SPI_ReceiveData(SPI_Types *pSPIx, uint8 *pRxBuffer, uint32 Len)
+void SPI_ReceiveData(SPI_Type *pSPIx, uint8 *pRxBuffer, uint32 Len)
 {
 	while(Len > 0)
 		{
@@ -237,7 +237,7 @@ void SPI_ReceiveData(SPI_Types *pSPIx, uint8 *pRxBuffer, uint32 Len)
  * @Note              -
 
  */
-void SPI_PeripheralControl(SPI_Types *pSPIx, uint8 EnOrDi)
+void SPI_PeripheralControl(SPI_Type *pSPIx, uint8 EnOrDi)
 {
 	if(EnOrDi == ENABLE)
 	{
@@ -265,7 +265,7 @@ void SPI_PeripheralControl(SPI_Types *pSPIx, uint8 EnOrDi)
  * @Note              -
 
  */
-void  SPI_SSIConfig(SPI_Types *pSPIx, uint8 EnOrDi)
+void  SPI_SSIConfig(SPI_Type *pSPIx, uint8 EnOrDi)
 {
 	if(EnOrDi == ENABLE)
 	{
@@ -293,7 +293,7 @@ void  SPI_SSIConfig(SPI_Types *pSPIx, uint8 EnOrDi)
  * @Note              -
 
  */
-void  SPI_SSOEConfig(SPI_Types *pSPIx, uint8 EnOrDi)
+void  SPI_SSOEConfig(SPI_Type *pSPIx, uint8 EnOrDi)
 {
 	if(EnOrDi == ENABLE)
 	{
@@ -490,7 +490,7 @@ void SPI_CloseReception(SPI_Handle_t *pSPIHandle)
 
 }
 
-void SPI_ClearOVRFlag(SPI_Types *pSPIx)
+void SPI_ClearOVRFlag(SPI_Type *pSPIx)
 {
 	uint8 temp;
 	temp = pSPIx->DR;

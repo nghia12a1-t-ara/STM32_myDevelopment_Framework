@@ -9,8 +9,8 @@
 #define __USART_H_
 
 #include "USART_Base.h"
-#include "USART_Types.h"
-
+#include "USART_Type.h"
+#include "USART_HwAccess.h"
 
 /******************************************************************************************
  *								APIs supported by this driver

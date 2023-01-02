@@ -12,7 +12,7 @@
 /* ----------------------------------------------------------------------------
    -- MPU Peripheral Access Layer
    ---------------------------------------------------------------------------- */
-#include "Std_Types.h"
+#include "Std_Type.h"
 
 /*!
  * @addtogroup MPU_Peripheral_Access_Layer MPU Peripheral Access Layer

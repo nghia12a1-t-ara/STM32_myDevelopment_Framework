@@ -1,3 +1,10 @@
+/**
+ * Filename		: EXTI_Base.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/12/22
+ * Brief		: External Interrupt Base Address
+ */
+
 #ifndef __EXTI_BASE_H_
 #define __EXTI_BASE_H_
 
@@ -14,10 +21,10 @@ typedef struct
 	__vo uint32 FTSR;   /*!< TODO, 										Address offset: 0x0C */
 	__vo uint32 SWIER;  /*!< TODO,  									   Address offset: 0x10 */
 	__vo uint32 PR;     /*!< TODO,                   					   Address offset: 0x14 */
-} EXTI_Types;
+} EXTI_Type;
 
 #define EXTI_BASEADDR				0x40013C00UL
-#define EXTI						((EXTI_Types*)EXTI_BASEADDR)
+#define EXTI						((EXTI_Type*)EXTI_BASEADDR)
 
 /*
  * Base addresses of peripherals which are hanging on APB2 bus

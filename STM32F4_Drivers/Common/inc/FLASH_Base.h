@@ -17,10 +17,10 @@ typedef struct {
 	__vo uint32 SR;			/** Flash Status Register			Offset = 0x0C */
 	__vo uint32 CR;			/** Flash Control Register			Offset = 0x10 */
 	__vo uint32 OPTCR; 		/** Flash Option Control Register	Offset = 0x14 */
-} FLASH_Types;
+} FLASH_Type;
 
 #define FLASH_BASEADDR				(0x40023C00UL)
-#define FLASH						((FLASH_Types *) FLASH_BASEADDR)
+#define FLASH						((FLASH_Type *) FLASH_BASEADDR)
 
 
 /* Exported constants --------------------------------------------------------*/

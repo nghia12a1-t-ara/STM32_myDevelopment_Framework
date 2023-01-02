@@ -10,7 +10,15 @@
 #define __SYSTICK_H__
 
 #include "SYSTICK_Base.h"
-#include "Std_Types.h"
+#include "Std_Type.h"
+
+typedef enum
+{
+	SYSTICK_FREQ_10HZ         = 100U,
+	SYSTICK_FREQ_100HZ        = 10U,
+	SYSTICK_FREQ_1KHZ         = 1U,
+	SYSTICK_FREQ_DEFAULT      = SYSTICK_FREQ_1KHZ
+} Systick_FreqType;
 
 /**
  * @fn		Systick_Init
@@ -35,5 +43,11 @@ uint32 Systick_GetElapsed(uint32 * const CurrentRef);
  * @brief	Convert time (micro second) to tick value
  */
 uint32 Systick_MicrosToTicks(uint32 Micros);
+
+/**
+ * @fn		Sys_Delay
+ * @brief	Custom Delay for Application
+ */
+void Sys_Delay(uint32 utime);
 
 #endif  /* #if !defined(__SYSTICK_BASE_H__) */

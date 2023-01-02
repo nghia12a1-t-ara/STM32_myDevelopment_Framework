@@ -1,5 +1,5 @@
-#ifndef __I2C_TYPES_H_
-#define __I2C_TYPES_H_
+#ifndef __I2C_TYPE_H__
+#define __I2C_TYPE_H__
 
 /*
  * Configuration structure for I2Cx peripheral
@@ -18,7 +18,7 @@ typedef struct
  */
 typedef struct
 {
-	I2C_Types 		*pI2Cx;
+	I2C_Type 		*pI2Cx;
 	I2C_Config_t 	I2C_Config;
 	uint8 			*pTxBuffer; /* !< To store the app. Tx buffer address > */
 	uint8 			*pRxBuffer;	/* !< To store the app. Rx buffer address > */
@@ -90,4 +90,4 @@ typedef struct
 #define I2C_EV_DATA_REQ         	8
 #define I2C_EV_DATA_RCV         	9
 
-#endif 	/* !(__I2C_TYPES_H_) */
+#endif 	/* !(__I2C_TYPE_H__) */

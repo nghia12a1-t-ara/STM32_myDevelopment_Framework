@@ -3,6 +3,11 @@
 
 #include "stm32f4xx.h"
 
+/**
+ * Number of GPIO Hardware Instance
+ */
+#define GPIO_INSTANCE_COUNT				(9U)
+
 /*
  * peripheral register definition structure for GPIO
  */
@@ -16,9 +21,8 @@ typedef struct
 	__vo uint32 ODR;					/*!< GPIO Output Data Register					Address offset: 0x14 */
 	__vo uint32 BSRR;					/*!< GPIO Bit Set/Reset Register 				Address offset: 0x18 */
 	__vo uint32 LCKR;					/*!< GPIO Lock Register							Address offset: 0x1C */
-	__vo uint32 AFR[2];					/*!< AFR[0] : GPIO alternate function low register, AF[1] : GPIO alternate function high register
-											Address offset: 0x20-0x24 */
-} GPIO_Types;
+	__vo uint32 AFR[2];					/*!< AFR[0] : GPIO alternate function low register, AF[1] : GPIO alternate function high register Address offset: 0x20-0x24 */
+} GPIO_Type;
 
 
 /*
@@ -39,17 +43,29 @@ typedef struct
  * peripheral definitions ( Peripheral base addresses typecasted to xxx_RegDef_t)
  */
 
-#define GPIOA  							((GPIO_Types*)GPIOA_BASEADDR)
-#define GPIOB  							((GPIO_Types*)GPIOB_BASEADDR)
-#define GPIOC  							((GPIO_Types*)GPIOC_BASEADDR)
-#define GPIOD  							((GPIO_Types*)GPIOD_BASEADDR)
-#define GPIOE  							((GPIO_Types*)GPIOE_BASEADDR)
-#define GPIOF  							((GPIO_Types*)GPIOF_BASEADDR)
-#define GPIOG  							((GPIO_Types*)GPIOG_BASEADDR)
-#define GPIOH  							((GPIO_Types*)GPIOH_BASEADDR)
-#define GPIOI  							((GPIO_Types*)GPIOI_BASEADDR)
+#define GPIOA  							((GPIO_Type*)GPIOA_BASEADDR)
+#define GPIOB  							((GPIO_Type*)GPIOB_BASEADDR)
+#define GPIOC  							((GPIO_Type*)GPIOC_BASEADDR)
+#define GPIOD  							((GPIO_Type*)GPIOD_BASEADDR)
+#define GPIOE  							((GPIO_Type*)GPIOE_BASEADDR)
+#define GPIOF  							((GPIO_Type*)GPIOF_BASEADDR)
+#define GPIOG  							((GPIO_Type*)GPIOG_BASEADDR)
+#define GPIOH  							((GPIO_Type*)GPIOH_BASEADDR)
+#define GPIOI  							((GPIO_Type*)GPIOI_BASEADDR)
 
+/**
+ * Define Array of GPIO Instances
+ */
+#define GPIO_BASE_PTRS					{ GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF, GPIOG, GPIOH, GPIOI }
 
+/**
+ * Define Register Mask for each Pins
+ */
+#define GPIO_MODER_PIN_MASK				0x03u
+#define GPIO_OSPEED_PIN_MASK			0x03u
+#define GPIO_PULL_PIN_MASK				0x03u
+#define GPIO_OTYPE_PIN_MASK				0x01u
+#define GPIO_ALTERNATE_PIN_MASK			0x0Fu
 /*
  *  Macros to reset GPIOx peripherals
  */

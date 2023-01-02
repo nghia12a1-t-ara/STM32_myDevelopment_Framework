@@ -1,7 +1,7 @@
 #ifndef __NVIC_BASE_H_
 #define __NVIC_BASE_H_
 
-#include "Std_Types.h"
+#include "Std_Type.h"
 
 /**
   \ingroup    CMSIS_core_register
@@ -28,12 +28,12 @@ typedef struct
   __IO uint8  IP[240U];					/*!< Offset: 0x300 (R/W)  Interrupt Priority Register (8Bit wide) */
         uint32_t RESERVED5[644U];
   __O  uint32_t STIR;					/*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
-} NVIC_Types;
+} NVIC_Type;
 
 /*!< NVIC Base Address */
 #define NVIC_BASE           (0xE000E100UL)
 
 /*!< NVIC configuration struct */
-#define NVIC                ((NVIC_Types *) NVIC_BASE)
+#define NVIC                ((NVIC_Type *) NVIC_BASE)
 
 #endif	/* !(__NVIC_BASE_H_) */

@@ -17,7 +17,7 @@
 /* ----------------------------------------------------------------------------
    -- SCB Peripheral Access Layer
    ---------------------------------------------------------------------------- */
-#include "Std_Types.h"
+#include "Std_Type.h"
 
 /** SCB - Size of Registers Arrays */
 #define SCB_ID_MMFR_COUNT                    4u

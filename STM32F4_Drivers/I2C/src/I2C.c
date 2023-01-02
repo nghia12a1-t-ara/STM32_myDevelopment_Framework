@@ -8,27 +8,27 @@
 #include "I2C.h"
 
 
-static void  I2C_GenerateStartCondition(I2C_Types *pI2Cx);
-static void I2C_ExecuteAddressPhaseWrite(I2C_Types *pI2Cx, uint8 SlaveAddr);
-static void I2C_ExecuteAddressPhaseRead(I2C_Types *pI2Cx, uint8 SlaveAddr);
+static void  I2C_GenerateStartCondition(I2C_Type *pI2Cx);
+static void I2C_ExecuteAddressPhaseWrite(I2C_Type *pI2Cx, uint8 SlaveAddr);
+static void I2C_ExecuteAddressPhaseRead(I2C_Type *pI2Cx, uint8 SlaveAddr);
 static void I2C_ClearADDRFlag(I2C_Handle_t *pI2CHandle);
 
 static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *pI2CHandle );
 static void I2C_MasterHandleTXEInterrupt(I2C_Handle_t *pI2CHandle );
 
-static void I2C_GenerateStartCondition(I2C_Types *pI2Cx)
+static void I2C_GenerateStartCondition(I2C_Type *pI2Cx)
 {
 	pI2Cx->CR1 |= ( 1 << I2C_CR1_START);
 }
 
-static void I2C_ExecuteAddressPhaseWrite(I2C_Types *pI2Cx, uint8 SlaveAddr)
+static void I2C_ExecuteAddressPhaseWrite(I2C_Type *pI2Cx, uint8 SlaveAddr)
 {
 	SlaveAddr = SlaveAddr << 1;
 	SlaveAddr &= ~(1); //SlaveAddr is Slave address + r/nw bit=0
 	pI2Cx->DR = SlaveAddr;
 }
 
-static void I2C_ExecuteAddressPhaseRead(I2C_Types *pI2Cx, uint8 SlaveAddr)
+static void I2C_ExecuteAddressPhaseRead(I2C_Type *pI2Cx, uint8 SlaveAddr)
 {
 	SlaveAddr = SlaveAddr << 1;
 	SlaveAddr |= 1; //SlaveAddr is Slave address + r/nw bit=1
@@ -76,13 +76,13 @@ static void I2C_ClearADDRFlag(I2C_Handle_t *pI2CHandle )
 	}
 }
 
-void I2C_GenerateStopCondition(I2C_Types *pI2Cx)
+void I2C_GenerateStopCondition(I2C_Type *pI2Cx)
 {
 	pI2Cx->CR1 |= ( 1 << I2C_CR1_STOP);
 }
 
 
-void I2C_SlaveEnableDisableCallbackEvents(I2C_Types *pI2Cx,uint8 EnorDi)
+void I2C_SlaveEnableDisableCallbackEvents(I2C_Type *pI2Cx,uint8 EnorDi)
 {
 	if(EnorDi == ENABLE)
 	{
@@ -111,7 +111,7 @@ void I2C_SlaveEnableDisableCallbackEvents(I2C_Types *pI2Cx,uint8 EnorDi)
  * @Note              -
 
  */
-void I2C_PeripheralControl(I2C_Types *pI2Cx, uint8 EnOrDi)
+void I2C_PeripheralControl(I2C_Type *pI2Cx, uint8 EnOrDi)
 {
 	if(EnOrDi == ENABLE)
 	{
@@ -139,7 +139,7 @@ void I2C_PeripheralControl(I2C_Types *pI2Cx, uint8 EnOrDi)
  * @Note              -
 
  */
-void I2C_PeriClockControl(I2C_Types *pI2Cx, uint8 EnorDi)
+void I2C_PeriClockControl(I2C_Type *pI2Cx, uint8 EnorDi)
 {
 	if(EnorDi == ENABLE)
 	{
@@ -254,13 +254,13 @@ void I2C_Init(I2C_Handle_t *pI2CHandle)
  * @Note              -
 
  */
-void I2C_DeInit(I2C_Types *pI2Cx)
+void I2C_DeInit(I2C_Type *pI2Cx)
 {
 
 }
 
 
-uint8 I2C_GetFlagStatus(I2C_Types *pI2Cx , uint32 FlagName)
+uint8 I2C_GetFlagStatus(I2C_Type *pI2Cx , uint32 FlagName)
 {
 	if(pI2Cx->SR1 & FlagName)
 	{
@@ -399,7 +399,7 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle,uint8 *pRxBuffer, uint8 Len,
 }
 
 
-void I2C_ManageAcking(I2C_Types *pI2Cx, uint8 EnorDi)
+void I2C_ManageAcking(I2C_Type *pI2Cx, uint8 EnorDi)
 {
 	if(EnorDi == I2C_ACK_ENABLE)
 	{
@@ -595,12 +595,12 @@ void I2C_CloseSendData(I2C_Handle_t *pI2CHandle)
 }
 
 
-void I2C_SlaveSendData(I2C_Types *pI2C,uint8 data)
+void I2C_SlaveSendData(I2C_Type *pI2C,uint8 data)
 {
 	pI2C->DR = data;
 }
 
-uint8 I2C_SlaveReceiveData(I2C_Types *pI2C)
+uint8 I2C_SlaveReceiveData(I2C_Type *pI2C)
 {
     return (uint8) pI2C->DR;
 }

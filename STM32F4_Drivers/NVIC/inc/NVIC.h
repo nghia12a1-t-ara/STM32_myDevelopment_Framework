@@ -3,7 +3,7 @@
 
 #include "SCB_Base.h"
 #include "NVIC_Base.h"
-#include "NVIC_Types.h"
+#include "NVIC_Type.h"
 
 /**
   \brief   Enable External Interrupt

@@ -18,7 +18,7 @@ typedef struct
   __vo uint32 CCR;        /*!< TODO,     										Address offset: 0x1C */
   __vo uint32 TRISE;      /*!< TODO,     										Address offset: 0x20 */
   __vo uint32 FLTR;       /*!< TODO,     										Address offset: 0x24 */
-} I2C_Types;
+} I2C_Type;
 
 /*
  * Base addresses of peripherals which are hanging on APB1 bus
@@ -28,9 +28,9 @@ typedef struct
 #define I2C2_BASEADDR					(APB1PERIPH_BASEADDR + 0x5800)
 #define I2C3_BASEADDR					(APB1PERIPH_BASEADDR + 0x5C00)
 
-#define I2C1  							((I2C_Types*)I2C1_BASEADDR)
-#define I2C2  							((I2C_Types*)I2C2_BASEADDR)
-#define I2C3  							((I2C_Types*)I2C3_BASEADDR)
+#define I2C1  							((I2C_Type*)I2C1_BASEADDR)
+#define I2C2  							((I2C_Type*)I2C2_BASEADDR)
+#define I2C3  							((I2C_Type*)I2C3_BASEADDR)
 
 
 /******************************************************************************************

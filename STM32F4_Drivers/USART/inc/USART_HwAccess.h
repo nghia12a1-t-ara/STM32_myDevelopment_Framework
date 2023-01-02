@@ -9,7 +9,7 @@
 #define __USART_HWACCESS_H__
 
 #include "USART_Base.h"
-#include "USART_Types.h"
+#include "USART_Type.h"
 #include "Systick.h"
 #include "RCC.h"
 

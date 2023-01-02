@@ -1,12 +1,12 @@
 /**
- * Filename		: Std_Types.h
+ * Filename		: Std_Type.h
  * Author		: Nghia Taarabt
  * Create Date 	: 18/12/22
  * Brief		: Standard Types for All Drivers
  */
  
-#ifndef _STD_TYPES_H_
-#define _STD_TYPES_H_
+#ifndef __STD_TYPE_H__
+#define __STD_TYPE_H__
 
 #include <stddef.h>
 #include <stdint.h>
@@ -53,16 +53,14 @@
 #define DISABLE 			0
 #define SET 				ENABLE
 #define RESET 				DISABLE
-#define GPIO_PIN_SET        SET
-#define GPIO_PIN_RESET      RESET
 #define FLAG_RESET         	RESET
 #define FLAG_SET 			SET
 
 typedef enum {
-	FALSE = 0,
-	TRUE = 1
+	FALSE 	= 0u,
+	TRUE 	= 1u
 } boolean;
 
 #define DEFAULT_FUNCTION(X) 			(void)X      /* To avoid gcc/g++ warnings */
 
-#endif	/* !(_STD_TYPES_H_) */
+#endif	/* !(__STD_TYPE_H__) */

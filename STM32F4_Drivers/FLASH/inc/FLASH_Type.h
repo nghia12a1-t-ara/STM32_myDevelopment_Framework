@@ -1,5 +1,5 @@
-#ifndef __FLASH_TYPES_H_
-#define __FLASH_TYPES_H_
+#ifndef __FLASH_TYPE_H__
+#define __FLASH_TYPE_H__
 
 /* Exported types ------------------------------------------------------------*/
 /** 
@@ -66,4 +66,4 @@ typedef enum
 #define FLASH_SR_EOP				(1 << 0)
 
 
-#endif	/* !(__FLASH_TYPES_H_) */
+#endif	/* !(__FLASH_TYPE_H__) */

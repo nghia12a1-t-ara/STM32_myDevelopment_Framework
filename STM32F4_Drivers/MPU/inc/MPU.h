@@ -16,8 +16,8 @@
 ==================================================================================================*/
 //#include "MPU_Cfg.h"
 //#include "MPU_Cfg_Defines.h"
-#include "MPU_Types.h"
-#include "Std_Types.h"
+#include "MPU_Type.h"
+#include "Std_Type.h"
 #include "MPU_Config.h"
 #include "MPU_Base.h"
 #include "SCB_Base.h"

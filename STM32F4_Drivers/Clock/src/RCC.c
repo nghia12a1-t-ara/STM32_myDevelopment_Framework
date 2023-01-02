@@ -1,14 +1,14 @@
-/*
- * stm32f4xx_rcc_driver.c
- *
- *  Created on: Mar 29, 2019
- *      Author: admin
+/**
+ * Filename		: RCC.c
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/12/22
+ * Brief		: Clock driver header file
  */
 
 #include "RCC.h"
 
-uint16 AHB_PreScaler[8] = { 2,4,8,16,64,128,256,512 };
-uint8 APB1_PreScaler[4] = { 2, 4 , 8, 16 };
+uint16 AHB_PreScaler[8] = { 2, 4, 8, 16, 64, 128, 256, 512 };
+uint8 APB1_PreScaler[4] = { 2, 4, 8, 16 };
 
 
 uint32 RCC_GetPCLK1Value(void)
