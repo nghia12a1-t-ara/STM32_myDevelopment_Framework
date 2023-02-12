@@ -123,6 +123,75 @@ void DMA_TransferConfig(const Dma_UserTransferType * UserTransferConfig)
 
 /*****************************************************************************************/
 /*********************************************************************
+ * @fn      		  - DMA_SyncStartTransfer
+ *
+ * @brief             - Configure Param and Start Transfer (Polling Method) - Check Timeout
+ *
+ * @param[in]         - UserTransferConfig 	- DMA Hardware Instance
+ * @param[in]         - Timeout 			- Timeout if data cannot transmit
+ * 
+ * @param[out]        - Dma_StatusType 		- Dma Transfer Status (SUCCESS or TIMEOUT)
+ *
+ * @return            -
+ *
+ * @Note              -
+ */
+Dma_StatusType DMA_SyncStartTransfer(const Dma_UserTransferType * UserTransferConfig, const uint32 Timeout)
+{
+	const uint8 	Instance 		= UserTransferConfig->DMA_Instance;
+	DMA_Type 		* Base 			= Dma_Base_Pointer[Instance];
+	DMAStream_Type 	* pDMAStreamx	= &(Base->Stream[UserTransferConfig->DMA_Streamx]);
+	Dma_StatusType	Dma_Status		= DMA_STATUS_ERROR;
+	
+	/* Timeout Setup Variables */
+	uint32 StartTime;
+    uint32 TimeoutTicks;
+    uint32 ElapsedTicks = 0;
+	
+	/* Configure Source/Destination Address */
+	DMA_TransferConfig(UserTransferConfig);
+	
+	/* DMA Start Transfer */
+	DMA_HwStartTransfer(pDMAStreamx);
+	
+	/* Start Timeout - Can using Systick Timer */
+    Dma_StartTimeout(&StartTime, &TimeoutTicks, Timeout);
+	
+	/* Wait transfer successfully or Timeout occurs */
+	while ( (!DMA_CheckStatusFlag(DMA_INSTANCE_2, DMA_STREAM_0, DMA_FLAG_TRANSFER_COMPLETE_INT)) && \
+			 !Dma_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) );
+	
+	/* Check if Timeout occur */
+	if ( Dma_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) )
+	{
+		Dma_Status = DMA_STATUS_TIMEOUT;
+	}
+	else	/* The transfer process is complete */
+	{
+		Dma_Status = DMA_STATUS_SUCCESS;
+	}
+	
+	return Dma_Status;
+}
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_AsyncStartTransfer
+ *
+ * @brief             - Configure Param and Start Transfer (Interrupt Method)
+ *
+ * @param[in]         - UserTransferConfig 	- DMA Hardware Instance
+ * 
+ * @param[out]        - Dma_StatusType 		- Dma Transfer Status (SUCCESS or TIMEOUT)
+ *
+ * @return            -
+ *
+ * @Note              -
+ */
+Dma_StatusType DMA_AsyncStartTransfer(const Dma_UserTransferType * UserTransferConfig
+
+/*****************************************************************************************/
+/*********************************************************************
  * @fn      		  - DMA_GetStatusFlag
  *
  * @brief             - Get Status Flag from interrupt status registers
@@ -165,19 +234,19 @@ boolean DMA_CheckStatusFlag(const uint8 Instance, Dma_StreamType Stream, DMA_Sta
 	switch (FlagType)
 	{
 		case DMA_FLAG_FIFO_ERROR_INT:
-			checkFlag = (boolean)((StreamStatus << (uint8)FlagType) & DMA_FLAG_FIFO_ERROR_MASK);
+			checkFlag = (boolean)((StreamStatus & DMA_FLAG_FIFO_ERROR_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_DIRECT_MODE_ERROR_INT:
-			checkFlag = (boolean)((StreamStatus << (uint8)FlagType) & DMA_FLAG_DIRECT_MODE_ERROR_MASK);
+			checkFlag = (boolean)((StreamStatus & DMA_FLAG_DIRECT_MODE_ERROR_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_TRANSFER_ERROR_INT:
-			checkFlag = (boolean)((StreamStatus << (uint8)FlagType) & DMA_FLAG_TRANSFER_ERROR_MASK);
+			checkFlag = (boolean)((StreamStatus & DMA_FLAG_TRANSFER_ERROR_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_HALF_TRANSFER_INT:
-			checkFlag = (boolean)((StreamStatus << (uint8)FlagType) & DMA_FLAG_HALF_TRANSFER_MASK);
+			checkFlag = (boolean)((StreamStatus & DMA_FLAG_HALF_TRANSFER_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_TRANSFER_COMPLETE_INT:
-			checkFlag = (boolean)((StreamStatus << (uint8)FlagType) & DMA_FLAG_TRANSFER_COMPLETE_MASK);
+			checkFlag = (boolean)((StreamStatus & DMA_FLAG_TRANSFER_COMPLETE_MASK) >> (uint8)FlagType);
 			break;
 		default:
 			break;

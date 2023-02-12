@@ -58,4 +58,52 @@ void DMA_TransferConfig(const Dma_UserTransferType * UserTransferConfig);
  */
 uint8 DMA_GetStatusFlag(const uint8 Instance, Dma_StreamType Stream);
 
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_CheckStatusFlag
+ *
+ * @brief             - Get Status Flag from interrupt status registers
+ *
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ * @param[in]         - Streamx 	- DMA Hardware Stream
+ *
+ * @return            -
+ *
+ * @Note              -
+ */
+boolean DMA_CheckStatusFlag(const uint8 Instance, Dma_StreamType Stream, DMA_StatusFlagType FlagType);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_SyncStartTransfer
+ *
+ * @brief             - Get Status Flag from interrupt status registers
+ *
+ * @param[in]         - UserTransferConfig 	- DMA Hardware Instance
+ * @param[in]         - Timeout 			- Timeout if data cannot transmit
+ * 
+ * @param[out]        - Dma_StatusType 		- Dma Transfer Status (SUCCESS or TIMEOUT)
+ *
+ * @return            -
+ *
+ * @Note              -
+ */
+Dma_StatusType DMA_SyncStartTransfer(const Dma_UserTransferType * UserTransferConfig, const uint32 Timeout);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_AsyncStartTransfer
+ *
+ * @brief             - Configure Param and Start Transfer (Interrupt Method)
+ *
+ * @param[in]         - UserTransferConfig 	- DMA Hardware Instance
+ * 
+ * @param[out]        - Dma_StatusType 		- Dma Transfer Status (SUCCESS or TIMEOUT)
+ *
+ * @return            -
+ *
+ * @Note              -
+ */
+Dma_StatusType DMA_AsyncStartTransfer(const Dma_UserTransferType * UserTransferConfig);
+
 #endif	/* !(_DMA_H_) */

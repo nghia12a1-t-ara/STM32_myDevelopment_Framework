@@ -96,8 +96,29 @@ typedef enum {
 typedef enum
 {
     DMA_STATUS_SUCCESS              = 0x00U,  		/**< @brief Success status */
-    DMA_STATUS_ERROR                = 0x01U  		/**< @brief DMA error */
+    DMA_STATUS_ERROR                = 0x01U,  		/**< @brief DMA error */
+    DMA_STATUS_TIMEOUT				= 0x02U,  		/**< @brief DMA timeout */
 } Dma_StatusType;
+
+/**
+ * @brief Dma Transfer Types - Normal or Circular.
+ * */
+typedef enum
+{
+    DMA_TRANSFER_NORMAL				= 0x00U,
+    DMA_TRANSFER_CIRCULAR			= 0x01U
+} Dma_TransferModeType;
+
+/**
+ * @brief Dma Interrupt Flags Types
+ * */
+typedef enum {
+	DMA_FLAG_FIFO_ERROR_INT				= 0u,
+	DMA_FLAG_DIRECT_MODE_ERROR_INT		= 2u,
+	DMA_FLAG_TRANSFER_ERROR_INT			= 3u,
+	DMA_FLAG_HALF_TRANSFER_INT			= 4u,
+	DMA_FLAG_TRANSFER_COMPLETE_INT		= 5u,
+} DMA_StatusFlagType;
 
 /*****************************************************************************/
 /**

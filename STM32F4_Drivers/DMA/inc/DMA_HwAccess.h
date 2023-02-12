@@ -10,6 +10,8 @@
 
 #include "DMA_Base.h"
 #include "DMA_Type.h"
+#include "Systick.h"
+#include "RCC.h"
 
 #define DMA_FLAG_STREAM_0_SHIFT			0u
 #define DMA_FLAG_STREAM_1_SHIFT			6u
@@ -26,14 +28,6 @@
 #define DMA_FLAG_TRANSFER_ERROR_MASK			0x08u
 #define DMA_FLAG_HALF_TRANSFER_MASK				0x10u
 #define DMA_FLAG_TRANSFER_COMPLETE_MASK			0x20u
-
-typedef enum {
-	DMA_FLAG_FIFO_ERROR_INT				= 0u,
-	DMA_FLAG_DIRECT_MODE_ERROR_INT		= 2u,
-	DMA_FLAG_TRANSFER_ERROR_INT			= 3u,
-	DMA_FLAG_HALF_TRANSFER_INT			= 4u,
-	DMA_FLAG_TRANSFER_COMPLETE_INT		= 5u,
-} DMA_StatusFlagType;
 
 /********************************************************************************
  * 							Funtion to access hardware							*
@@ -199,7 +193,7 @@ __STATIC_INLINE uint8 DMA_GetStreamStatus(DMA_Type * pDMAx, Dma_StreamType Strea
 	uint8	Status  = 0u;
 	
 	/* if Stream = 0..3 => Use LISR register */
-	if ( ((uint8)Stream > 0) && ((uint8)Stream < 4) )
+	if ( ((uint8)Stream >= 0) && ((uint8)Stream <= 3) )
 	{
 		readReg = pDMAx->LISR;
 	}
@@ -229,5 +223,31 @@ __STATIC_INLINE uint8 DMA_GetStreamStatus(DMA_Type * pDMAx, Dma_StreamType Strea
 	return Status;
 }
 
+
+/******************************************************************************/
+/****************************** TIMEOUT FUNCTIONS *****************************/
+/**
+ * @brief   : Prepare for timeout checking
+ * @
+ * @return  : None
+ */
+__STATIC_INLINE void Dma_StartTimeout(uint32 * StartTimeOut, uint32 *TimeoutTicksOut, uint32 TimeoutUs)
+{
+    *StartTimeOut    = Systick_GetCounter();
+    *TimeoutTicksOut = Systick_MicrosToTicks(TimeoutUs);
+}
+
+/**
+ * @brief   : Checks for timeout condition
+ * @
+ * @return  TRUE     Timeout occurs
+ *          FALSE    Timeout does not occur
+ */
+__STATIC_INLINE boolean Dma_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
+{
+    uint32 CurrentElapsedTicks = Systick_GetElapsed(StartTime);
+    *ElapsedTicks += CurrentElapsedTicks;
+    return ((*ElapsedTicks >= TimeoutTicks) ? TRUE : FALSE);
+}
 
 #endif 	/* !(__DMA_HWACCESS_H__) */
