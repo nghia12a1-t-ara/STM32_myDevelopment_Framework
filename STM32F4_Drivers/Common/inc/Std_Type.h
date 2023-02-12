@@ -51,10 +51,10 @@
 */
 #define ENABLE 				1
 #define DISABLE 			0
-#define SET 				ENABLE
-#define RESET 				DISABLE
-#define FLAG_RESET         	RESET
-#define FLAG_SET 			SET
+#define BIT_SET 			ENABLE
+#define BIT_RESET 			DISABLE
+#define FLAG_RESET         	BIT_RESET
+#define FLAG_SET 			BIT_SET
 
 typedef enum {
 	FALSE 	= 0u,

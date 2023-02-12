@@ -1,5 +1,12 @@
-#ifndef __NVIC_H_
-#define __NVIC_H_
+/**
+ * Filename		: NVIC.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/2/22
+ * Brief		: Header for NVIC Driver
+ */
+
+#ifndef __NVIC_H__
+#define __NVIC_H__
 
 #include "SCB_Base.h"
 #include "NVIC_Base.h"
@@ -80,4 +87,4 @@ uint32_t NVIC_GetPriority(IRQn_Type IRQn);
  */
 void NVIC_TriggerInterrupt(IRQn_Type IRQn)
 
-#endif 	/* !(__NVIC_H_) */
+#endif 	/* !(__NVIC_H__) */

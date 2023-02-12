@@ -17,6 +17,7 @@
 
 __IO uint32 uwTick;
 Systick_FreqType uwTickFreq = SYSTICK_FREQ_DEFAULT;		/* 1KHz */
+static uint32 OsIf_au32InternalFrequencies;
 
 /**
  * @fn		Systick_Init
@@ -72,7 +73,7 @@ uint32 Systick_MicrosToTicks(uint32 Micros)
     uint64 interim = 0;
     uint32 ticks = 0u;
 
-    /*interim = Micros * (uint64)OsIf_au32InternalFrequencies[CoreId];*/
+    interim = Micros * (uint64)OsIf_au32InternalFrequencies;
     interim /= 1000000u;
     ticks = (uint32)(interim & 0xFFFFFFFFu);
 
@@ -85,7 +86,7 @@ uint32 Systick_MicrosToTicks(uint32 Micros)
   */
 static uint32 Sys_GetTick(void)
 {
-  return uwTick;
+	return uwTick;
 }
 
 /**

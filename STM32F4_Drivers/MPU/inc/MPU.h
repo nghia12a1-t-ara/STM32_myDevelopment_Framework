@@ -1,21 +1,13 @@
-/*
- * MPU.h
- *
- *  Created on: Mar 29, 2022
- *      Author: Admin
+/**
+ * Filename		: MPU.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/2/22
+ * Brief		: Header MPU Driver
  */
 
-#ifndef INC_MPU_H_
-#define INC_MPU_H_
+#ifndef __MPU_H__
+#define __MPU_H__
 
-/**
-*   @file MPU.h
-*/
-/*==================================================================================================
-*                                        INCLUDE FILES
-==================================================================================================*/
-//#include "MPU_Cfg.h"
-//#include "MPU_Cfg_Defines.h"
 #include "MPU_Type.h"
 #include "Std_Type.h"
 #include "MPU_Config.h"
@@ -129,6 +121,6 @@ boolean MPU_GetErrorDetails(MPU_ErrorDetailsType * pErrorDetails);
  *
  * @return void
  */
-extern void MPU_GetErrorRegisters(uint32_t * pMmfsr, uint32_t * pAddress);
+void MPU_GetErrorRegisters(uint32_t * pMmfsr, uint32_t * pAddress);
 
-#endif /* INC_MPU_H_ */
+#endif /* __MPU_H__ */

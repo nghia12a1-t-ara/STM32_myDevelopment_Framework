@@ -57,6 +57,16 @@ typedef struct
 
 #define USART_BASE_PTRS					{ NULL_PTR, USART1, USART2, USART3, UART4, UART5, USART6 }
 
+/**
+ * Define Supported Instance of USART
+ */
+#define UART_INSTANCE_1					(1u)
+#define UART_INSTANCE_2					(2u)
+#define UART_INSTANCE_3					(3u)
+#define UART_INSTANCE_4					(4u)
+#define UART_INSTANCE_5					(5u)
+#define UART_INSTANCE_6					(6u)
+
 /******************************************************************************************
  *Bit position definitions of USART peripheral
  ******************************************************************************************/

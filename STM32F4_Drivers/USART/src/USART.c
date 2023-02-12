@@ -6,10 +6,11 @@
  */
 
 #include "USART.h"
+#include "USART_HwAccess.h"
 
 /*****************************************************************************************/
 /************************************ Private Variables **********************************/
-/* Pointer to lpuart runtime state structure */
+/* Pointer to Usart runtime state structure */
 static Usart_StateRuntimeType * Usart_StateRuntime_Pointer[USART_INSTANCE_COUNT];
 
 /** @brief User config structure. */

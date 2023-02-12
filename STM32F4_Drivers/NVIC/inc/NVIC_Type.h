@@ -1,5 +1,14 @@
+/**
+ * Filename		: NVIC_Type.h
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/2/22
+ * Brief		: Typedef for NVIC Driver
+ */
+
 #ifndef __NVIC_TYPE_H__
 #define __NVIC_TYPE_H__
+
+#include "Std_Type.h"
 
 /*
  * ARM Cortex Mx Processor Priority Register Address Calculation

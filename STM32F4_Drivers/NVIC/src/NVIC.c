@@ -1,3 +1,9 @@
+/**
+ * Filename		: NVIC.c
+ * Author		: Nghia Taarabt
+ * Create Date 	: 18/5/22
+ * Brief		: Implement API for NVIC Driver
+ */
 
 #include "NVIC.h"
 
@@ -17,7 +23,7 @@
  */
 void NVIC_EnableIRQ(IRQn_Type IRQn)
 {
-  NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
 }
 
 
@@ -28,7 +34,7 @@ void NVIC_EnableIRQ(IRQn_Type IRQn)
  */
 void NVIC_DisableIRQ(IRQn_Type IRQn)
 {
-  NVIC->ICER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ICER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
 }
 
 
@@ -41,7 +47,7 @@ void NVIC_DisableIRQ(IRQn_Type IRQn)
  */
 uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)
 {
-  return((uint32_t)(((NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
+	return((uint32_t)(((NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
 }
 
 
@@ -52,7 +58,7 @@ uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)
  */
 void NVIC_SetPendingIRQ(IRQn_Type IRQn)
 {
-  NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
 }
 
 
@@ -63,7 +69,7 @@ void NVIC_SetPendingIRQ(IRQn_Type IRQn)
  */
 void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
 {
-  NVIC->ICPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ICPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
 }
 
 
@@ -76,7 +82,7 @@ void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
  */
 uint32_t NVIC_GetActive(IRQn_Type IRQn)
 {
-  return((uint32_t)(((NVIC->IABR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
+	return((uint32_t)(((NVIC->IABR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
 }
 
 
@@ -89,14 +95,14 @@ uint32_t NVIC_GetActive(IRQn_Type IRQn)
  */
 void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
-  if ((int32_t)(IRQn) < 0)
-  {
-    SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
-  }
-  else
-  {
-    NVIC->IP[((uint32_t)(int32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
-  }
+	if ((int32_t)(IRQn) < 0)
+	{
+		SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+	}
+	else
+	{
+		NVIC->IP[((uint32_t)(int32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+	}
 }
 
 
@@ -111,15 +117,14 @@ void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
  */
 uint32_t NVIC_GetPriority(IRQn_Type IRQn)
 {
-
-  if ((int32_t)(IRQn) < 0)
-  {
-    return(((uint32_t)SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] >> (8U - __NVIC_PRIO_BITS)));
-  }
-  else
-  {
-    return(((uint32_t)NVIC->IP[((uint32_t)(int32_t)IRQn)]               >> (8U - __NVIC_PRIO_BITS)));
-  }
+	if ((int32_t)(IRQn) < 0)
+	{
+		return (((uint32_t)SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] >> (8U - __NVIC_PRIO_BITS)));
+	}
+	else
+	{
+		return (((uint32_t)NVIC->IP[((uint32_t)(int32_t)IRQn)]               >> (8U - __NVIC_PRIO_BITS)));
+	}
 }
 
 /**

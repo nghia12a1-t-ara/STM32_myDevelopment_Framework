@@ -135,7 +135,7 @@ __STATIC_INLINE void USART_SetTransferMode(USART_Type *pUSARTx, Usart_TransferMo
 	else if ( USART_Mode == USART_MODE_TXRX )
 	{
 		/* Implement the code to enable the both Transmitter and Receiver bit fields */
-		pUSARTx->CR1 |= ( USART_CR1_RE(1) | USART_CR1_RE(1) );
+		pUSARTx->CR1 |= ( USART_CR1_TE(1) | USART_CR1_RE(1) );
 	}
 	else
 	{

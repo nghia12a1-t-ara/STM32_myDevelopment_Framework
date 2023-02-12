@@ -8,15 +8,15 @@
  */
 typedef enum 
 {
-	GPIO_INS_A					= 0u,
-	GPIO_INS_B					= 1u,
-	GPIO_INS_C					= 2u,
-	GPIO_INS_D					= 3u,
-	GPIO_INS_E					= 4u,
-	GPIO_INS_F					= 5u,
-	GPIO_INS_G					= 6u,
-	GPIO_INS_H					= 7u,
-	GPIO_INS_I					= 8u
+	GPIO_INSTANCE_A				= 0u,
+	GPIO_INSTANCE_B				= 1u,
+	GPIO_INSTANCE_C				= 2u,
+	GPIO_INSTANCE_D				= 3u,
+	GPIO_INSTANCE_E				= 4u,
+	GPIO_INSTANCE_F				= 5u,
+	GPIO_INSTANCE_G				= 6u,
+	GPIO_INSTANCE_H				= 7u,
+	GPIO_INSTANCE_I				= 8u
 } GPIO_InstanceType;
 
 /**
