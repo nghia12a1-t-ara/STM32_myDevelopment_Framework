@@ -1,0 +1,8 @@
+
+TEST_DETAILS = Checking Flash_Write functions
+
+INC_DIRS += ../STM32F4_Driver_Testing/test_$(MODULE)/$(TEST)/test_suite/inc
+INC_DIRS += ../STM32F4_Driver_Testing/test_$(MODULE)/$(TEST)/test_case/inc
+
+SRC_DIRS += ../STM32F4_Driver_Testing/test_$(MODULE)/$(TEST)/test_suite/src
+SRC_DIRS += ../STM32F4_Driver_Testing/test_$(MODULE)/$(TEST)/test_case/src

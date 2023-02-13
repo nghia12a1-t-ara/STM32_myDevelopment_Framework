@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MakeTest>
+ <name>
+  TEST_NAME
+ </name>
+ <discrip>
+  TEST_DISCRIPTION
+ </discrip>
+ <num>
+  Tests: 1
+ </num>
+ <result>
+  FAIL
+ </result>
+</MakeTest>
