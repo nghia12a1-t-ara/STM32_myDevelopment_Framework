@@ -10,24 +10,38 @@ endif
 # Load to FLASH or RAM
 LOAD_TO=FLASH
 
-# include make test suite
-include ../STM32F4_Driver_Testing/test_$(MODULE)/make/$(TEST)
-include User_Config.mak
+PRO_DIR := ..
+PROJ_NAME := $(TEST)
+DRIVER_DIR := $(PRO_DIR)/../STM32F4_Drivers
+DRV_TEST_DIR := $(PRO_DIR)/../STM32F4_Driver_Testing
 
-PRO_DIR := .
-PATH_OUTPUT = ../STM32F4_Driver_Testing/output
-PROJ_NAME := $(MODULE)
+include $(PRO_DIR)/User_Config.mak
+include $(DRV_TEST_DIR)/test_$(MODULE)/make/$(TEST)
 
-INC_DIRS += $(PRO_DIR)/inc
-SRC_DIRS += $(PRO_DIR)/src
+# Warning empty MODULE_LIST
+ifeq ($(MODULE_LIST),)
+	$(error Need add MODULE_LIST in make test)
+endif
+
+# include make and source test suite
+SRC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_suite/src
+SRC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_case/src
+INC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_suite/inc
+INC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_case/inc
+
+PATH_OUTPUT = $(DRV_TEST_DIR)/output
+
+# Testing source framework
 INC_DIRS += $(PRO_DIR)/TestCUnit/inc
 SRC_DIRS += $(PRO_DIR)/TestCUnit/src
 
 ############### Add source/header file to build ###############
-INC_DIRS += ../STM32F4_Drivers/Common/inc
-SRC_DIRS += ../STM32F4_Drivers/Common/src
-INC_DIRS += ../STM32F4_Drivers/$(MODULE)/inc
-SRC_DIRS += ../STM32F4_Drivers/$(MODULE)/src
+find_files_inc = $(DRIVER_DIR)/$(MODULES)/inc
+find_files_src = $(DRIVER_DIR)/$(MODULES)/src
+DRV_INC_DIRS := $(foreach MODULES,$(MODULE_LIST),$(find_files_inc))
+DRV_SRC_DIRS := $(foreach MODULES,$(MODULE_LIST),$(find_files_src))
+INC_DIRS += $(DRV_INC_DIRS)
+SRC_DIRS += $(DRV_SRC_DIRS)
 
 SRC_FILES := $(foreach SRC_DIRS, $(SRC_DIRS),$(wildcard $(SRC_DIRS)/*))
 INC_FILES := $(foreach INC_DIRS, $(INC_DIRS),$(wildcard $(INC_DIRS)/*))
@@ -68,11 +82,11 @@ clean:
 .PHONY:run
 run:
 	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -ME
-	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -p "../output/$(PROJ_NAME).hex" 0x08000000
+	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -p "$(PATH_OUTPUT)/$(PROJ_NAME).hex" 0x08000000
 	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -rst
 	
 	# remove report file
-	#rm -fr ../output/$(TEST).xml
+	#rm -fr $(PATH_OUTPUT)/$(TEST).xml
 	rm -fr $(PATH_OUTPUT)/result.log
 	
 	# read data from <TEST> address to check test case -> export result to log file
@@ -83,20 +97,20 @@ run:
 report:
 	if [[ -s $(PATH_OUTPUT)/result.log ]]; then \
 		echo "Test $(TEST) is PASSED "; \
-		cp $(PRO_DIR)/Report_Template/Pass/Template.xml ../output/$(TEST).xml; \
-		sed -i 's/TEST_NAME/$(TEST)/g' ../output/$(TEST).xml; \
-		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' ../output/$(TEST).xml; \
+		cp $(PRO_DIR)/Report_Template/Pass/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
+		sed -i 's/TEST_NAME/$(TEST)/g' $(PATH_OUTPUT)/$(TEST).xml; \
+		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 	else \
 		echo "Test $(TEST) is FAILED "; \
-		cp $(PRO_DIR)/Report_Template/Fail/Template.xml ../output/$(TEST).xml; \
-		sed -i 's/TEST_NAME/$(TEST)/g' ../output/$(TEST).xml; \
-		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' ../output/$(TEST).xml; \
+		cp $(PRO_DIR)/Report_Template/Fail/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
+		sed -i 's/TEST_NAME/$(TEST)/g' $(PATH_OUTPUT)/$(TEST).xml; \
+		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 	fi
 	@$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -rst
 # list all test suite	
 .PHONY:info
 info:	
-	@ls ../STM32F4_Driver_Testing/test_$(MODULE)/make
+	@ls $(DRV_TEST_DIR)/test_$(MODULE)/make
 	
 print-%:
 	@echo $($(subst print-,,$@))
