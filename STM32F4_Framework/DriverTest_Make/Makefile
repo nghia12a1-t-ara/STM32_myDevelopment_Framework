@@ -38,10 +38,16 @@ SRC_DIRS += $(PRO_DIR)/TestCUnit/src
 ############### Add source/header file to build ###############
 find_files_inc = $(DRIVER_DIR)/$(MODULES)/inc
 find_files_src = $(DRIVER_DIR)/$(MODULES)/src
+gen_files_inc = $(DRIVER_DIR)/$(MODULES)/Generate/inc
+gen_files_src = $(DRIVER_DIR)/$(MODULES)/Generate/src
 DRV_INC_DIRS := $(foreach MODULES,$(MODULE_LIST),$(find_files_inc))
 DRV_SRC_DIRS := $(foreach MODULES,$(MODULE_LIST),$(find_files_src))
+GEN_INC_DIRS := $(foreach MODULES,$(GENERATE_LIST),$(gen_files_inc))
+GEN_SRC_DIRS := $(foreach MODULES,$(GENERATE_LIST),$(gen_files_src))
 INC_DIRS += $(DRV_INC_DIRS)
 SRC_DIRS += $(DRV_SRC_DIRS)
+INC_DIRS += $(GEN_INC_DIRS)
+SRC_DIRS += $(GEN_SRC_DIRS)
 
 SRC_FILES := $(foreach SRC_DIRS, $(SRC_DIRS),$(wildcard $(SRC_DIRS)/*))
 INC_FILES := $(foreach INC_DIRS, $(INC_DIRS),$(wildcard $(INC_DIRS)/*))
@@ -54,8 +60,8 @@ LD := $(COMPILER_DIR)/bin/arm-none-eabi-ld
 INC_DIRS_OPT := $(foreach INC_DIRS,$(INC_DIRS),-I$(INC_DIRS))
 
 # Compiler and linker option
-CC_OPT := -mcpu=cortex-m4 -c -std=gnu11 -o0 -g -mthumb $(INC_DIRS_OPT)
-LD_OPT := -T $(LINKER_FILE) -Map $(PATH_OUTPUT)/$(PROJ_NAME).map
+CC_OPT := -mcpu=cortex-m4 -c -std=gnu11 -o0 -g3 $(INC_DIRS_OPT) -ffunction-sections -fdata-sections -Wall -fstack-usage --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+LD_OPT := -T $(LINKER_FILE) -Map $(PATH_OUTPUT)/$(PROJ_NAME).map -static
 
 OJB_FILES := $(notdir $(SRC_FILES))
 OJB_FILES := $(subst .c,.o,$(OJB_FILES))
@@ -76,18 +82,18 @@ build: $(OJB_FILES) $(LINKER_FILE)
 # Clean all output files
 .PHONY:clean
 clean:
-	rm -rf $(PATH_OUTPUT)/*.o $(PATH_OUTPUT)/*.elf $(PATH_OUTPUT)/*.hex $(PATH_OUTPUT)/*.bin $(PATH_OUTPUT)/*.log $(PATH_OUTPUT)/*.map
+	rm -rf $(PATH_OUTPUT)/*.o $(PATH_OUTPUT)/*.su $(PATH_OUTPUT)/*.elf $(PATH_OUTPUT)/*.hex $(PATH_OUTPUT)/*.bin $(PATH_OUTPUT)/*.log $(PATH_OUTPUT)/*.map
 
 # Run Test with Board
 .PHONY:run
 run:
+	# remove report file
+	rm -fr $(PATH_OUTPUT)/$(TEST).xml
+	rm -fr $(PATH_OUTPUT)/result.log
+    
 	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -ME
 	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -p "$(PATH_OUTPUT)/$(PROJ_NAME).hex" 0x08000000
 	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -rst
-	
-	# remove report file
-	#rm -fr $(PATH_OUTPUT)/$(TEST).xml
-	rm -fr $(PATH_OUTPUT)/result.log
 	
 	# read data from <TEST> address to check test case -> export result to log file
 	@$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -r32 0x20000000 4 | grep -i 00000000 > $(PATH_OUTPUT)/result.log

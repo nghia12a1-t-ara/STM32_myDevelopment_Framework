@@ -26,8 +26,8 @@ typedef struct
   __IO uint32 IABR[8U];					/*!< Offset: 0x200 (R/W)  Interrupt Active bit Register */
         uint32 RESERVED4[56U];
   __IO uint8  IP[240U];					/*!< Offset: 0x300 (R/W)  Interrupt Priority Register (8Bit wide) */
-        uint32_t RESERVED5[644U];
-  __O  uint32_t STIR;					/*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
+        uint32 RESERVED5[644U];
+  __O  uint32 STIR;					/*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
 } NVIC_Type;
 
 /*!< NVIC Base Address */

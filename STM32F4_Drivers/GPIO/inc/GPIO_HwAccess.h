@@ -44,7 +44,7 @@ typedef enum
  * 			ENABLE or DISABLE macros
  * @reval	none
  */
-__STATIC_INLINE void GPIO_PeriClockControl(GPIO_Type *pGPIOx, uint8_t EnorDi)
+__STATIC_INLINE void GPIO_PeriClockControl(GPIO_Type *pGPIOx, uint8 EnorDi)
 {
 	if (EnorDi == ENABLE)
 	{

@@ -1,15 +1,14 @@
 /**
- * Filename		: Std_Type.h
+ * Filename		: Stdype.h
  * Author		: Nghia Taarabt
  * Create Date 	: 18/12/22
  * Brief		: Standard Types for All Drivers
  */
  
-#ifndef __STD_TYPE_H__
-#define __STD_TYPE_H__
+#ifndef __STDYPE_H__
+#define __STDYPE_H__
 
 #include <stddef.h>
-#include <stdint.h>
 
 /**
  * Define Volatile Types
@@ -36,15 +35,14 @@
 /**
  * Define Standard Types
  */
-#define uint64				uint64_t
-#define uint32				uint32_t
-#define uint16				uint16_t
-#define uint8				uint8_t
-
-#define int64				int64_t
-#define int32				int32_t
-#define int16				int16_t
-#define int8				int8_t
+typedef signed char         int8;
+typedef unsigned char       uint8;
+typedef short               int16;
+typedef unsigned short      uint16;
+typedef int                 int32;
+typedef unsigned            uint32;
+typedef long long           int64;
+typedef unsigned long long  uint64;
 
 /**
  * Some generic macros
@@ -63,4 +61,4 @@ typedef enum {
 
 #define DEFAULT_FUNCTION(X) 			(void)X      /* To avoid gcc/g++ warnings */
 
-#endif	/* !(__STD_TYPE_H__) */
+#endif	/* !(__STDYPE_H__) */

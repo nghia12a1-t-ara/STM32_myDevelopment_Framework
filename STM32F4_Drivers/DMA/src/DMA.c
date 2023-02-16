@@ -188,7 +188,7 @@ Dma_StatusType DMA_SyncStartTransfer(const Dma_UserTransferType * UserTransferCo
  *
  * @Note              -
  */
-Dma_StatusType DMA_AsyncStartTransfer(const Dma_UserTransferType * UserTransferConfig
+Dma_StatusType DMA_AsyncStartTransfer(const Dma_UserTransferType * UserTransferConfig);
 
 /*****************************************************************************************/
 /*********************************************************************

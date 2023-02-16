@@ -8,7 +8,7 @@
 #ifndef __MPU_TYPE_H__
 #define __MPU_TYPE_H__
 
-#include "Std_Type.h"
+#include "MPU_Base.h"
 
 /*==================================================================================================
 *                                            CONSTANTS
@@ -103,9 +103,9 @@ typedef enum
 /* @implements    MPU_RegionConfigType_struct */
 typedef struct
 {
-    uint8_t                       u8RegionNum;          /* Region number                    */
-    uint32_t                      u32StartAddr;         /* Memory region start address      */
-    uint32_t                      u32EndAddr;           /* Memory region end address        */
+    uint8                       u8RegionNum;          /* Region number                    */
+    uint32                      u32StartAddr;         /* Memory region start address      */
+    uint32                      u32EndAddr;           /* Memory region end address        */
     MPU_MemoryType        		eMemType;             	  /* Memory Type for region           */
     MPU_AccessRightsType  		eAccessRight;         	  /* Access permission for region     */
 } MPU_RegionConfigType;
@@ -120,7 +120,7 @@ typedef struct
     boolean bDefaultMapEn;                                           /* Enables the default memory map background region */
     boolean bEnableRunHFNMI;                                         /* Enables use of the MPU when in the hard fault, non-maskable interrupt, and FAULTMASK escalated handlers  */
     boolean bEnMemManageInterrupt;                                   /* Enable Memory Manage Fault Exception Handler */
-    uint8_t u8RegionCnt;                                               /* Region Count */
+    uint8 u8RegionCnt;                                               /* Region Count */
     const MPU_RegionConfigType * pRegionConfigArr;             		 /* Region configuration array */
 } MPU_ConfigType;
 
@@ -130,7 +130,7 @@ typedef struct
 /* @implements     MPU_ErrorDetailsType_struct */
 typedef struct
 {
-    uint32_t u32Address;			/* Violation address */
+    uint32 u32Address;			/* Violation address */
     MPU_ErrorType eType;			/* Type of violation */
 } MPU_ErrorDetailsType;
 

@@ -10,7 +10,7 @@
 
 #include "MPU_Type.h"
 #include "Std_Type.h"
-#include "MPU_Config.h"
+#include "D:/STM32/STM32_SourceCode/STM32_Programming/STM32F4_Drivers/MPU/Generate/inc/MPU_Config.h"
 #include "MPU_Base.h"
 #include "SCB_Base.h"
 
@@ -48,7 +48,7 @@ void MPU_Init(const MPU_ConfigType * pConfig);
  * @pre
  *
  * */
-void MPU_SetRegionConfig(uint8_t u8RegionNum, const MPU_RegionConfigType * const pUserConfigPtr);
+void MPU_SetRegionConfig(uint8 u8RegionNum, const MPU_RegionConfigType * const pUserConfigPtr);
 
 /**
  * @brief         Disables the module and resets all region configurations
@@ -77,7 +77,7 @@ void MPU_Deinit(void);
  * @pre
  *
  * */
-void MPU_EnableRegion(uint8_t u8RegionNum, boolean bEnable);
+void MPU_EnableRegion(uint8 u8RegionNum, boolean bEnable);
 
 /**
  * @brief         Modify the access rights for a specific region
@@ -93,7 +93,7 @@ void MPU_EnableRegion(uint8_t u8RegionNum, boolean bEnable);
  * @pre
  *
  * */
-void MPU_SetAccessRight(uint8_t u8RegionNum, MPU_AccessRightsType eRights);
+void MPU_SetAccessRight(uint8 u8RegionNum, MPU_AccessRightsType eRights);
 
 /**
  * @brief         Retrieve error details
@@ -121,6 +121,6 @@ boolean MPU_GetErrorDetails(MPU_ErrorDetailsType * pErrorDetails);
  *
  * @return void
  */
-void MPU_GetErrorRegisters(uint32_t * pMmfsr, uint32_t * pAddress);
+void MPU_GetErrorRegisters(uint32 * pMmfsr, uint32 * pAddress);
 
 #endif /* __MPU_H__ */

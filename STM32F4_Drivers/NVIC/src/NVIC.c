@@ -23,7 +23,7 @@
  */
 void NVIC_EnableIRQ(IRQn_Type IRQn)
 {
-	NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ISER[(((uint32)(int32)IRQn) >> 5UL)] = (uint32)(1UL << (((uint32)(int32)IRQn) & 0x1FUL));
 }
 
 
@@ -34,7 +34,7 @@ void NVIC_EnableIRQ(IRQn_Type IRQn)
  */
 void NVIC_DisableIRQ(IRQn_Type IRQn)
 {
-	NVIC->ICER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ICER[(((uint32)(int32)IRQn) >> 5UL)] = (uint32)(1UL << (((uint32)(int32)IRQn) & 0x1FUL));
 }
 
 
@@ -45,9 +45,9 @@ void NVIC_DisableIRQ(IRQn_Type IRQn)
   \return             0  Interrupt status is not pending.
   \return             1  Interrupt status is pending.
  */
-uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)
+uint32 NVIC_GetPendingIRQ(IRQn_Type IRQn)
 {
-	return((uint32_t)(((NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
+	return((uint32)(((NVIC->ISPR[(((uint32)(int32)IRQn) >> 5UL)] & (1UL << (((uint32)(int32)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
 }
 
 
@@ -58,7 +58,7 @@ uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)
  */
 void NVIC_SetPendingIRQ(IRQn_Type IRQn)
 {
-	NVIC->ISPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ISPR[(((uint32)(int32)IRQn) >> 5UL)] = (uint32)(1UL << (((uint32)(int32)IRQn) & 0x1FUL));
 }
 
 
@@ -69,7 +69,7 @@ void NVIC_SetPendingIRQ(IRQn_Type IRQn)
  */
 void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
 {
-	NVIC->ICPR[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
+	NVIC->ICPR[(((uint32)(int32)IRQn) >> 5UL)] = (uint32)(1UL << (((uint32)(int32)IRQn) & 0x1FUL));
 }
 
 
@@ -80,9 +80,9 @@ void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
   \return             0  Interrupt status is not active.
   \return             1  Interrupt status is active.
  */
-uint32_t NVIC_GetActive(IRQn_Type IRQn)
+uint32 NVIC_GetActive(IRQn_Type IRQn)
 {
-	return((uint32_t)(((NVIC->IABR[(((uint32_t)(int32_t)IRQn) >> 5UL)] & (1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
+	return((uint32)(((NVIC->IABR[(((uint32)(int32)IRQn) >> 5UL)] & (1UL << (((uint32)(int32)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL));
 }
 
 
@@ -93,15 +93,15 @@ uint32_t NVIC_GetActive(IRQn_Type IRQn)
   \param [in]      IRQn  Interrupt number.
   \param [in]  priority  Priority to set.
  */
-void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
+void NVIC_SetPriority(IRQn_Type IRQn, uint32 priority)
 {
-	if ((int32_t)(IRQn) < 0)
+	if ((int32)(IRQn) < 0)
 	{
-		SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+		SCB->SHP[(((uint32)(int32)IRQn) & 0xFUL)-4UL] = (uint8)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32)0xFFUL);
 	}
 	else
 	{
-		NVIC->IP[((uint32_t)(int32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+		NVIC->IP[((uint32)(int32)IRQn)]               = (uint8)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32)0xFFUL);
 	}
 }
 
@@ -115,15 +115,15 @@ void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
   \return             Interrupt Priority.
                       Value is aligned automatically to the implemented priority bits of the microcontroller.
  */
-uint32_t NVIC_GetPriority(IRQn_Type IRQn)
+uint32 NVIC_GetPriority(IRQn_Type IRQn)
 {
-	if ((int32_t)(IRQn) < 0)
+	if ((int32)(IRQn) < 0)
 	{
-		return (((uint32_t)SCB->SHP[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] >> (8U - __NVIC_PRIO_BITS)));
+		return (((uint32)SCB->SHP[(((uint32)(int32)IRQn) & 0xFUL)-4UL] >> (8U - __NVIC_PRIO_BITS)));
 	}
 	else
 	{
-		return (((uint32_t)NVIC->IP[((uint32_t)(int32_t)IRQn)]               >> (8U - __NVIC_PRIO_BITS)));
+		return (((uint32)NVIC->IP[((uint32)(int32)IRQn)]               >> (8U - __NVIC_PRIO_BITS)));
 	}
 }
 

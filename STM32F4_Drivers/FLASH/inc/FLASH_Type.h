@@ -29,12 +29,12 @@ typedef enum
 /** @defgroup FLASH_Program_Parallelism   
   * @{
   */
-#define FLASH_PSIZE_BYTE			((uint32_t)0x00000000)
-#define FLASH_PSIZE_HALF_WORD		((uint32_t)0x00000100)
-#define FLASH_PSIZE_WORD			((uint32_t)0x00000200)
-#define FLASH_PSIZE_DOUBLE_WORD		((uint32_t)0x00000300)
-#define FLASH_CR_PSIZE_MASK			((uint32_t)0xFFFFFCFF)
-#define FLASH_CR_SECTOR_MASK		((uint32_t)0xFFFFFF07)
+#define FLASH_PSIZE_BYTE			((uint32)0x00000000)
+#define FLASH_PSIZE_HALF_WORD		((uint32)0x00000100)
+#define FLASH_PSIZE_WORD			((uint32)0x00000200)
+#define FLASH_PSIZE_DOUBLE_WORD		((uint32)0x00000300)
+#define FLASH_CR_PSIZE_MASK			((uint32)0xFFFFFCFF)
+#define FLASH_CR_SECTOR_MASK		((uint32)0xFFFFFF07)
 
 #define FLASH_CR_STRT_POS			(16)
 #define FLASH_CR_MER_POS			(2)

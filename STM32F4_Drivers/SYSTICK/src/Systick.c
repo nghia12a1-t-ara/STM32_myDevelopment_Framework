@@ -70,11 +70,12 @@ uint32 Systick_GetElapsed(uint32 * const CurrentRef)
  */
 uint32 Systick_MicrosToTicks(uint32 Micros)
 {
-    uint64 interim = 0;
+    uint32 interim = 0;
     uint32 ticks = 0u;
 
     interim = Micros * (uint64)OsIf_au32InternalFrequencies;
-    interim /= 1000000u;
+    interim /= 1000u;
+    interim /= 1000u;       /* divide for 1.000.000u */
     ticks = (uint32)(interim & 0xFFFFFFFFu);
 
     return ticks;

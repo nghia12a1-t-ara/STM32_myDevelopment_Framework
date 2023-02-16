@@ -33,7 +33,7 @@ void NVIC_DisableIRQ(IRQn_Type IRQn);
   \return             0  Interrupt status is not pending.
   \return             1  Interrupt status is pending.
  */
-uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn);
+uint32 NVIC_GetPendingIRQ(IRQn_Type IRQn);
 
 /**
   \brief   Set Pending Interrupt
@@ -57,7 +57,7 @@ void NVIC_ClearPendingIRQ(IRQn_Type IRQn);
   \return             0  Interrupt status is not active.
   \return             1  Interrupt status is active.
  */
-uint32_t NVIC_GetActive(IRQn_Type IRQn);
+uint32 NVIC_GetActive(IRQn_Type IRQn);
 
 /**
   \brief   Set Interrupt Priority
@@ -66,7 +66,7 @@ uint32_t NVIC_GetActive(IRQn_Type IRQn);
   \param [in]      IRQn  Interrupt number.
   \param [in]  priority  Priority to set.
  */
-void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority);
+void NVIC_SetPriority(IRQn_Type IRQn, uint32 priority);
 
 /**
   \brief   Get Interrupt Priority
@@ -77,7 +77,7 @@ void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority);
   \return             Interrupt Priority.
                       Value is aligned automatically to the implemented priority bits of the microcontroller.
  */
-uint32_t NVIC_GetPriority(IRQn_Type IRQn);
+uint32 NVIC_GetPriority(IRQn_Type IRQn);
 
 /**
   \brief   Software Trigger Interrupt

@@ -19,10 +19,10 @@
 
 /** SysTick - Register Layout Typedef */
 typedef struct {
-  __IO uint32_t CSRr;                               /**< SysTick Control and Status Register, offset: 0x0 */
-  __IO uint32_t RVR;                               /**< SysTick Reload Value Register, offset: 0x4 */
-  __IO uint32_t CVR;                               /**< SysTick Current Value Register, offset: 0x8 */
-  __I  uint32_t CALIB;                             /**< SysTick Calibration Value Register, offset: 0xC */
+  __IO uint32 CSRr;                               /**< SysTick Control and Status Register, offset: 0x0 */
+  __IO uint32 RVR;                               /**< SysTick Reload Value Register, offset: 0x4 */
+  __IO uint32 CVR;                               /**< SysTick Current Value Register, offset: 0x8 */
+  __I  uint32 CALIB;                             /**< SysTick Calibration Value Register, offset: 0xC */
 } SysTick_Type;
 
 /** Number of instances of the SysTick module. */
@@ -58,41 +58,41 @@ typedef struct {
 #define SYSTICK_CSR_ENABLE_MASK              0x1u
 #define SYSTICK_CSR_ENABLE_SHIFT             0u
 #define SYSTICK_CSR_ENABLE_WIDTH             1u
-#define SYSTICK_CSR_ENABLE(x)                (((uint32_t)(((uint32_t)(x))<<SYSTICK_CSR_ENABLE_SHIFT))&SYSTICK_CSR_ENABLE_MASK)
+#define SYSTICK_CSR_ENABLE(x)                (((uint32)(((uint32)(x))<<SYSTICK_CSR_ENABLE_SHIFT))&SYSTICK_CSR_ENABLE_MASK)
 #define SYSTICK_CSR_TICKINT_MASK             0x2u
 #define SYSTICK_CSR_TICKINT_SHIFT            1u
 #define SYSTICK_CSR_TICKINT_WIDTH            1u
-#define SYSTICK_CSR_TICKINT(x)               (((uint32_t)(((uint32_t)(x))<<SYSTICK_CSR_TICKINT_SHIFT))&SYSTICK_CSR_TICKINT_MASK)
+#define SYSTICK_CSR_TICKINT(x)               (((uint32)(((uint32)(x))<<SYSTICK_CSR_TICKINT_SHIFT))&SYSTICK_CSR_TICKINT_MASK)
 #define SYSTICK_CSR_CLKSOURCE_MASK           0x4u
 #define SYSTICK_CSR_CLKSOURCE_SHIFT          2u
 #define SYSTICK_CSR_CLKSOURCE_WIDTH          1u
-#define SYSTICK_CSR_CLKSOURCE(x)             (((uint32_t)(((uint32_t)(x))<<SYSTICK_CSR_CLKSOURCE_SHIFT))&SYSTICK_CSR_CLKSOURCE_MASK)
+#define SYSTICK_CSR_CLKSOURCE(x)             (((uint32)(((uint32)(x))<<SYSTICK_CSR_CLKSOURCE_SHIFT))&SYSTICK_CSR_CLKSOURCE_MASK)
 #define SYSTICK_CSR_COUNTFLAG_MASK           0x10000u
 #define SYSTICK_CSR_COUNTFLAG_SHIFT          16u
 #define SYSTICK_CSR_COUNTFLAG_WIDTH          1u
-#define SYSTICK_CSR_COUNTFLAG(x)             (((uint32_t)(((uint32_t)(x))<<SYSTICK_CSR_COUNTFLAG_SHIFT))&SYSTICK_CSR_COUNTFLAG_MASK)
+#define SYSTICK_CSR_COUNTFLAG(x)             (((uint32)(((uint32)(x))<<SYSTICK_CSR_COUNTFLAG_SHIFT))&SYSTICK_CSR_COUNTFLAG_MASK)
 /* RVR Bit Fields */
 #define SYSTICK_RVR_RELOAD_MASK              0xFFFFFFu
 #define SYSTICK_RVR_RELOAD_SHIFT             0u
 #define SYSTICK_RVR_RELOAD_WIDTH             24u
-#define SYSTICK_RVR_RELOAD(x)                (((uint32_t)(((uint32_t)(x))<<SYSTICK_RVR_RELOAD_SHIFT))&SYSTICK_RVR_RELOAD_MASK)
+#define SYSTICK_RVR_RELOAD(x)                (((uint32)(((uint32)(x))<<SYSTICK_RVR_RELOAD_SHIFT))&SYSTICK_RVR_RELOAD_MASK)
 /* CVR Bit Fields */
 #define SYSTICK_CVR_CURRENT_MASK             0xFFFFFFu
 #define SYSTICK_CVR_CURRENT_SHIFT            0u
 #define SYSTICK_CVR_CURRENT_WIDTH            24u
-#define SYSTICK_CVR_CURRENT(x)               (((uint32_t)(((uint32_t)(x))<<SYSTICK_CVR_CURRENT_SHIFT))&SYSTICK_CVR_CURRENT_MASK)
+#define SYSTICK_CVR_CURRENT(x)               (((uint32)(((uint32)(x))<<SYSTICK_CVR_CURRENT_SHIFT))&SYSTICK_CVR_CURRENT_MASK)
 /* CALIB Bit Fields */
 #define SYSTICK_CALIB_TENMS_MASK             0xFFFFFFu
 #define SYSTICK_CALIB_TENMS_SHIFT            0u
 #define SYSTICK_CALIB_TENMS_WIDTH            24u
-#define SYSTICK_CALIB_TENMS(x)               (((uint32_t)(((uint32_t)(x))<<SYSTICK_CALIB_TENMS_SHIFT))&SYSTICK_CALIB_TENMS_MASK)
+#define SYSTICK_CALIB_TENMS(x)               (((uint32)(((uint32)(x))<<SYSTICK_CALIB_TENMS_SHIFT))&SYSTICK_CALIB_TENMS_MASK)
 #define SYSTICK_CALIB_SKEW_MASK              0x40000000u
 #define SYSTICK_CALIB_SKEW_SHIFT             30u
 #define SYSTICK_CALIB_SKEW_WIDTH
-#define SYSTICK_CALIB_SKEW(x)                (((uint32_t)(((uint32_t)(x))<<SYSTICK_CALIB_SKEW_SHIFT))&SYSTICK_CALIB_SKEW_MASK)
+#define SYSTICK_CALIB_SKEW(x)                (((uint32)(((uint32)(x))<<SYSTICK_CALIB_SKEW_SHIFT))&SYSTICK_CALIB_SKEW_MASK)
 #define SYSTICK_CALIB_NOREF_MASK             0x80000000u
 #define SYSTICK_CALIB_NOREF_SHIFT            31u
 #define SYSTICK_CALIB_NOREF_WIDTH            1u
-#define SYSTICK_CALIB_NOREF(x)               (((uint32_t)(((uint32_t)(x))<<SYSTICK_CALIB_NOREF_SHIFT))&SYSTICK_CALIB_NOREF_MASK)
+#define SYSTICK_CALIB_NOREF(x)               (((uint32)(((uint32)(x))<<SYSTICK_CALIB_NOREF_SHIFT))&SYSTICK_CALIB_NOREF_MASK)
 
 #endif  /* #if !defined(__SYSTICK_BASE_H__) */

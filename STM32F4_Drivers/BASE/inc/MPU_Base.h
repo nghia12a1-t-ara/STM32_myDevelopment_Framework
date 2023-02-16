@@ -22,15 +22,15 @@
 
 /** MPU - Register Layout Typedef */
 typedef struct {
-       uint8_t RESERVED_0[3472];
-  __I  uint32_t TYPE;                              /* MPU Type Register, offset: 0xD90 */
-  __IO uint32_t CTRL;                              /* MPU Control Register, offset: 0xD94 */
-  __IO uint32_t RNR;                               /* MPU Region Number Register, offset: 0xD98 */
-  __IO uint32_t RBAR;                              /* MPU Region Base Address Register, offset: 0xD9C */
-  __IO uint32_t RASR;                              /* MPU Region Attribute and Size Register, offset: 0xDA0 */
+       uint8 RESERVED_0[3472];
+  __I  uint32 TYPE;                              /* MPU Type Register, offset: 0xD90 */
+  __IO uint32 CTRL;                              /* MPU Control Register, offset: 0xD94 */
+  __IO uint32 RNR;                               /* MPU Region Number Register, offset: 0xD98 */
+  __IO uint32 RBAR;                              /* MPU Region Base Address Register, offset: 0xD9C */
+  __IO uint32 RASR;                              /* MPU Region Attribute and Size Register, offset: 0xDA0 */
   struct {                                         /* offset: 0xDA4, array step: 0x8 */
-    __IO uint32_t RBAR;                              /* Alias of RBAR0..Alias of RBAR2, array offset: 0xDA4, array step: 0x8 */
-    __IO uint32_t RASR;                              /* Alias of RASR0..Alias of RASR2, array offset: 0xDA8, array step: 0x8 */
+    __IO uint32 RBAR;                              /* Alias of RBAR0..Alias of RBAR2, array offset: 0xDA4, array step: 0x8 */
+    __IO uint32 RASR;                              /* Alias of RASR0..Alias of RASR2, array offset: 0xDA8, array step: 0x8 */
   } A[MPU_A_COUNT];
 } MPU_Type, *MPU_MemMapPtr;
 
@@ -60,133 +60,133 @@ typedef struct {
 #define MPU_TYPE_SEPARATE_MASK               0x1u
 #define MPU_TYPE_SEPARATE_SHIFT              0u
 #define MPU_TYPE_SEPARATE_WIDTH              1u
-#define MPU_TYPE_SEPARATE(x)                 (((uint32_t)(((uint32_t)(x))<<MPU_TYPE_SEPARATE_SHIFT))&MPU_TYPE_SEPARATE_MASK)
+#define MPU_TYPE_SEPARATE(x)                 (((uint32)(((uint32)(x))<<MPU_TYPE_SEPARATE_SHIFT))&MPU_TYPE_SEPARATE_MASK)
 #define MPU_TYPE_DREGION_MASK                0xFF00u
 #define MPU_TYPE_DREGION_SHIFT               8u
 #define MPU_TYPE_DREGION_WIDTH               8u
-#define MPU_TYPE_DREGION(x)                  (((uint32_t)(((uint32_t)(x))<<MPU_TYPE_DREGION_SHIFT))&MPU_TYPE_DREGION_MASK)
+#define MPU_TYPE_DREGION(x)                  (((uint32)(((uint32)(x))<<MPU_TYPE_DREGION_SHIFT))&MPU_TYPE_DREGION_MASK)
 #define MPU_TYPE_IREGION_MASK                0xFF0000u
 #define MPU_TYPE_IREGION_SHIFT               16u
 #define MPU_TYPE_IREGION_WIDTH               8u
-#define MPU_TYPE_IREGION(x)                  (((uint32_t)(((uint32_t)(x))<<MPU_TYPE_IREGION_SHIFT))&MPU_TYPE_IREGION_MASK)
+#define MPU_TYPE_IREGION(x)                  (((uint32)(((uint32)(x))<<MPU_TYPE_IREGION_SHIFT))&MPU_TYPE_IREGION_MASK)
 /* CTRL Bit Fields */
 #define MPU_CTRL_ENABLE_MASK                 0x1u
 #define MPU_CTRL_ENABLE_SHIFT                0u
 #define MPU_CTRL_ENABLE_WIDTH                1u
-#define MPU_CTRL_ENABLE(x)                   (((uint32_t)(((uint32_t)(x))<<MPU_CTRL_ENABLE_SHIFT))&MPU_CTRL_ENABLE_MASK)
+#define MPU_CTRL_ENABLE(x)                   (((uint32)(((uint32)(x))<<MPU_CTRL_ENABLE_SHIFT))&MPU_CTRL_ENABLE_MASK)
 #define MPU_CTRL_HFNMIENA_MASK               0x2u
 #define MPU_CTRL_HFNMIENA_SHIFT              1u
 #define MPU_CTRL_HFNMIENA_WIDTH              1u
-#define MPU_CTRL_HFNMIENA(x)                 (((uint32_t)(((uint32_t)(x))<<MPU_CTRL_HFNMIENA_SHIFT))&MPU_CTRL_HFNMIENA_MASK)
+#define MPU_CTRL_HFNMIENA(x)                 (((uint32)(((uint32)(x))<<MPU_CTRL_HFNMIENA_SHIFT))&MPU_CTRL_HFNMIENA_MASK)
 #define MPU_CTRL_PRIVDEFENA_MASK             0x4u
 #define MPU_CTRL_PRIVDEFENA_SHIFT            2u
 #define MPU_CTRL_PRIVDEFENA_WIDTH            1u
-#define MPU_CTRL_PRIVDEFENA(x)               (((uint32_t)(((uint32_t)(x))<<MPU_CTRL_PRIVDEFENA_SHIFT))&MPU_CTRL_PRIVDEFENA_MASK)
+#define MPU_CTRL_PRIVDEFENA(x)               (((uint32)(((uint32)(x))<<MPU_CTRL_PRIVDEFENA_SHIFT))&MPU_CTRL_PRIVDEFENA_MASK)
 /* RNR Bit Fields */
 #define MPU_RNR_REGION_MASK                  0xFFu
 #define MPU_RNR_REGION_SHIFT                 0u
 #define MPU_RNR_REGION_WIDTH                 8u
-#define MPU_RNR_REGION(x)                    (((uint32_t)(((uint32_t)(x))<<MPU_RNR_REGION_SHIFT))&MPU_RNR_REGION_MASK)
+#define MPU_RNR_REGION(x)                    (((uint32)(((uint32)(x))<<MPU_RNR_REGION_SHIFT))&MPU_RNR_REGION_MASK)
 /* RBAR Bit Fields */
 #define MPU_RBAR_REGION_MASK                 0xFu
 #define MPU_RBAR_REGION_SHIFT                0u
 #define MPU_RBAR_REGION_WIDTH                4u
-#define MPU_RBAR_REGION(x)                   (((uint32_t)(((uint32_t)(x))<<MPU_RBAR_REGION_SHIFT))&MPU_RBAR_REGION_MASK)
+#define MPU_RBAR_REGION(x)                   (((uint32)(((uint32)(x))<<MPU_RBAR_REGION_SHIFT))&MPU_RBAR_REGION_MASK)
 #define MPU_RBAR_VALID_MASK                  0x10u
 #define MPU_RBAR_VALID_SHIFT                 4u
 #define MPU_RBAR_VALID_WIDTH                 1u
-#define MPU_RBAR_VALID(x)                    (((uint32_t)(((uint32_t)(x))<<MPU_RBAR_VALID_SHIFT))&MPU_RBAR_VALID_MASK)
+#define MPU_RBAR_VALID(x)                    (((uint32)(((uint32)(x))<<MPU_RBAR_VALID_SHIFT))&MPU_RBAR_VALID_MASK)
 #define MPU_RBAR_ADDR_MASK                   0xFFFFFFE0u
 #define MPU_RBAR_ADDR_SHIFT                  5u
 #define MPU_RBAR_ADDR_WIDTH                  27u
-#define MPU_RBAR_ADDR(x)                     (((uint32_t)(((uint32_t)(x))<<MPU_RBAR_ADDR_SHIFT))&MPU_RBAR_ADDR_MASK)
+#define MPU_RBAR_ADDR(x)                     (((uint32)(((uint32)(x))<<MPU_RBAR_ADDR_SHIFT))&MPU_RBAR_ADDR_MASK)
 /* RASR Bit Fields */
 #define MPU_RASR_ENABLE_MASK                 0x1u
 #define MPU_RASR_ENABLE_SHIFT                0u
 #define MPU_RASR_ENABLE_WIDTH                1u
-#define MPU_RASR_ENABLE(x)                   (((uint32_t)(((uint32_t)(x))<<MPU_RASR_ENABLE_SHIFT))&MPU_RASR_ENABLE_MASK)
+#define MPU_RASR_ENABLE(x)                   (((uint32)(((uint32)(x))<<MPU_RASR_ENABLE_SHIFT))&MPU_RASR_ENABLE_MASK)
 #define MPU_RASR_SIZE_MASK                   0x3Eu
 #define MPU_RASR_SIZE_SHIFT                  1u
 #define MPU_RASR_SIZE_WIDTH                  5u
-#define MPU_RASR_SIZE(x)                     (((uint32_t)(((uint32_t)(x))<<MPU_RASR_SIZE_SHIFT))&MPU_RASR_SIZE_MASK)
+#define MPU_RASR_SIZE(x)                     (((uint32)(((uint32)(x))<<MPU_RASR_SIZE_SHIFT))&MPU_RASR_SIZE_MASK)
 #define MPU_RASR_SRD_MASK                    0xFF00u
 #define MPU_RASR_SRD_SHIFT                   8u
 #define MPU_RASR_SRD_WIDTH                   8u
-#define MPU_RASR_SRD(x)                      (((uint32_t)(((uint32_t)(x))<<MPU_RASR_SRD_SHIFT))&MPU_RASR_SRD_MASK)
+#define MPU_RASR_SRD(x)                      (((uint32)(((uint32)(x))<<MPU_RASR_SRD_SHIFT))&MPU_RASR_SRD_MASK)
 #define MPU_RASR_B_MASK                      0x10000u
 #define MPU_RASR_B_SHIFT                     16u
 #define MPU_RASR_B_WIDTH                     1u
-#define MPU_RASR_B(x)                        (((uint32_t)(((uint32_t)(x))<<MPU_RASR_B_SHIFT))&MPU_RASR_B_MASK)
+#define MPU_RASR_B(x)                        (((uint32)(((uint32)(x))<<MPU_RASR_B_SHIFT))&MPU_RASR_B_MASK)
 #define MPU_RASR_C_MASK                      0x20000u
 #define MPU_RASR_C_SHIFT                     17u
 #define MPU_RASR_C_WIDTH                     1u
-#define MPU_RASR_C(x)                        (((uint32_t)(((uint32_t)(x))<<MPU_RASR_C_SHIFT))&MPU_RASR_C_MASK)
+#define MPU_RASR_C(x)                        (((uint32)(((uint32)(x))<<MPU_RASR_C_SHIFT))&MPU_RASR_C_MASK)
 #define MPU_RASR_S_MASK                      0x40000u
 #define MPU_RASR_S_SHIFT                     18u
 #define MPU_RASR_S_WIDTH                     1u
-#define MPU_RASR_S(x)                        (((uint32_t)(((uint32_t)(x))<<MPU_RASR_S_SHIFT))&MPU_RASR_S_MASK)
+#define MPU_RASR_S(x)                        (((uint32)(((uint32)(x))<<MPU_RASR_S_SHIFT))&MPU_RASR_S_MASK)
 #define MPU_RASR_TEX_MASK                    0x380000u
 #define MPU_RASR_TEX_SHIFT                   19u
 #define MPU_RASR_TEX_WIDTH                   3u
-#define MPU_RASR_TEX(x)                      (((uint32_t)(((uint32_t)(x))<<MPU_RASR_TEX_SHIFT))&MPU_RASR_TEX_MASK)
+#define MPU_RASR_TEX(x)                      (((uint32)(((uint32)(x))<<MPU_RASR_TEX_SHIFT))&MPU_RASR_TEX_MASK)
 #define MPU_RASR_AP_MASK                     0x7000000u
 #define MPU_RASR_AP_SHIFT                    24u
 #define MPU_RASR_AP_WIDTH                    3u
-#define MPU_RASR_AP(x)                       (((uint32_t)(((uint32_t)(x))<<MPU_RASR_AP_SHIFT))&MPU_RASR_AP_MASK)
+#define MPU_RASR_AP(x)                       (((uint32)(((uint32)(x))<<MPU_RASR_AP_SHIFT))&MPU_RASR_AP_MASK)
 #define MPU_RASR_XN_MASK                     0x10000000u
 #define MPU_RASR_XN_SHIFT                    28u
 #define MPU_RASR_XN_WIDTH                    1u
-#define MPU_RASR_XN(x)                       (((uint32_t)(((uint32_t)(x))<<MPU_RASR_XN_SHIFT))&MPU_RASR_XN_MASK)
+#define MPU_RASR_XN(x)                       (((uint32)(((uint32)(x))<<MPU_RASR_XN_SHIFT))&MPU_RASR_XN_MASK)
 /* A_RBAR Bit Fields */
 #define MPU_A_RBAR_REGION_MASK               0xFu
 #define MPU_A_RBAR_REGION_SHIFT              0u
 #define MPU_A_RBAR_REGION_WIDTH              4u
-#define MPU_A_RBAR_REGION(x)                 (((uint32_t)(((uint32_t)(x))<<MPU_A_RBAR_REGION_SHIFT))&MPU_A_RBAR_REGION_MASK)
+#define MPU_A_RBAR_REGION(x)                 (((uint32)(((uint32)(x))<<MPU_A_RBAR_REGION_SHIFT))&MPU_A_RBAR_REGION_MASK)
 #define MPU_A_RBAR_VALID_MASK                0x10u
 #define MPU_A_RBAR_VALID_SHIFT               4u
 #define MPU_A_RBAR_VALID_WIDTH               1u
-#define MPU_A_RBAR_VALID(x)                  (((uint32_t)(((uint32_t)(x))<<MPU_A_RBAR_VALID_SHIFT))&MPU_A_RBAR_VALID_MASK)
+#define MPU_A_RBAR_VALID(x)                  (((uint32)(((uint32)(x))<<MPU_A_RBAR_VALID_SHIFT))&MPU_A_RBAR_VALID_MASK)
 #define MPU_A_RBAR_ADDR_MASK                 0xFFFFFFE0u
 #define MPU_A_RBAR_ADDR_SHIFT                5u
 #define MPU_A_RBAR_ADDR_WIDTH                27u
-#define MPU_A_RBAR_ADDR(x)                   (((uint32_t)(((uint32_t)(x))<<MPU_A_RBAR_ADDR_SHIFT))&MPU_A_RBAR_ADDR_MASK)
+#define MPU_A_RBAR_ADDR(x)                   (((uint32)(((uint32)(x))<<MPU_A_RBAR_ADDR_SHIFT))&MPU_A_RBAR_ADDR_MASK)
 /* A_RASR Bit Fields */
 #define MPU_A_RASR_ENABLE_MASK               0x1u
 #define MPU_A_RASR_ENABLE_SHIFT              0u
 #define MPU_A_RASR_ENABLE_WIDTH              1u
-#define MPU_A_RASR_ENABLE(x)                 (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_ENABLE_SHIFT))&MPU_A_RASR_ENABLE_MASK)
+#define MPU_A_RASR_ENABLE(x)                 (((uint32)(((uint32)(x))<<MPU_A_RASR_ENABLE_SHIFT))&MPU_A_RASR_ENABLE_MASK)
 #define MPU_A_RASR_SIZE_MASK                 0x3Eu
 #define MPU_A_RASR_SIZE_SHIFT                1u
 #define MPU_A_RASR_SIZE_WIDTH                5u
-#define MPU_A_RASR_SIZE(x)                   (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_SIZE_SHIFT))&MPU_A_RASR_SIZE_MASK)
+#define MPU_A_RASR_SIZE(x)                   (((uint32)(((uint32)(x))<<MPU_A_RASR_SIZE_SHIFT))&MPU_A_RASR_SIZE_MASK)
 #define MPU_A_RASR_SRD_MASK                  0xFF00u
 #define MPU_A_RASR_SRD_SHIFT                 8u
 #define MPU_A_RASR_SRD_WIDTH                 8u
-#define MPU_A_RASR_SRD(x)                    (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_SRD_SHIFT))&MPU_A_RASR_SRD_MASK)
+#define MPU_A_RASR_SRD(x)                    (((uint32)(((uint32)(x))<<MPU_A_RASR_SRD_SHIFT))&MPU_A_RASR_SRD_MASK)
 #define MPU_A_RASR_B_MASK                    0x10000u
 #define MPU_A_RASR_B_SHIFT                   16u
 #define MPU_A_RASR_B_WIDTH                   1u
-#define MPU_A_RASR_B(x)                      (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_B_SHIFT))&MPU_A_RASR_B_MASK)
+#define MPU_A_RASR_B(x)                      (((uint32)(((uint32)(x))<<MPU_A_RASR_B_SHIFT))&MPU_A_RASR_B_MASK)
 #define MPU_A_RASR_C_MASK                    0x20000u
 #define MPU_A_RASR_C_SHIFT                   17u
 #define MPU_A_RASR_C_WIDTH                   1u
-#define MPU_A_RASR_C(x)                      (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_C_SHIFT))&MPU_A_RASR_C_MASK)
+#define MPU_A_RASR_C(x)                      (((uint32)(((uint32)(x))<<MPU_A_RASR_C_SHIFT))&MPU_A_RASR_C_MASK)
 #define MPU_A_RASR_S_MASK                    0x40000u
 #define MPU_A_RASR_S_SHIFT                   18u
 #define MPU_A_RASR_S_WIDTH                   1u
-#define MPU_A_RASR_S(x)                      (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_S_SHIFT))&MPU_A_RASR_S_MASK)
+#define MPU_A_RASR_S(x)                      (((uint32)(((uint32)(x))<<MPU_A_RASR_S_SHIFT))&MPU_A_RASR_S_MASK)
 #define MPU_A_RASR_TEX_MASK                  0x380000u
 #define MPU_A_RASR_TEX_SHIFT                 19u
 #define MPU_A_RASR_TEX_WIDTH                 3u
-#define MPU_A_RASR_TEX(x)                    (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_TEX_SHIFT))&MPU_A_RASR_TEX_MASK)
+#define MPU_A_RASR_TEX(x)                    (((uint32)(((uint32)(x))<<MPU_A_RASR_TEX_SHIFT))&MPU_A_RASR_TEX_MASK)
 #define MPU_A_RASR_AP_MASK                   0x7000000u
 #define MPU_A_RASR_AP_SHIFT                  24u
 #define MPU_A_RASR_AP_WIDTH                  3u
-#define MPU_A_RASR_AP(x)                     (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_AP_SHIFT))&MPU_A_RASR_AP_MASK)
+#define MPU_A_RASR_AP(x)                     (((uint32)(((uint32)(x))<<MPU_A_RASR_AP_SHIFT))&MPU_A_RASR_AP_MASK)
 #define MPU_A_RASR_XN_MASK                   0x10000000u
 #define MPU_A_RASR_XN_SHIFT                  28u
 #define MPU_A_RASR_XN_WIDTH                  1u
-#define MPU_A_RASR_XN(x)                     (((uint32_t)(((uint32_t)(x))<<MPU_A_RASR_XN_SHIFT))&MPU_A_RASR_XN_MASK)
+#define MPU_A_RASR_XN(x)                     (((uint32)(((uint32)(x))<<MPU_A_RASR_XN_SHIFT))&MPU_A_RASR_XN_MASK)
 
 /*!
  * @}

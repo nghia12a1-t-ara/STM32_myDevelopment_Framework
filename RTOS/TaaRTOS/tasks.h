@@ -14,9 +14,9 @@ typedef struct
 {
 	volatile StackType_t 	*pxTopOfStack;	/*< Points to top of Task Stack >*/
 	char 					*name; 			/*< Name of Tasks >*/
-	uint8_t					Priority;		/*< Priority of Tasks >*/
-	uint8_t					Status;			/*< Status of Task >*/
-	uint32_t				DelayTicks;		/*< delay time of Task >*/
+	uint8					Priority;		/*< Priority of Tasks >*/
+	uint8					Status;			/*< Status of Task >*/
+	uint32				DelayTicks;		/*< delay time of Task >*/
 	void(*func)(void *);					/*< function pointer that is implemented by task >*/
 	struct task				*NextTask;		/*< point to next Task in Linked List >*/
 } TCB_Type;

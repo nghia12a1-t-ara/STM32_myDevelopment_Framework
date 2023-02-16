@@ -5,7 +5,7 @@
  * Brief		: Startup file for STM32F4 - Apply for GCC Compiler
  */
 
-#include <stdint.h>
+#include "Std_Type.h"
 
 #define SRAM_START	0x20000000U
 #define	SRAM_SIZE	(128U + 1024U)		//128KB
@@ -13,13 +13,13 @@
 
 #define	STACK_START	SRAM_END
 
-extern uint32_t _etext;
-extern uint32_t _sdata;
-extern uint32_t	_edata;
-extern uint32_t _la_data;
+extern uint32 _etext;
+extern uint32 _sdata;
+extern uint32 _edata;
+extern uint32 _la_data;
 
-extern uint32_t _sbss;
-extern uint32_t _ebss;
+extern uint32 _sbss;
+extern uint32 _ebss;
 
 /* function prototypes */
 void main(void);
@@ -121,49 +121,49 @@ void HASH_RNG_IRQHandler         	(void) __attribute__ ((weak, alias("Default_Ha
 void FPU_IRQHandler              	(void) __attribute__ ((weak, alias("Default_Handler"))); 
 
 
-uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
+uint32 vectors[] __attribute__((section(".isr_vector"))) = {
 	STACK_START,
-	(uint32_t)&Reset_Handler,
-	(uint32_t)&NMI_Handler,
-	(uint32_t)&HardFault_Handler,
-	(uint32_t)&MemManage_Handler,
-	(uint32_t)&BusFault_Handler,
-	(uint32_t)&UsageFault_Handler,
-	(uint32_t)&SVC_Handler,
-	(uint32_t)&DebugMon_Handler,
-	(uint32_t)&PendSV_Handler,
-	(uint32_t)&SysTick_Handler,
-	(uint32_t)&WWDG_IRQHandler,
-	(uint32_t)&PVD_IRQHandler,
-	(uint32_t)&TAMP_STAMP_IRQHandler,
-	(uint32_t)&RTC_WKUP_IRQHandler,
-	(uint32_t)&RCC_IRQHandler,
-	(uint32_t)&EXTI0_IRQHandler,
-	(uint32_t)&EXTI1_IRQHandler,
-	(uint32_t)&EXTI2_IRQHandler,
-	(uint32_t)&EXTI3_IRQHandler,
-	(uint32_t)&EXTI4_IRQHandler,
+	(uint32)&Reset_Handler,
+	(uint32)&NMI_Handler,
+	(uint32)&HardFault_Handler,
+	(uint32)&MemManage_Handler,
+	(uint32)&BusFault_Handler,
+	(uint32)&UsageFault_Handler,
+	(uint32)&SVC_Handler,
+	(uint32)&DebugMon_Handler,
+	(uint32)&PendSV_Handler,
+	(uint32)&SysTick_Handler,
+	(uint32)&WWDG_IRQHandler,
+	(uint32)&PVD_IRQHandler,
+	(uint32)&TAMP_STAMP_IRQHandler,
+	(uint32)&RTC_WKUP_IRQHandler,
+	(uint32)&RCC_IRQHandler,
+	(uint32)&EXTI0_IRQHandler,
+	(uint32)&EXTI1_IRQHandler,
+	(uint32)&EXTI2_IRQHandler,
+	(uint32)&EXTI3_IRQHandler,
+	(uint32)&EXTI4_IRQHandler,
 	/*....*/
 };
 
 void Reset_Handler()
 {
 	/* Copy .data section to SRAM */
-	uint32_t size = (uint32_t)&_edata - (uint32_t)&_sdata;
+	uint32 size = (uint32)&_edata - (uint32)&_sdata;
 	
-	uint8_t *pDst = (uint8_t*)&_sdata;		// SRAM
-	uint8_t *pSrc = (uint8_t*)&_etext;		// FLASH
+	uint8 *pDst = (uint8*)&_sdata;		// SRAM
+	uint8 *pSrc = (uint8*)&_etext;		// FLASH
 	
-	for(uint32_t i = 0; i < size; i++)
+	for(uint32 i = 0; i < size; i++)
 	{
 		*pDst++ = *pSrc++;
 	}
 	
 	/* Init the .bss section to zero in SRAM */
-	size = (uint32_t)&_ebss - (uint32_t)&_sbss;
-	pDst = (uint8_t*)&_sbss;
+	size = (uint32)&_ebss - (uint32)&_sbss;
+	pDst = (uint8*)&_sbss;
 	
-	for(uint32_t i = 0; i < size; i++)
+	for(uint32 i = 0; i < size; i++)
 	{
 		*pDst++ = 0;
 	}
