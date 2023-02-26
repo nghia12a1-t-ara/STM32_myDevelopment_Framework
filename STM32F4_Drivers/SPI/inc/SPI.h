@@ -1,61 +1,53 @@
-/*
- * stm32f4xx_spi_driver.h
- *
- *  Created on: Feb 9, 2019
- *      Author: admin
+/**
+ * Filename     : SPI.h
+ * Author       : Nghia Taarabt
+ * Create Date  : 18/12/22
+ * Brief        : SPI Function Prototypes
  */
 
-#ifndef __SPI_H_
-#define __SPI_H_
+#ifndef __SPI_H__
+#define __SPI_H__
 
 #include "SPI_Base.h"
 #include "SPI_Type.h"
 
 /******************************************************************************************
- *								APIs supported by this driver
- *		 For more information about the APIs check the function definitions
+ *                          APIs supported by this driver
+ *      For more information about the APIs check the function definitions
  ******************************************************************************************/
-/*
- * Peripheral Clock setup
+ 
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn                - SPI_Init
+ *
+ * @brief             - Initialize SPI Driver
+ *
+ * @param[in]         - Instance    - SPI Hardware Instance
+ * @param[in]         - UserConfig  - SPI User Configuration
+ *
+ * @return            -
+ *
+ * @Note              -
  */
-void SPI_PeriClockControl(SPI_Type *pSPIx, uint8 EnorDi);
+void SPI_Init(const uint8 Instance, const Spi_UserConfigType * UserConfig);
 
-/*
- * Init and De-init
+/*********************************************************************
+ * @fn                - Spi_SyncSendData
+ *
+ * @brief             - Synchronous Send Data - Wait to send done or timeout
+ *
+ * @param[in]         - Instance    - SPI Hardware Instance
+ * @param[in]         - TxBuff      - uffer to transmission
+ * @param[in]         - TxSize      - Size of Buffer to transmission
+ * @param[in]         - Timeout     - Timeout if data cannot transmit
+ *
+ * @return            - Spi_StatusType
+ *
+ * @Note              -
  */
-void SPI_Init(SPI_Handle_t *pSPIHandle);
-void SPI_DeInit(SPI_Type *pSPIx);
+Spi_StatusType Spi_SyncSendData(const uint8 Instance,
+                                const uint8 *TxBuff,
+                                const uint32 TxSize,
+                                const uint32 Timeout);
 
-
-/*
- * Data Send and Receive
- */
-void SPI_SendData(SPI_Type *pSPIx,uint8 *pTxBuffer, uint32 Len);
-void SPI_ReceiveData(SPI_Type *pSPIx, uint8 *pRxBuffer, uint32 Len);
-
-uint8 SPI_SendDataIT(SPI_Handle_t *pSPIHandle,uint8 *pTxBuffer, uint32 Len);
-uint8 SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8 *pRxBuffer, uint32 Len);
-
-/*
- * IRQ Configuration and ISR handling
- */
-void SPI_IRQHandling(SPI_Handle_t *pHandle);
-
-/*
- * Other Peripheral Control APIs
- */
-void SPI_PeripheralControl(SPI_Type *pSPIx, uint8 EnOrDi);
-void SPI_SSIConfig(SPI_Type *pSPIx, uint8 EnOrDi);
-void SPI_SSOEConfig(SPI_Type *pSPIx, uint8 EnOrDi);
-uint8 SPI_GetFlagStatus(SPI_Type *pSPIx , uint32 FlagName);
-void SPI_ClearOVRFlag(SPI_Type *pSPIx);
-void SPI_CloseTransmisson(SPI_Handle_t *pSPIHandle);
-void SPI_CloseReception(SPI_Handle_t *pSPIHandle);
-uint8 I2C_DeviceMode(I2C_Type *I2Cx);
-
-/*
- * Application callback
- */
-void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle,uint8 AppEv);
-
-#endif /* __SPI_H_ */
+#endif /* __SPI_H__ */

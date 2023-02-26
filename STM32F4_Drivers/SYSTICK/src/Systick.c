@@ -1,36 +1,28 @@
 /**
  * Filename		: Systick.c
- * Author		: Nghia Taarabt
+ * Author		: Nghia-Taarabt
  * Create Date 	: 18/12/22
- * Brief		: Implement Systick Functions
+ * Brief		: Implement Sys-tick Functions
  */
 
 #include "Systick.h"
 
-#define SYSTICK_GET_COUNTER() 					((SYSTICK->CVR) & SYSTICK_CVR_CURRENT_MASK)
-#define SYSTICK_DELTA_OUTER(high, low, max) 	((max) - ((high) - (low)))
-#define SYSTICK_DELTA_INNER(high, low) 			((high) - (low))
-#define SYSTICK_MAX 							(0xFFFFFFu)
-#define SYSTICK_MAX_DELAY 						(0xFFFFFFFFu)
-
-#define SYSTICK_OVERFLOWED(curr, ref) 			(curr > ref)
-
 __IO uint32 uwTick;
 Systick_FreqType uwTickFreq = SYSTICK_FREQ_DEFAULT;		/* 1KHz */
-static uint32 OsIf_au32InternalFrequencies;
+static uint32 u32InternalFrequencies = 8000000ul;
 
 /**
  * @fn		Systick_Init
- * @brief	Initialize Systick Timer
+ * @brief	Initialize Sys-tick Timer
  */
 void Systick_Init(uint32 SystemCounterFreq)
 {
     (void)SystemCounterFreq;
 
-    SYSTICK->CSRr = SYSTICK_CSR_ENABLE(0u);
+    SYSTICK->CSR = SYSTICK_CSR_ENABLE(DISABLE);
     SYSTICK->RVR = SYSTICK_RVR_RELOAD(SYSTICK_MAX);
     SYSTICK->CVR = SYSTICK_CVR_CURRENT(0U);
-    SYSTICK->CSRr = SYSTICK_CSR_ENABLE(1u) | SYSTICK_CSR_TICKINT(0u) | SYSTICK_CSR_CLKSOURCE(1u);
+    SYSTICK->CSR = SYSTICK_CSR_TICKINT(DISABLE) | SYSTICK_CSR_CLKSOURCE(1u);
 }
 
 /**
@@ -39,16 +31,16 @@ void Systick_Init(uint32 SystemCounterFreq)
  */
 uint32 Systick_GetCounter(void)
 {
-    return SYSTICK_GET_COUNTER();
+    return ((SYSTICK->CVR) & SYSTICK_CVR_CURRENT_MASK);
 }
 
 /**
  * @fn		Systick_GetElapsed
- * @brief	Get remainning time
+ * @brief	Get remaining time
  */
 uint32 Systick_GetElapsed(uint32 * const CurrentRef)
 {
-    uint32 CurrentVal = SYSTICK_GET_COUNTER();
+    uint32 CurrentVal = (SYSTICK->CVR) & SYSTICK_CVR_CURRENT_MASK;
     uint32 dif = 0u;
     if (SYSTICK_OVERFLOWED((CurrentVal), (*CurrentRef)))
     {
@@ -66,16 +58,15 @@ uint32 Systick_GetElapsed(uint32 * const CurrentRef)
 
 /**
  * @fn		Systick_MicrosToTicks
- * @brief	Convert time (micro second) to tick value
+ * @brief	Convert time (micro-second) to tick value
  */
 uint32 Systick_MicrosToTicks(uint32 Micros)
 {
     uint32 interim = 0;
     uint32 ticks = 0u;
 
-    interim = Micros * (uint64)OsIf_au32InternalFrequencies;
-    interim /= 1000u;
-    interim /= 1000u;       /* divide for 1.000.000u */
+    interim = u32InternalFrequencies/1000000u;
+    interim *= Micros;
     ticks = (uint32)(interim & 0xFFFFFFFFu);
 
     return ticks;
@@ -99,11 +90,20 @@ void Sys_Delay(uint32 utime)
 	uint32 tickstart = Sys_GetTick();
 	uint32 wait = utime;
 
-	/* Add a freq to guarantee minimum wait */
+	/* Add a frequency to guarantee minimum wait */
 	if (wait < SYSTICK_MAX_DELAY)
 	{
 		wait += (uint32)(uwTickFreq);
 	}
 
 	while((Sys_GetTick() - tickstart) < wait);
+}
+
+/**
+ * @fn		SysTick_Handler
+ * @brief	Handler SysTick Interrupt
+ */
+void SysTick_Handler(void)
+{
+
 }

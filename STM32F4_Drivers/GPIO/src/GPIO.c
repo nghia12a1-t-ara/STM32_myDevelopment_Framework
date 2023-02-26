@@ -39,6 +39,9 @@ void GPIO_Init(GPIO_InstanceType Instance, const GPIO_PinConfigType * UserConfig
 	GPIO_AlternateType 	PinAFMode	= UserConfig->GPIO_PinAlternate;
 	EXTI_ModeType		ExtiMode	= UserConfig->EXTI_Mode;
 	
+    /* Enable Clock for GPIO Instance */
+    GPIO_PeriClockControl(Base, ENABLE);
+    
 	if ( GPIO_MODE_EXTI == PinMode )
 	{
 		/* Configure External Interrupt */
@@ -87,8 +90,10 @@ void GPIO_Init(GPIO_InstanceType Instance, const GPIO_PinConfigType * UserConfig
  */
 void GPIO_DeInit(GPIO_InstanceType Instance)
 {
-	/*!< @TODO */
-	RCC->AHB1ENR &= ~(1 << Instance);
+	GPIO_Type *Base = Gpio_Base_Pointer[Instance];
+    
+    /* Disable Clock for GPIO Instance */
+	GPIO_PeriClockControl(Base, DISABLE);
 }
 
 /*

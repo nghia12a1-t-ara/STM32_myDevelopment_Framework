@@ -231,7 +231,7 @@ __STATIC_INLINE uint8 DMA_GetStreamStatus(DMA_Type * pDMAx, Dma_StreamType Strea
  * @
  * @return  : None
  */
-__STATIC_INLINE void Dma_StartTimeout(uint32 * StartTimeOut, uint32 *TimeoutTicksOut, uint32 TimeoutUs)
+__STATIC_INLINE void Systick_StartTimeout(uint32 * StartTimeOut, uint32 *TimeoutTicksOut, uint32 TimeoutUs)
 {
     *StartTimeOut    = Systick_GetCounter();
     *TimeoutTicksOut = Systick_MicrosToTicks(TimeoutUs);
@@ -243,7 +243,7 @@ __STATIC_INLINE void Dma_StartTimeout(uint32 * StartTimeOut, uint32 *TimeoutTick
  * @return  TRUE     Timeout occurs
  *          FALSE    Timeout does not occur
  */
-__STATIC_INLINE boolean Dma_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
+__STATIC_INLINE boolean Systick_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
 {
     uint32 CurrentElapsedTicks = Systick_GetElapsed(StartTime);
     *ElapsedTicks += CurrentElapsedTicks;

@@ -19,7 +19,7 @@
 
 /** SysTick - Register Layout Typedef */
 typedef struct {
-  __IO uint32 CSRr;                               /**< SysTick Control and Status Register, offset: 0x0 */
+  __IO uint32 CSR;                               /**< SysTick Control and Status Register, offset: 0x0 */
   __IO uint32 RVR;                               /**< SysTick Reload Value Register, offset: 0x4 */
   __IO uint32 CVR;                               /**< SysTick Current Value Register, offset: 0x8 */
   __I  uint32 CALIB;                             /**< SysTick Calibration Value Register, offset: 0xC */

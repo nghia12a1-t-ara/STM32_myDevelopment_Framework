@@ -11,7 +11,7 @@
 /*****************************************************************************************/
 /************************************ Private Variables **********************************/
 /* Pointer to Usart runtime state structure */
-static Usart_StateRuntimeType * Usart_StateRuntime_Pointer[USART_INSTANCE_COUNT];
+static Usart_StateRuntimeType * Usart_StateRuntime_Pointer[USART_INSTANCE_COUNT] = {NULL_PTR};
 
 /** @brief User config structure. */
 const Usart_UserConfigType * Usart_UserConfig_Pointer[USART_INSTANCE_COUNT];
@@ -57,13 +57,13 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 	uint8 * ClearStructPtr;
 	uint8 Index;
 	
-	/* Assign Config to Static Variables */
+	/* Assign Configuration to Static Variables */
 	Usart_UserConfig_Pointer[Instance] 		= UserConfig;
 	Usart_StateRuntime_Pointer[Instance] 	= UserConfig->StateStruct;
 	UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 	ClearStructPtr = (uint8 *)UartStatePtr;
 	
-    /* Clear the state struct for this Instance. */
+    /* Clear the state structure for this Instance. */
     for (Index = 0; Index < sizeof(Usart_StateRuntimeType); Index++)
     {
         ClearStructPtr[Index] = 0;
@@ -72,7 +72,7 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 	/* Implement the code to enable the Clock for given USART peripheral */
 	USART_PeriClockControl(Base, ENABLE);
 	
-	/* Enable USART Tx and Rx engines according to the USART_Mode configuration item */
+	/* Enable USART TX and RX engines according to the USART_Mode configuration item */
 	USART_SetTransferMode(Base, UserConfig->USART_Mode);
 	
 	/* Implement the code to configure the Word length configuration item */
@@ -87,13 +87,15 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 	/* Configuration of USART hardware flow control */
 	USART_SetHWFlowControl(Base, UserConfig->USART_HWFlowControl);
 	
-	/* ---------------- Setup Baudrate for USART Instance ---------------- */
+	/* ---------------- Setup Baud-rate for USART Instance ---------------- */
 	Usart_SetBaudRate(Instance, UserConfig->USART_Baud);
 	
     /* Initialize last driver operation status */
-    UartStatePtr->TransmitStatus = USART_STATUS_SUCCESS;
-    UartStatePtr->ReceiveStatus = USART_STATUS_SUCCESS;	
-	UartStatePtr->USART_Baud = UserConfig->USART_Baud;
+	UartStatePtr->IsTxBusy 			= FALSE;
+	UartStatePtr->IsRxBusy			= FALSE;
+	UartStatePtr->TransmitStatus 	= USART_STATUS_SUCCESS;
+	UartStatePtr->ReceiveStatus 	= USART_STATUS_SUCCESS;
+	UartStatePtr->USART_Baud 		= UserConfig->USART_Baud;
 	
 	/* ---------------- Enable USART Instance ---------------- */
 	USART_PeripheralControl(Base, ENABLE);
@@ -102,7 +104,7 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 /*********************************************************************
  * @fn      		  - Usart_SyncSendData
  *
- * @brief             - Synchronus Send Data - Wait to send ok or timeout
+ * @brief             - Synchronous Send Data - Wait to send ok or timeout
  *
  * @param[in]         - Instance 	- USART Hardware Instance
  * @param[in]         - TxBuff 		- Buffer to transmission
@@ -142,30 +144,30 @@ Usart_StatusType Usart_SyncSendData(const uint8 Instance,
 
         UartStatePtr->TransmitStatus = USART_STATUS_BUSY;
 
-        /* Disble Tx data register empty and transmission complete interrupt */
+        /* Disable TX data register empty and transmission complete interrupt */
         Usart_SetIntMode(Base, USART_INT_TX_DATA_REG_EMPTY, DISABLE);
         Usart_SetIntMode(Base, USART_INT_TX_COMPLETE, DISABLE);
 
         /* Enable the USART transmitter */
         Usart_SetTransmitterCmd(Base, TRUE);
 		
-		/* Start Timeout - Can using Systick Timer */
-        Usart_StartTimeout(&StartTime, &TimeoutTicks, Timeout);
+		/* Start Timeout - Can using Sys-tick Timer */
+        Systick_StartTimeout(&StartTime, &TimeoutTicks, Timeout);
 		
 		/* Wait transfer successfully or Timeout occurs */
         while ( (UartStatePtr->TxSize > 0U) && \
-                !Usart_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) )
+                !Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) )
         {
             Usart_PutData(Instance);
             while ( !Usart_GetStatusFlag(Base, USART_FLAG_TX_DATA_REG_EMPTY)  && \
-                    !Usart_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) );
+                    !Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) );
         }
 
         /* Disable the USART transmitter */
         Usart_SetTransmitterCmd(Base, DISABLE);
 
         /* Check if Timeout occur */
-        if ( Usart_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) )
+        if ( Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) )
         {
             UartStatePtr->TransmitStatus = USART_STATUS_TIMEOUT;
         }
@@ -183,7 +185,7 @@ Usart_StatusType Usart_SyncSendData(const uint8 Instance,
 /*********************************************************************
  * @fn      		  - Usart_AsyncSendData
  *
- * @brief             - Asynchronus Send Data - Send Data and no wait (Interrupt or DMA)
+ * @brief             - Asynchronous Send Data - Send Data and no wait (Interrupt or DMA)
  *
  * @param[in]         - Instance 	- USART Hardware Instance
  * @param[in]         - TxBuff 		- Buffer to transmission
@@ -235,7 +237,7 @@ Usart_StatusType Usart_AsyncSendData(const uint8 Instance,
  * @param[in]         - Instance 	- USART Hardware Instance
  * @param[in]         - RxBuff 		- Buffer to Receive
  * @param[in]         - RxSize 		- Size of Buffer to Receive
- * @param[in]         - Timeout 	- Timeout if data cannot Receive
+ * @param[in]         - Timeout 	- Timeout if data cannot Receive (us)
  *
  * @return            - Usart_StatusType
  *
@@ -269,17 +271,17 @@ Usart_StatusType Usart_SyncReceiveData(const uint8 Instance,
         UartStatePtr->RxSize = RxSize;
         UartStatePtr->ReceiveStatus = USART_STATUS_BUSY;
 
-        /* Disble Rx data register full */
+        /* Disable RX data register full */
         Usart_SetIntMode(Base, USART_INT_RX_DATA_REG_FULL, DISABLE);
         /* Enable the USART receiver */
-        Usart_SetReceiveCmd((USART_Type *)Base, DISABLE);
+        Usart_SetReceiveCmd((USART_Type *)Base, ENABLE);
 
-        Usart_StartTimeout(&StartTime, &TimeoutTicks, Timeout);
+        Systick_StartTimeout(&StartTime, &TimeoutTicks, Timeout);
 
         Usart_StartGetData(Instance, &StartTime, &ElapsedTicks, TimeoutTicks);
 
         /* Check if Timeout occur */
-        if (Usart_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks))
+        if (Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks))
         {
             UartStatePtr->ReceiveStatus = USART_STATUS_TIMEOUT;
         }
@@ -312,7 +314,7 @@ Usart_StatusType Usart_SyncReceiveData(const uint8 Instance,
 /*********************************************************************
  * @fn      		  - Usart_AsyncReceiveData
  *
- * @brief             - Asynchronus Receive Data - Receive Data and no wait (Interrupt or DMA)
+ * @brief             - Asynchronous Receive Data - Receive Data and no wait (Interrupt or DMA)
  *
  * @param[in]         - Instance 	- USART Hardware Instance
  * @param[in]         - RxBuff 		- Buffer to Receive
@@ -360,7 +362,7 @@ Usart_StatusType Usart_AsyncReceiveData(const uint8 Instance,
 /*********************************************************************
  * @fn      		  - USART_SetBaudRate
  *
- * @brief             - Setting Baudrate for USART Driver
+ * @brief             - Setting Baud-rate for USART Driver
  *
  * @param[in]         - Instance - number of Hardware Instance
  * @param[in]         - BaudRate
@@ -457,7 +459,7 @@ void Usart_IrqHandler(const uint8 Instance)
             {
                 Usart_RxIrqHandler(Instance);
             }
-            /* Case of spurious interrupt when the interupt enable flag is not set and respective interrupt status flag is set */
+            /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
             else
             {
                 /* Read dummy to clear RDRF flag */
@@ -473,7 +475,7 @@ void Usart_IrqHandler(const uint8 Instance)
                 Usart_TxEmptyIrqHandler(Instance);
                 IsReturn = TRUE;
             }
-            /* Case of spurious interrupt when the interupt enable flag is not set and respective interrupt status flag is set */
+            /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
             else
             {
                 /* Do nothing, because TDRE can not clear without affecting to normal operation*/
@@ -486,7 +488,7 @@ void Usart_IrqHandler(const uint8 Instance)
             {
                 Usart_TxCompleteIrqHandler(Instance);
             }
-            /* Case of spurious interrupt when the interupt enable flag is not set and respective interrupt status flag is set */
+            /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
             else
             {
                 /* Do nothing, because TC can not clear without affecting to normal operation*/
@@ -537,8 +539,8 @@ static void Usart_RxIrqHandler(const uint8 Instance)
 /*******************************************************************************
  *
  * Function Name : Usart_TxEmptyIrqHandler
- * Description   : Tx Empty Interrupt handler for USART.
- * This function treats the tx empty interrupt.
+ * Description   : TX Empty Interrupt handler for USART.
+ * This function treats the TX empty interrupt.
  *
  *****************************************************************************/
 static void Usart_TxEmptyIrqHandler(const uint8 Instance)
@@ -556,7 +558,7 @@ static void Usart_TxEmptyIrqHandler(const uint8 Instance)
         /* Check if this was the last byte in the current buffer */
         if ((0U == UartStatePtr->TxSize) && (UartUserCfg->Callback != NULL_PTR))
         {
-            /* Invoke callback if there is one (callback may reset the tx buffer for continuous transmission)*/
+            /* Invoke callback if there is one (callback may reset the TX buffer for continuous transmission)*/
             UartUserCfg->Callback(Instance, USART_EVENT_TX_EMPTY, UartUserCfg->CallbackParam);
         }
         /* If there's no new data, disable tx empty interrupt and enable transmission complete interrupt */
@@ -769,13 +771,13 @@ static void Usart_CompleteSendDataINT(const uint8 Instance)
     /* Disable transmission complete interrupt */
     Usart_SetIntMode(Base, USART_INT_TX_COMPLETE, FALSE);
 
-    Usart_StartTimeout(&StartTime, &TimeoutTicks, USART_TIMEOUT_VALUE_US);
+    Systick_StartTimeout(&StartTime, &TimeoutTicks, USART_TIMEOUT_VALUE_US);
     /* Wait until the data is completely shifted out of shift register */
     while (!Usart_GetStatusFlag(Base, USART_FLAG_TX_COMPLETE) && \
-           !Usart_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks))
+           !Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks))
     {}
 
-    if (Usart_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks))
+    if (Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks))
     {
         /* In case timeout occur */
         UartStatePtr->TransmitStatus = USART_STATUS_TIMEOUT;
@@ -794,17 +796,17 @@ static void Usart_CompleteSendDataINT(const uint8 Instance)
 }
 
 /*********************************************************************
- * @fn      		  - Usart_StartSendDataINT
+ * @fn                - Usart_StartSendDataINT
  *
  * @brief             - Initiate (start) a transmit by beginning the process of
- * 						sending data and enabling the interrupt.
+ *                      sending data and enabling the interrupt.
  */
 static Usart_StatusType Usart_StartSendDataINT(const uint8 Instance,
                                                const uint8 *TxBuff,
                                                const uint32 TxSize)
 {
     USART_Type * Base = Usart_Base_Pointer[Instance];
-	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];	
+    Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];	
 
     /* Initialize state structure */
     UartStatePtr->TxBuff = TxBuff;
@@ -821,19 +823,19 @@ static Usart_StatusType Usart_StartSendDataINT(const uint8 Instance,
 }
 
 /*********************************************************************
- * @fn      		  - Usart_StartReceiveDataINT
+ * @fn                - Usart_StartReceiveDataINT
  *
  * @brief             - Initiate (start) a transmit by beginning the process of
- * 						sending data and enabling the interrupt.
+ *                      sending data and enabling the interrupt.
  */
 static Usart_StatusType Usart_StartReceiveDataINT(const uint8 Instance,
                                                   uint8 * RxBuff,
                                                   const uint32 RxSize)
 {
     USART_Type * Base = Usart_Base_Pointer[Instance];
-	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];	
+    Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 
-    /* Initialize the module driver state struct to indicate transfer in progress
+    /* Initialize the module driver state structure to indicate transfer in progress
      * and with the buffer and byte count data. */
     UartStatePtr->IsRxBusy = TRUE;
     UartStatePtr->RxBuff = RxBuff;
@@ -848,7 +850,7 @@ static Usart_StatusType Usart_StartReceiveDataINT(const uint8 Instance,
 
     /* Enable error interrupts */
     /* Usart_SetIntMode(Base, USART_INT_RX_OVERRUN, TRUE);
-	   Usart_SetIntMode(Base, USART_INT_NOISE_ERR_FLAG, TRUE); */
+       Usart_SetIntMode(Base, USART_INT_NOISE_ERR_FLAG, TRUE); */
     Usart_SetIntMode(Base, USART_INT_PARITY_ERR_FLAG, TRUE);
     Usart_SetIntMode(Base, USART_INT_FRAME_ERR_FLAG, TRUE);
 
@@ -860,16 +862,16 @@ static Usart_StatusType Usart_StartReceiveDataINT(const uint8 Instance,
 
 
 /*********************************************************************
- * @fn      		  - Usart_PutData
+ * @fn                - Usart_PutData
  *
  * @brief             - Initiate (start) a transmit by beginning the process of
- * 						sending data and enabling the interrupt.
+ *                      sending data and enabling the interrupt.
  */
 static void Usart_PutData(const uint8 Instance)
 {
-	USART_Type * Base = Usart_Base_Pointer[Instance];
-	const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
-	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
+    USART_Type * Base = Usart_Base_Pointer[Instance];
+    const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
+    Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
     uint16 Data16b;
     uint8 Data8b;
 
@@ -901,27 +903,27 @@ static void Usart_PutData(const uint8 Instance)
         }
 
         /* Transmit the data */
-		if ( USART_WORDLEN_9BITS == UartUserCfg->USART_WordLength )
+        if ( USART_WORDLEN_9BITS == UartUserCfg->USART_WordLength )
         {
             Usart_Putchar9(Base, Data16b);
         }
-		else
-		{
-			/* TODO - 10 bits */
-		}
+        else
+        {
+            /* TODO - 10 bits */
+        }
     }
 }
 
 /*********************************************************************
- * @fn      		  - Usart_GetData
+ * @fn                - Usart_GetData
  *
  * @brief             - Get Data From RX Transfer
  */
 static void Usart_GetData(const uint8 Instance)
 {
-	USART_Type * Base = Usart_Base_Pointer[Instance];
-	const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
-	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
+    USART_Type * Base = Usart_Base_Pointer[Instance];
+    const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
+    Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
     uint16 Data16b;
 
     if ( USART_WORDLEN_8BITS == UartUserCfg->USART_WordLength )
@@ -954,7 +956,7 @@ static void Usart_GetData(const uint8 Instance)
             /* Write the least significant bits to the receive buffer */
             *(UartStatePtr->RxBuff) = (uint8)(Data16b & 0xFFU);
             ++UartStatePtr->RxBuff;
-            /* Write the ninth bit to the subsequent byte in the rx buffer */
+            /* Write the ninth bit to the subsequent byte in the RX buffer */
             *UartStatePtr->RxBuff = (uint8)(Data16b >> 8U);
             ++UartStatePtr->RxBuff;
             UartStatePtr->RxSize -= 2U;
@@ -970,20 +972,20 @@ static void Usart_GetData(const uint8 Instance)
  ***************************************************************************/
 static void Usart_StartGetData(const uint8 Instance, uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
 {
-	USART_Type * Base = Usart_Base_Pointer[Instance];
-	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
-	
-	while ((UartStatePtr->RxSize > 0U) && \
-			!Usart_CheckTimeout(StartTime, ElapsedTicks, TimeoutTicks))
-	{
-		/* Wait until data reception flag is set or timeout occurs if there is an error during reception */
-		while (!Usart_GetStatusFlag((const USART_Type*)Base, USART_FLAG_RX_DATA_REG_FULL) && \
-			   !Usart_CheckTimeout(StartTime, ElapsedTicks, TimeoutTicks))
-		{}
-		/* Check for errors on received data */
-		/* @TODO */
-		
-		/* Get received data */
-		Usart_GetData(Instance);
-	}
+    USART_Type * Base = Usart_Base_Pointer[Instance];
+    Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
+    
+    while ((UartStatePtr->RxSize > 0U) && \
+            !Systick_CheckTimeout(StartTime, ElapsedTicks, TimeoutTicks))
+    {
+        /* Wait until data reception flag is set or timeout occurs if there is an error during reception */
+        while (!Usart_GetStatusFlag((const USART_Type*)Base, USART_FLAG_RX_DATA_REG_FULL) && \
+            !Systick_CheckTimeout(StartTime, ElapsedTicks, TimeoutTicks))
+        {}
+        /* Check for errors on received data */
+        /* @TODO */
+        
+        /* Get received data */
+        Usart_GetData(Instance);
+    }
 }

@@ -1,8 +1,8 @@
 /**
- * Filename		: USART_Type.h
- * Author		: Nghia Taarabt
- * Create Date 	: 18/12/22
- * Brief		: USART definitions and types
+ * Filename     : USART_Type.h
+ * Author       : Nghia Taarabt
+ * Create Date  : 18/12/22
+ * Brief        : USART definitions and types
  */
  
 #ifndef __USART_TYPE_H__
@@ -11,31 +11,31 @@
 /**
  * USART flags
  */
-#define USART_FLAG_TXE 						( 1 << USART_SR_TXE )
-#define USART_FLAG_RXNE 					( 1 << USART_SR_RXNE )
-#define USART_FLAG_TC 						( 1 << USART_SR_TC )
+#define USART_FLAG_TXE                      ( 1 << USART_SR_TXE )
+#define USART_FLAG_RXNE                     ( 1 << USART_SR_RXNE )
+#define USART_FLAG_TC                       ( 1 << USART_SR_TC )
 
-#define USART_9BITS_DATA_MASK				(uint16)0x01FFu
-#define USART_8BITS_DATA_MASK				(uint8)0xFFu
-#define USART_7BITS_DATA_MASK				(uint8)0x7Fu
+#define USART_9BITS_DATA_MASK               (uint16)0x01FFu
+#define USART_8BITS_DATA_MASK               (uint8)0xFFu
+#define USART_7BITS_DATA_MASK               (uint8)0x7Fu
 
 /**
  * Default timeout is 100us
  */
 #ifndef USART_TIMEOUT_VALUE_US
-	#define USART_TIMEOUT_VALUE_US			100u
+    #define USART_TIMEOUT_VALUE_US          100u
 #endif
 
 /**
  * Application states
  */
-#define USART_READY 	 					0U
-#define USART_BUSY_IN_RX 					1U
-#define USART_BUSY_IN_TX 					2U
+#define USART_READY                         
+#define USART_BUSY_IN_RX                    1U
+#define USART_BUSY_IN_TX                    2U
 
-#define	USART_ERR_FE     					5U
-#define	USART_ERR_NE    					6U
-#define	USART_ERR_ORE    					7U
+#define USART_ERR_FE                        5U
+#define USART_ERR_NE                        6U
+#define USART_ERR_ORE                       7U
 
 /**
  *@USART_Mode
@@ -43,9 +43,9 @@
  */
 typedef enum
 {
-	USART_MODE_ONLY_TX 						= 0u,
-	USART_MODE_ONLY_RX						= 1u,
-	USART_MODE_TXRX							= 2u
+    USART_MODE_ONLY_TX                      = 0u,
+    USART_MODE_ONLY_RX                      = 1u,
+    USART_MODE_TXRX                         = 2u
 } Usart_TransferModeType;
 
 /**
@@ -54,8 +54,8 @@ typedef enum
  */
 typedef enum
 { 
-	USART_WORDLEN_8BITS 					= 0u,
-	USART_WORDLEN_9BITS						= 1u
+    USART_WORDLEN_8BITS                     = 0u,
+    USART_WORDLEN_9BITS                     = 1u
 } Usart_WordLenType;
 
 /**
@@ -64,18 +64,18 @@ typedef enum
  */
 typedef enum
 {
-	USART_STD_BAUD_1200						= 1200ul,
-	USART_STD_BAUD_2400						= 2400ul,
-	USART_STD_BAUD_9600						= 9600ul,
-	USART_STD_BAUD_19200 					= 19200ul,
-	USART_STD_BAUD_38400 					= 38400ul,
-	USART_STD_BAUD_57600 					= 57600ul,
-	USART_STD_BAUD_115200 					= 115200ul,
-	USART_STD_BAUD_230400 					= 230400ul,
-	USART_STD_BAUD_460800 					= 460800ul,
-	USART_STD_BAUD_921600 					= 921600ul,
-	USART_STD_BAUD_2M 						= 2000000ul,
-	USART_STD_BAUD_3M 						= 3000000ul
+    USART_STD_BAUD_1200                     = 1200ul,
+    USART_STD_BAUD_2400                     = 2400ul,
+    USART_STD_BAUD_9600                     = 9600ul,
+    USART_STD_BAUD_19200                    = 19200ul,
+    USART_STD_BAUD_38400                    = 38400ul,
+    USART_STD_BAUD_57600                    = 57600ul,
+    USART_STD_BAUD_115200                   = 115200ul,
+    USART_STD_BAUD_230400                   = 230400ul,
+    USART_STD_BAUD_460800                   = 460800ul,
+    USART_STD_BAUD_921600                   = 921600ul,
+    USART_STD_BAUD_2M                       = 2000000ul,
+    USART_STD_BAUD_3M                       = 3000000ul
 } Usart_BaudrateType;
 
 /**
@@ -84,9 +84,9 @@ typedef enum
  */
 typedef enum
 {
-	USART_PARITY_DISABLE 					= 0u,
-	USART_PARITY_EN_EVEN					= 1u,
-	USART_PARITY_EN_ODD						= 2u
+    USART_PARITY_DISABLE                    = 0u,
+    USART_PARITY_EN_EVEN                    = 1u,
+    USART_PARITY_EN_ODD                     = 2u
 } Usart_ParityType;
 
 /**
@@ -95,10 +95,10 @@ typedef enum
  */
 typedef enum
 {
-	USART_STOPBITS_1 						= 0u,
-	USART_STOPBITS_0_5						= 1u,
-	USART_STOPBITS_2						= 2u,
-	USART_STOPBITS_1_5						= 3u
+    USART_STOPBITS_1                        = 0u,
+    USART_STOPBITS_0_5                      = 1u,
+    USART_STOPBITS_2                        = 2u,
+    USART_STOPBITS_1_5                      = 3u
 } Usart_StopBitsType;
 
 /**
@@ -107,10 +107,10 @@ typedef enum
  */
 typedef enum
 {
-	USART_HW_FLOW_CTRL_NONE 				= 0u,
-	USART_HW_FLOW_CTRL_CTS  				= 1u,
-	USART_HW_FLOW_CTRL_RTS					= 2u,
-	USART_HW_FLOW_CTRL_CTS_RTS				= 3u
+    USART_HW_FLOW_CTRL_NONE                 = 0u,
+    USART_HW_FLOW_CTRL_CTS                  = 1u,
+    USART_HW_FLOW_CTRL_RTS                  = 2u,
+    USART_HW_FLOW_CTRL_CTS_RTS              = 3u
 } Usart_HardwareFlowType;
 
 /**
@@ -118,10 +118,10 @@ typedef enum
  */
 typedef enum
 {
-    USART_EVENT_RX_FULL      				= 0x00U,    	/**< @brief Rx buffer is full */
-    USART_EVENT_TX_EMPTY     				= 0x01U,    	/**< @brief Tx buffer is empty */
-    USART_EVENT_END_TRANSFER 				= 0x02U,    	/**< @brief The current transfer is ending */
-    USART_EVENT_ERROR        				= 0x03U,    	/**< @brief An error occured during transfer */
+    USART_EVENT_RX_FULL                     = 0x00U,        /**< @brief Rx buffer is full */
+    USART_EVENT_TX_EMPTY                    = 0x01U,        /**< @brief Tx buffer is empty */
+    USART_EVENT_END_TRANSFER                = 0x02U,        /**< @brief The current transfer is ending */
+    USART_EVENT_ERROR                       = 0x03U,        /**< @brief An error occured during transfer */
 } Usart_EventType;
 
 /**
@@ -129,8 +129,8 @@ typedef enum
  */
 typedef enum
 {
-    USART_USING_DMA         				= 0U,    /**< @brief The driver will use DMA to perform UART transfer */
-    USART_USING_INTERRUPTS  				= 1U     /**< @brief The driver will use interrupts to perform UART transfer */
+    USART_USING_DMA                         = 0U,           /**< @brief The driver will use DMA to perform UART transfer */
+    USART_USING_INTERRUPTS                  = 1U            /**< @brief The driver will use interrupts to perform UART transfer */
 } Usart_TransferType;
 
 /**
@@ -138,16 +138,16 @@ typedef enum
  * */
 typedef enum
 {
-    USART_STATUS_SUCCESS                    = 0x00U,  		/**< @brief Success status */
-    USART_STATUS_ERROR                      = 0x01U,  		/**< @brief Failure status */
-    USART_STATUS_BUSY                       = 0x02U,  		/**< @brief Busy status */
-    USART_STATUS_TIMEOUT                    = 0x03U,  		/**< @brief Timeout status */
-    USART_STATUS_TX_UNDERRUN                = 0x04U,  		/**< @brief TX underrun error */
-    USART_STATUS_RX_OVERRUN                 = 0x05U,  		/**< @brief RX overrun error */
-    USART_STATUS_FRAMING_ERROR              = 0x06U,  		/**< @brief Frame error */
-    USART_STATUS_PARITY_ERROR               = 0x07U,  		/**< @brief Parity error */
-    USART_STATUS_NOISE_ERROR               	= 0x07U,  		/**< @brief Noise error */
-    USART_STATUS_DMA_ERROR                  = 0x10U  		/**< @brief DMA error */
+    USART_STATUS_SUCCESS                    = 0x00U,        /**< @brief Success status */
+    USART_STATUS_ERROR                      = 0x01U,        /**< @brief Failure status */
+    USART_STATUS_BUSY                       = 0x02U,        /**< @brief Busy status */
+    USART_STATUS_TIMEOUT                    = 0x03U,        /**< @brief Timeout status */
+    USART_STATUS_TX_UNDERRUN                = 0x04U,        /**< @brief TX underrun error */
+    USART_STATUS_RX_OVERRUN                 = 0x05U,        /**< @brief RX overrun error */
+    USART_STATUS_FRAMING_ERROR              = 0x06U,        /**< @brief Frame error */
+    USART_STATUS_PARITY_ERROR               = 0x07U,        /**< @brief Parity error */
+    USART_STATUS_NOISE_ERROR               	= 0x07U,        /**< @brief Noise error */
+    USART_STATUS_DMA_ERROR                  = 0x10U         /**< @brief DMA error */
 } Usart_StatusType;
 
 /**
@@ -167,15 +167,15 @@ typedef void (*Usart_CallbackType)(const uint8 HwInstance,
  */
 typedef struct
 {
-	Usart_BaudrateType				USART_Baud;						/*!< @brief Baudrate */
-    const uint8 					* TxBuff;						/**< @brief The buffer of Sent Data */
-    uint8 							* RxBuff;						/**< @brief The buffer of Received Data.*/
-    volatile uint32 				TxSize;							/**< @brief The remaining number of bytes to be transmitted. */
-    volatile uint32 				RxSize;							/**< @brief The remaining number of bytes to be received. */
-    volatile boolean 				IsTxBusy;                       /**< @brief True if there is an active transmit.*/
-    volatile boolean 				IsRxBusy;                       /**< @brief True if there is an active receive.*/
-    volatile Usart_StatusType 		TransmitStatus;     			/**< @brief Status of last driver transmit operation */
-    volatile Usart_StatusType 		ReceiveStatus;      			/**< @brief Status of last driver receive operation */
+    Usart_BaudrateType              USART_Baud;                     /*!< @brief Baudrate */
+    const uint8                     * TxBuff;                       /**< @brief The buffer of Sent Data */
+    uint8                           * RxBuff;                       /**< @brief The buffer of Received Data.*/
+    volatile uint32                 TxSize;                         /**< @brief The remaining number of bytes to be transmitted. */
+    volatile uint32                 RxSize;                         /**< @brief The remaining number of bytes to be received. */
+    volatile boolean                IsTxBusy;                       /**< @brief True if there is an active transmit.*/
+    volatile boolean                IsRxBusy;                       /**< @brief True if there is an active receive.*/
+    volatile Usart_StatusType       TransmitStatus;                 /**< @brief Status of last driver transmit operation */
+    volatile Usart_StatusType       ReceiveStatus;                  /**< @brief Status of last driver receive operation */
 } Usart_StateRuntimeType;
 
 /**
@@ -183,21 +183,21 @@ typedef struct
  */
 typedef struct
 {
-	Usart_TransferModeType			USART_Mode;						/*!< @brief Transfer Mode (TX or RX or both) */
-	Usart_BaudrateType				USART_Baud;						/*!< @brief Baudrate */
-	Usart_StopBitsType				USART_NoOfStopBits;				/*!< @brief Number of Stop Bits (1, 1.5, 2) */
-	Usart_WordLenType 				USART_WordLength;				/*!< @brief Length of Transfer Words (7, 8, 9) */
-	Usart_ParityType				USART_ParityControl;			/*!< @brief Types of Parity (Even, Odd, None) */
-	Usart_HardwareFlowType			USART_HWFlowControl;			/*!< @brief Hardware Flow Control */
-	
-    Usart_TransferType 				USART_Transfer;            	/*!< @brief of USART transfer (interrupt/dma based) */
-    Usart_CallbackType			 	Callback;             			/**< @brief Callback to invoke for handle uart event */
-    void 							* CallbackParam;					/**< @brief User callback parameter pointer.*/
+    Usart_TransferModeType          USART_Mode;                     /*!< @brief Transfer Mode (TX or RX or both) */
+    Usart_BaudrateType              USART_Baud;                     /*!< @brief Baudrate */
+    Usart_StopBitsType              USART_NoOfStopBits;             /*!< @brief Number of Stop Bits (1, 1.5, 2) */
+    Usart_WordLenType               USART_WordLength;               /*!< @brief Length of Transfer Words (7, 8, 9) */
+    Usart_ParityType                USART_ParityControl;            /*!< @brief Types of Parity (Even, Odd, None) */
+    Usart_HardwareFlowType          USART_HWFlowControl;            /*!< @brief Hardware Flow Control */
+
+    Usart_TransferType              USART_Transfer;                 /*!< @brief of USART transfer (interrupt/dma based) */
+    Usart_CallbackType              Callback;                       /**< @brief Callback to invoke for handle uart event */
+    void                            * CallbackParam;                /**< @brief User callback parameter pointer.*/
 #if (USART_DMA_ENABLE == STD_ON)
-    uint32 							RxDMAChannel;					/**< @brief DMA channel number for DMA-based rx. */
-    uint32 							TxDMAChannel;					/**< @brief DMA channel number for DMA-based tx. */
+    uint32                          RxDMAChannel;                   /**< @brief DMA channel number for DMA-based rx. */
+    uint32                          TxDMAChannel;                   /**< @brief DMA channel number for DMA-based tx. */
 #endif
-    Usart_StateRuntimeType 			* StateStruct;
+    Usart_StateRuntimeType          * StateStruct;
 } Usart_UserConfigType;
 
-#endif 	/* !(__USART_TYPE_H__) */
+#endif  /* !(__USART_TYPE_H__) */

@@ -155,14 +155,14 @@ Dma_StatusType DMA_SyncStartTransfer(const Dma_UserTransferType * UserTransferCo
 	DMA_HwStartTransfer(pDMAStreamx);
 	
 	/* Start Timeout - Can using Systick Timer */
-    Dma_StartTimeout(&StartTime, &TimeoutTicks, Timeout);
+    Systick_StartTimeout(&StartTime, &TimeoutTicks, Timeout);
 	
 	/* Wait transfer successfully or Timeout occurs */
 	while ( (!DMA_CheckStatusFlag(DMA_INSTANCE_2, DMA_STREAM_0, DMA_FLAG_TRANSFER_COMPLETE_INT)) && \
-			 !Dma_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) );
+			 !Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) );
 	
 	/* Check if Timeout occur */
-	if ( Dma_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) )
+	if ( Systick_CheckTimeout(&StartTime, &ElapsedTicks, TimeoutTicks) )
 	{
 		Dma_Status = DMA_STATUS_TIMEOUT;
 	}

@@ -10,10 +10,12 @@ endif
 # Load to FLASH or RAM
 LOAD_TO=FLASH
 
-PRO_DIR := ..
+PRO_DIR := .
 PROJ_NAME := $(TEST)
 DRIVER_DIR := $(PRO_DIR)/../STM32F4_Drivers
 DRV_TEST_DIR := $(PRO_DIR)/../STM32F4_Driver_Testing
+STARTUP_DIR := $(PRO_DIR)/startup
+PYTHON_DIR := $(PRO_DIR)/testing/python
 
 include $(PRO_DIR)/User_Config.mak
 include $(DRV_TEST_DIR)/test_$(MODULE)/make/$(TEST)
@@ -28,12 +30,14 @@ SRC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_suite/src
 SRC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_case/src
 INC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_suite/inc
 INC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_case/inc
+SRC_DIRS += $(STARTUP_DIR)
+INC_DIRS += $(STARTUP_DIR)
 
 PATH_OUTPUT = $(DRV_TEST_DIR)/output
 
 # Testing source framework
-INC_DIRS += $(PRO_DIR)/TestCUnit/inc
-SRC_DIRS += $(PRO_DIR)/TestCUnit/src
+INC_DIRS += $(PRO_DIR)/testing/TestCUnit/inc
+SRC_DIRS += $(PRO_DIR)/testing/TestCUnit/src
 
 ############### Add source/header file to build ###############
 find_files_inc = $(DRIVER_DIR)/$(MODULES)/inc
@@ -91,28 +95,28 @@ run:
 	rm -fr $(PATH_OUTPUT)/$(TEST).xml
 	rm -fr $(PATH_OUTPUT)/result.log
     
-	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -ME
-	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -p "$(PATH_OUTPUT)/$(PROJ_NAME).hex" 0x08000000
-	$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -rst
+	$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -ME
+	$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -p "$(PATH_OUTPUT)/$(PROJ_NAME).hex" 0x08000000
+	$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -rst
 	
 	# read data from <TEST> address to check test case -> export result to log file
-	@$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -r32 0x20000000 4 | grep -i 00000000 > $(PATH_OUTPUT)/result.log
+	@$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -r32 0x20000000 4 | grep -i 00000000 > $(PATH_OUTPUT)/result.log
 	
 # Export report
 .PHONY:report
 report:
 	if [[ -s $(PATH_OUTPUT)/result.log ]]; then \
 		echo "Test $(TEST) is PASSED "; \
-		cp $(PRO_DIR)/Report_Template/Pass/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
+		cp $(PRO_DIR)/testing/Report_Template/Pass/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_NAME/$(TEST)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 	else \
 		echo "Test $(TEST) is FAILED "; \
-		cp $(PRO_DIR)/Report_Template/Fail/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
+		cp $(PRO_DIR)/testing/Report_Template/Fail/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_NAME/$(TEST)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 	fi
-	@$(PRO_DIR)/ST-LINKUtility/ST-LINK_CLI.exe -rst
+	@$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -rst
 # list all test suite	
 .PHONY:info
 info:	
@@ -121,5 +125,5 @@ info:
 print-%:
 	@echo $($(subst print-,,$@))
 
-py: ./python/xmldata.py
+py: $(PYTHON_DIR)/xmldata.py
 	python $<
