@@ -188,7 +188,7 @@ void MPU_Deinit(void)
  * @pre
  *
  */
-void MPU_EnableRegion(uint8 u8RegionNum, boolean bEnable)
+void MPU_EnableRegion(uint8 u8RegionNum, Bool_Type bEnable)
 {
     MPU_Type * base = MPU;
 
@@ -233,9 +233,9 @@ void MPU_SetAccessRight(uint8 u8RegionNum, MPU_AccessRightsType eRights)
  * @brief         Retrieve error details
  * @implements    MPU_GetErrorDetails_Activity
  */
-boolean MPU_GetErrorDetails(MPU_ErrorDetailsType * pErrorDetails)
+Bool_Type MPU_GetErrorDetails(MPU_ErrorDetailsType * pErrorDetails)
 {
-    boolean result = FALSE;
+    Bool_Type result = FALSE;
     uint32  mmfsr;
     uint32  mmfsrCopy;
     uint32  errorAddress;

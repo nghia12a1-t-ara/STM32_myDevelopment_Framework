@@ -1,68 +1,47 @@
 #include <stdio.h>
-
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
 #include "CircularQueue.h"
 
-#define QUEUE_SIZE				5
-
-uint32_t QUEUE_State_Arr[QUEUE_SIZE] = {0};
-
-CircularQueue_Types TestQueue = {
-	-1, -1, QUEUE_SIZE,
-	&QUEUE_State_Arr[0]
-};
-
-// Display the queue
-void display(CircularQueue_Types *Queue) 
-{
-	uint8_t i;
-	if (CircularQueue_IsEmpty(Queue))
-	{
-		printf(" \n Empty Queue\n");
-	}
-	else 
-	{
-		printf("\n Queue->Front -> %d ", Queue->Front);
-		printf("\n Queue->QueueArr -> ");
-		for (i = Queue->Front; i != Queue->Rear; i = (i + 1) % Queue->Size) 
-		{
-			printf("%d ", Queue->QueueArr[i]);
-		}
-		printf("%d ", Queue->QueueArr[i]);
-		printf("\n Queue->Rear -> %d \n", Queue->Rear);
-	}
-}
-
 int main() {
-	/* Fails because Queue->Front = -1 */
-	uint32_t Data;
-	display(&TestQueue);
+    CircularQueue_Create(6);
+	uint32_t data = 1;
+	uint32_t data2 = 131;
+	uint32_t data3 = 53;
+	uint32_t data4 = 546;
+	uint32_t data5 = 1234;
+	uint32_t data6 = 542313;
+	uint32_t data7 = 2344576;
 	
-	Data = CircularQueue_PopData(&TestQueue);
-	printf("\nPopData = %d\n", Data);
+	uint32_t DataPeek;
 	
-	CircularQueue_PushData(&TestQueue, 1);
-	CircularQueue_PushData(&TestQueue, 2);
-	CircularQueue_PushData(&TestQueue, 3);
-	CircularQueue_PushData(&TestQueue, 4);
-	CircularQueue_PushData(&TestQueue, 5);
-
-	/* Fails to enqueue because Queue->Front == 0 && Queue->Rear == Queue->Size - 1 */
-	CircularQueue_PushData(&TestQueue, 6);
-
-	display(&TestQueue);
+    printf(" ---- Test Peek when Queue is empty ---- \n");
 	
-	Data = CircularQueue_PopData(&TestQueue);
-	printf("\nPopData = %d\n", Data);
-
-	display(&TestQueue);
-
-	CircularQueue_PushData(&TestQueue, 7);
-	display(&TestQueue);
-
-	/* Fails to enqueue because Queue->Front == Queue->Rear + 1 */
-	CircularQueue_PushData(&TestQueue, 8);
-	display(&TestQueue);
-
+	printf("DataPeek = %d\n", CircularQueue_PopData());
+    CircularQueue_Print();
+    
+    printf(" ---- Test Push Data into Queue ---- \n");
+	printf("%d ", CircularQueue_PushData(data));
+	printf("%d ", CircularQueue_PushData(data2));
+	printf("%d ", CircularQueue_PushData(data3));
+	printf("%d ", CircularQueue_PushData(data4));
+	printf("%d ", CircularQueue_PushData(data5));
+	printf("%d ", CircularQueue_PushData(data6));
+	printf("%d ", CircularQueue_PushData(data7));
+	printf("\n");
+    CircularQueue_Print();
+    
+    printf(" ---- Test Peek Data when Queue is Full ---- \n");
+	printf("DataPeek = %d\n", CircularQueue_PopData());
+	printf("DataPeek = %d\n", CircularQueue_PopData());
+	printf("DataPeek = %d\n", CircularQueue_PopData());
+    CircularQueue_Print();
+    
+    printf("%d ", CircularQueue_PushData(data));
+	printf("%d ", CircularQueue_PushData(data2));
+	printf("%d ", CircularQueue_PushData(data3));
+	printf("%d ", CircularQueue_PushData(data4));
+	printf("%d ", CircularQueue_PushData(data5));
+    printf("\n");
+    CircularQueue_Print();
+    
 	return 0;
 }

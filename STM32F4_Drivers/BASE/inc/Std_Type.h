@@ -47,8 +47,8 @@ typedef unsigned long long  uint64;
 /**
  * Some generic macros
 */
-#define ENABLE 				1
-#define DISABLE 			0
+#define ENABLE 				1u
+#define DISABLE 			0u
 #define BIT_SET 			ENABLE
 #define BIT_RESET 			DISABLE
 #define FLAG_RESET         	BIT_RESET
@@ -57,7 +57,7 @@ typedef unsigned long long  uint64;
 typedef enum {
 	FALSE 	= 0u,
 	TRUE 	= 1u
-} boolean;
+} Bool_Type;
 
 #define DEFAULT_FUNCTION(X) 			(void)X      /* To avoid gcc/g++ warnings */
 

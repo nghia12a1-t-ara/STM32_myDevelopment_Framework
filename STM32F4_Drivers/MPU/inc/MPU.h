@@ -77,7 +77,7 @@ void MPU_Deinit(void);
  * @pre
  *
  * */
-void MPU_EnableRegion(uint8 u8RegionNum, boolean bEnable);
+void MPU_EnableRegion(uint8 u8RegionNum, Bool_Type bEnable);
 
 /**
  * @brief         Modify the access rights for a specific region
@@ -102,7 +102,7 @@ void MPU_SetAccessRight(uint8 u8RegionNum, MPU_AccessRightsType eRights);
  *
  * @param[out]    pErrorDetails : Storage where the data will be saved
  *
- * @return        boolean
+ * @return        Bool_Type
  * @retval        TRUE       if an error was present
  * @retval        FALSE      otherwise
  *
@@ -111,7 +111,7 @@ void MPU_SetAccessRight(uint8 u8RegionNum, MPU_AccessRightsType eRights);
  * @pre
  *
  * */
-boolean MPU_GetErrorDetails(MPU_ErrorDetailsType * pErrorDetails);
+Bool_Type MPU_GetErrorDetails(MPU_ErrorDetailsType * pErrorDetails);
 
 /*!
  * @brief Retrieve fault information from SCB

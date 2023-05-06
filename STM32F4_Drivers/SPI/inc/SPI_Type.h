@@ -84,8 +84,8 @@ typedef enum {
  * @brief Software Slave Management
  */
 typedef enum {
-    SPI_SSM_DISABLE                 = 0x0u,
-    SPI_SSM_ENABLE                  = 0x1u,
+    SPI_SSM_NSS_HARD                = 0x0u,
+    SPI_SSM_NSS_SOFT                = 0x1u,
 } Spi_SSMEnaleType;
 
 /**
@@ -113,6 +113,21 @@ typedef enum
     SPI_EVENT_OVR_ERR               = 0x03U,        /**< @brief SPI Overrun Error */
     SPI_EVENT_CRC_ERR               = 0x04U,        /**< @brief SPI CRC Calculate Error */
 } Spi_EventType;
+
+/**
+ * @brief Type of SPI Flag
+ */
+typedef enum {
+    SPI_FLAG_FRAME_FORMAT_ERROR     = SPI_SR_FRE_SHIFT,
+    SPI_FLAG_TRANSFER_BUSY          = SPI_SR_BSY_SHIFT,
+    SPI_FLAG_OVERRUN                = SPI_SR_OVR_SHIFT,
+    SPI_FLAG_MODE_FAULT             = SPI_SR_MODF_SHIFT,
+    SPI_FLAG_CRC_ERROR              = SPI_SR_CRCERR_SHIFT,
+    SPI_FLAG_UNDERRUN               = SPI_SR_UDR_SHIFT,
+    SPI_FLAG_CHANNEL_SIDE           = SPI_SR_CHSIDE_SHIFT,
+    SPI_FLAG_TX_BUFFER_EMPTY        = SPI_SR_TXE_SHIFT,
+    SPI_FLAG_RX_BUFFER_NOT_EMPTY    = SPI_SR_RXNE_SHIFT,
+} Spi_StatusFlagType;
 
 /**
  * @brief Type of SPI transfer (based on interrupts or DMA).
@@ -156,8 +171,8 @@ typedef struct
     uint8                           * pRxBuffer;                    /**< @brief The buffer of Received Data */
     volatile uint32                 TxSize;                         /**< @brief The remaining number of bytes to be transmitted. */
     volatile uint32                 RxSize;                         /**< @brief The remaining number of bytes to be received. */
-    volatile boolean                IsTxBusy;                       /**< @brief True if there is an active transmit.*/
-    volatile boolean                IsRxBusy;                       /**< @brief True if there is an active receive.*/
+    volatile Bool_Type                IsTxBusy;                       /**< @brief True if there is an active transmit.*/
+    volatile Bool_Type                IsRxBusy;                       /**< @brief True if there is an active receive.*/
     volatile Spi_StatusType         TransmitStatus;                 /**< @brief Status of last driver transmit operation */
     volatile Spi_StatusType         ReceiveStatus;                  /**< @brief Status of last driver receive operation */
 } Spi_StateRuntimeType;

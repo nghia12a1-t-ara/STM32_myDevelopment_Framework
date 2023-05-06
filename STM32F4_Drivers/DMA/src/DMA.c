@@ -226,27 +226,27 @@ uint8 DMA_GetStatusFlag(const uint8 Instance, Dma_StreamType Stream)
  *
  * @Note              -
  */
-boolean DMA_CheckStatusFlag(const uint8 Instance, Dma_StreamType Stream, DMA_StatusFlagType FlagType)
+Bool_Type DMA_CheckStatusFlag(const uint8 Instance, Dma_StreamType Stream, DMA_StatusFlagType FlagType)
 {
 	uint8 StreamStatus = DMA_GetStatusFlag(Instance, Stream);
-	boolean checkFlag = FALSE;
+	Bool_Type checkFlag = FALSE;
 	
 	switch (FlagType)
 	{
 		case DMA_FLAG_FIFO_ERROR_INT:
-			checkFlag = (boolean)((StreamStatus & DMA_FLAG_FIFO_ERROR_MASK) >> (uint8)FlagType);
+			checkFlag = (Bool_Type)((StreamStatus & DMA_FLAG_FIFO_ERROR_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_DIRECT_MODE_ERROR_INT:
-			checkFlag = (boolean)((StreamStatus & DMA_FLAG_DIRECT_MODE_ERROR_MASK) >> (uint8)FlagType);
+			checkFlag = (Bool_Type)((StreamStatus & DMA_FLAG_DIRECT_MODE_ERROR_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_TRANSFER_ERROR_INT:
-			checkFlag = (boolean)((StreamStatus & DMA_FLAG_TRANSFER_ERROR_MASK) >> (uint8)FlagType);
+			checkFlag = (Bool_Type)((StreamStatus & DMA_FLAG_TRANSFER_ERROR_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_HALF_TRANSFER_INT:
-			checkFlag = (boolean)((StreamStatus & DMA_FLAG_HALF_TRANSFER_MASK) >> (uint8)FlagType);
+			checkFlag = (Bool_Type)((StreamStatus & DMA_FLAG_HALF_TRANSFER_MASK) >> (uint8)FlagType);
 			break;
 		case DMA_FLAG_TRANSFER_COMPLETE_INT:
-			checkFlag = (boolean)((StreamStatus & DMA_FLAG_TRANSFER_COMPLETE_MASK) >> (uint8)FlagType);
+			checkFlag = (Bool_Type)((StreamStatus & DMA_FLAG_TRANSFER_COMPLETE_MASK) >> (uint8)FlagType);
 			break;
 		default:
 			break;

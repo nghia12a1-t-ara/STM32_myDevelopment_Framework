@@ -11,7 +11,7 @@
 #include "DMA_Base.h"
 #include "DMA_Type.h"
 #include "Systick.h"
-#include "RCC.h"
+#include "CLOCK.h"
 
 #define DMA_FLAG_STREAM_0_SHIFT			0u
 #define DMA_FLAG_STREAM_1_SHIFT			6u
@@ -243,7 +243,7 @@ __STATIC_INLINE void Systick_StartTimeout(uint32 * StartTimeOut, uint32 *Timeout
  * @return  TRUE     Timeout occurs
  *          FALSE    Timeout does not occur
  */
-__STATIC_INLINE boolean Systick_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
+__STATIC_INLINE Bool_Type Systick_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
 {
     uint32 CurrentElapsedTicks = Systick_GetElapsed(StartTime);
     *ElapsedTicks += CurrentElapsedTicks;

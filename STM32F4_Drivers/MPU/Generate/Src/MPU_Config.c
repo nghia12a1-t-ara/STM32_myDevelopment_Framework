@@ -62,9 +62,9 @@ static const MPU_RegionConfigType MPU_ModuleConfig_0_RegionConfig[2] =
 
 const MPU_ConfigType MPU_Config_0 =
 {
-        ((boolean)TRUE),
-        ((boolean)TRUE),
-        ((boolean)TRUE),
+        ((Bool_Type)TRUE),
+        ((Bool_Type)TRUE),
+        ((Bool_Type)TRUE),
         2,
         MPU_ModuleConfig_0_RegionConfig
 };

@@ -8,13 +8,12 @@
 #ifndef __USART_HWACCESS_H__
 #define __USART_HWACCESS_H__
 
-#include "USART_Base.h"
-#include "USART_Type.h"
+#include "USART.h"
 #include "Systick.h"
-#include "RCC.h"
+#include "CLOCK.h"
 
 
-/** @brief LPUART interrupt configuration structure, default settings are 0 (disabled) */
+/** @brief USART interrupt configuration structure, default settings are 0 (disabled) */
 typedef enum
 {
     USART_INT_TX_DATA_REG_EMPTY = (uint32)USART_CR1_TXEIE_SHIFT,        /*!< Transmit data register empty. */
@@ -52,18 +51,26 @@ typedef enum
 __STATIC_INLINE uint32 RCC_GetClockValue(USART_Type * pUSARTx)
 {
     uint32 PCLKx = 0u;
+    ClockPeripheralType ClkPer;
 
     /* Get the value of APB bus clock in to the variable PCLKx */
-    if ( (pUSARTx == USART1) || (pUSARTx == USART6) )
+    if ( pUSARTx == USART1 )
     {
-        //USART1 and USART6 are hanging on APB2 bus
-        PCLKx = RCC_GetPCLK2Value();
+        ClkPer = CLOCK_USART1;
     }
-    else	/* pUSARTx == USART2 */
+    else if ( pUSARTx == USART2 )
     {
-        PCLKx = RCC_GetPCLK1Value();
+        ClkPer = CLOCK_USART2;
     }
-
+    else if ( pUSARTx == USART6 )
+    {
+        ClkPer = CLOCK_USART6;
+    }
+    else
+    {
+        /* Do nothing */
+    }
+    PCLKx = Clock_GetPeripheralFreq(ClkPer);
     return PCLKx;
 }
 
@@ -73,29 +80,52 @@ __STATIC_INLINE uint32 RCC_GetClockValue(USART_Type * pUSARTx)
  */
 __STATIC_INLINE void USART_PeriClockControl(USART_Type *pUSARTx, uint8 EnorDi)
 {
-    if (EnorDi == ENABLE)
+    ClockPeripheralType ClkPer;
+    if ( pUSARTx == USART1 )
     {
-        if (pUSARTx == USART1)
-        {
-            USART1_PCLK_EN();
-        }
-        else if (pUSARTx == USART2)
-        {
-            USART2_PCLK_EN();
-        }
-        else if (pUSARTx == USART3)
-        {
-            USART3_PCLK_EN();
-        }
-        else if (pUSARTx == UART4)
-        {
-            USART4_PCLK_EN();
-        }
+        ClkPer = CLOCK_USART1;
+    }
+    else if ( pUSARTx == USART2 )
+    {
+        ClkPer = CLOCK_USART2;
+    }
+    else if ( pUSARTx == USART6 )
+    {
+        ClkPer = CLOCK_USART6;
     }
     else
     {
-        //TODO
+        /* Do nothing */
     }
+    
+    /* Enable or Disable Clock */
+    Clock_PeripheralControl(ClkPer, (Bool_Type)EnorDi);
+}
+
+/*********************************************************************
+ * @fn                - Enable UART Interrupt by NVIC
+ *
+ */
+void USART_SetInterruptEnable(USART_Type *pUSARTx)
+{
+    uint8 irqline;
+    if ( pUSARTx == USART1 )
+    {
+        irqline = USART1_IRQn;
+    }
+    else if ( pUSARTx == USART2 )
+    {
+        irqline = USART2_IRQn;
+    }
+    else if ( pUSARTx == USART6 )
+    {
+        irqline = USART6_IRQn;
+    }
+    else
+    {
+        /* Do nothing */
+    }    
+    sys_EnableIRQ(irqline, 0);
 }
 
 /*********************************************************************
@@ -230,11 +260,11 @@ __STATIC_INLINE void USART_SetHWFlowControl(USART_Type *pUSARTx, Usart_HardwareF
  * @fn                - Setting Transmit or Receive for USART Instance
  *
  */
-__STATIC_INLINE void Usart_SetTransmitterCmd(USART_Type * pUSARTx, boolean EnorDir)
+__STATIC_INLINE void Usart_SetTransmitterCmd(USART_Type * pUSARTx, Bool_Type EnorDir)
 {
     pUSARTx->CR1 = (pUSARTx->CR1 & ~USART_CR1_TE_MASK) | ((EnorDir ? ENABLE : DISABLE) << USART_CR1_TE_SHIFT);
 }
-__STATIC_INLINE void Usart_SetReceiveCmd(USART_Type * pUSARTx, boolean EnorDir)
+__STATIC_INLINE void Usart_SetReceiveCmd(USART_Type * pUSARTx, Bool_Type EnorDir)
 {
     pUSARTx->CR1 = (pUSARTx->CR1 & ~USART_CR1_RE_MASK) | ((EnorDir ? ENABLE : DISABLE) << USART_CR1_RE_SHIFT);
 }
@@ -243,13 +273,13 @@ __STATIC_INLINE void Usart_SetReceiveCmd(USART_Type * pUSARTx, boolean EnorDir)
  * @fn                - Config USART Interrupt with source
  *
  */
-__STATIC_INLINE void Usart_SetIntMode(USART_Type * pUSARTx, Usart_InterruptType IntSrc, boolean EnorDir)
+__STATIC_INLINE void Usart_SetIntMode(USART_Type * pUSARTx, Usart_InterruptType IntSrc, Bool_Type EnorDir)
 {
     pUSARTx->CR1 = (pUSARTx->CR1 & ~(1UL << (uint32)IntSrc)) | ((EnorDir ? ENABLE : DISABLE) << (uint32)IntSrc);
 }
-__STATIC_INLINE boolean Usart_GetIntMode(const USART_Type * pUSARTx, Usart_InterruptType IntSrc)
+__STATIC_INLINE Bool_Type Usart_GetIntMode(const USART_Type * pUSARTx, Usart_InterruptType IntSrc)
 {
-    boolean RetVal = FALSE;
+    Bool_Type RetVal = FALSE;
     RetVal = (((pUSARTx->CR1 >> (uint32)(IntSrc)) & 1U) > 0U);
     return RetVal;
 }
@@ -307,9 +337,9 @@ __STATIC_INLINE uint16 Usart_Getchar9(const USART_Type * pUSARTx)
  *
  * This function returns the state of a status flag.
  */
-__STATIC_INLINE boolean Usart_GetStatusFlag(const USART_Type * pUSARTx, Usart_StatusFlagType StatusFlag)
+__STATIC_INLINE Bool_Type Usart_GetStatusFlag(const USART_Type * pUSARTx, Usart_StatusFlagType StatusFlag)
 {
-    boolean RetVal = FALSE;
+    Bool_Type RetVal = FALSE;
     RetVal = (((pUSARTx->SR >> (uint32)(StatusFlag)) & 1U) > 0U);
     return RetVal;
 }

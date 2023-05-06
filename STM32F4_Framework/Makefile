@@ -7,8 +7,10 @@ ifeq ($(TEST),)
 	$(error export TEST before starting tests: example export TEST=FLASH_TS_001 ...)
 endif
 
-# Load to FLASH or RAM
-LOAD_TO=FLASH
+# Load to FLASH or RAM - Default Load to FLASH
+ifeq ($(LOAD_TO),)
+    LOAD_TO=FLASH
+endif
 
 PRO_DIR := .
 PROJ_NAME := $(TEST)
@@ -64,7 +66,7 @@ LD := $(COMPILER_DIR)/bin/arm-none-eabi-ld
 INC_DIRS_OPT := $(foreach INC_DIRS,$(INC_DIRS),-I$(INC_DIRS))
 
 # Compiler and linker option
-CC_OPT := -mcpu=cortex-m4 -c -std=gnu11 -o0 -g3 $(INC_DIRS_OPT) -ffunction-sections -fdata-sections -Wall -fstack-usage --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+CC_OPT := -mcpu=cortex-m4 -c -std=gnu11 -o0 -g3 $(INC_DIRS_OPT) -ffunction-sections -fdata-sections -Wall -fstack-usage --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -DLOAD_TO_$(LOAD_TO)
 LD_OPT := -T $(LINKER_FILE) -Map $(PATH_OUTPUT)/$(PROJ_NAME).map -static
 
 OJB_FILES := $(notdir $(SRC_FILES))

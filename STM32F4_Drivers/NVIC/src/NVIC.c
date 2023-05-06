@@ -1,6 +1,6 @@
 /**
  * Filename		: NVIC.c
- * Author		: Nghia Taarabt
+ * Author		: Nghia-Taarabt
  * Create Date 	: 18/5/22
  * Brief		: Implement API for NVIC Driver
  */
@@ -101,7 +101,7 @@ void NVIC_SetPriority(IRQn_Type IRQn, uint32 priority)
 	}
 	else
 	{
-		NVIC->IP[((uint32)(int32)IRQn)]               = (uint8)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32)0xFFUL);
+		NVIC->IP[((uint32)(int32)IRQn)] = (uint8)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32)0xFFUL);
 	}
 }
 
@@ -117,14 +117,16 @@ void NVIC_SetPriority(IRQn_Type IRQn, uint32 priority)
  */
 uint32 NVIC_GetPriority(IRQn_Type IRQn)
 {
+    uint32 prio;
 	if ((int32)(IRQn) < 0)
 	{
-		return (((uint32)SCB->SHP[(((uint32)(int32)IRQn) & 0xFUL)-4UL] >> (8U - __NVIC_PRIO_BITS)));
+		prio = (((uint32)SCB->SHP[(((uint32)(int32)IRQn) & 0xFUL)-4UL] >> (8U - __NVIC_PRIO_BITS)));
 	}
 	else
 	{
-		return (((uint32)NVIC->IP[((uint32)(int32)IRQn)]               >> (8U - __NVIC_PRIO_BITS)));
+		prio = (((uint32)NVIC->IP[((uint32)(int32)IRQn)] >> (8U - __NVIC_PRIO_BITS)));
 	}
+    return prio;
 }
 
 /**

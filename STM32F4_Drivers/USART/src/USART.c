@@ -97,6 +97,12 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 	UartStatePtr->ReceiveStatus 	= USART_STATUS_SUCCESS;
 	UartStatePtr->USART_Baud 		= UserConfig->USART_Baud;
 	
+	/* Enable NVIC Interrupt if support */
+	if ( USART_USING_INTERRUPTS == UserConfig->USART_Transfer )
+	{
+		USART_SetInterruptEnable(Base);
+	}
+
 	/* ---------------- Enable USART Instance ---------------- */
 	USART_PeripheralControl(Base, ENABLE);
 }
@@ -123,7 +129,7 @@ Usart_StatusType Usart_SyncSendData(const uint8 Instance,
 	USART_Type * Base = Usart_Base_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
-	boolean IsReturn = FALSE;
+	Bool_Type IsReturn = FALSE;
 	
 	/* Timeout Setup Variables */
 	uint32 StartTime;
@@ -202,7 +208,7 @@ Usart_StatusType Usart_AsyncSendData(const uint8 Instance,
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 	const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
-	boolean IsReturn = FALSE;
+	Bool_Type IsReturn = FALSE;
 	
 	if (UartStatePtr->IsTxBusy)
     {
@@ -251,7 +257,7 @@ Usart_StatusType Usart_SyncReceiveData(const uint8 Instance,
 	USART_Type * Base = Usart_Base_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
-	boolean IsReturn = FALSE;
+	Bool_Type IsReturn = FALSE;
 	
 	/* Timeout Setup Variables */
 	uint32 StartTime;
@@ -331,7 +337,7 @@ Usart_StatusType Usart_AsyncReceiveData(const uint8 Instance,
 	const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];	
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
-	boolean IsReturn = FALSE;
+	Bool_Type IsReturn = FALSE;
 	
     /* Check it's not busy receiving data from a previous function call */
     if (UartStatePtr->IsRxBusy)
@@ -438,7 +444,7 @@ void Usart_IrqHandler(const uint8 Instance)
 {
     USART_Type * Base = Usart_Base_Pointer[Instance];
 	const Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];	
-    boolean IsReturn = FALSE;
+    Bool_Type IsReturn = FALSE;
 
     /* Case of spurious interrupt when driver is not at all initialized or it is not in transmit/receive process*/
     if (NULL_PTR == UartStatePtr)
@@ -513,14 +519,14 @@ static void Usart_RxIrqHandler(const uint8 Instance)
     Usart_GetData(Instance);
 
     /* Check if this was the last byte in the current buffer */
-    if (0U == UartStatePtr->RxSize)
-    {
-        /* Invoke callback if there is one (callback may reset the rx buffer for continuous reception) */
-        if (UartUserCfg->Callback != NULL_PTR)
-        {
-            UartUserCfg->Callback(Instance, USART_EVENT_RX_FULL, UartUserCfg->CallbackParam);
-        }
-    }
+//    if (0U == UartStatePtr->RxSize)
+//    {
+//        /* Invoke callback if there is one (callback may reset the rx buffer for continuous reception) */
+//        if (UartUserCfg->Callback != NULL_PTR)
+//        {
+//            UartUserCfg->Callback(Instance, USART_EVENT_RX_FULL, UartUserCfg->CallbackParam);
+//        }
+//    }
 
     /* Finish reception if this was the last byte received */
     if (0U == UartStatePtr->RxSize)
@@ -609,8 +615,8 @@ static void Usart_ErrIrqHandler(const uint8 Instance)
     USART_Type * Base = Usart_Base_Pointer[Instance];
 	const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
-    boolean IsError = FALSE;
-    boolean IsReturn = FALSE;
+    Bool_Type IsError = FALSE;
+    Bool_Type IsReturn = FALSE;
 
     /* Handle receive overrun interrupt */
     if (Usart_GetStatusFlag(Base, USART_FLAG_RX_OVERRUN))

@@ -20,6 +20,9 @@
 
 #define SYSTICK_OVERFLOWED(curr, ref) 			(curr > ref)
 
+#define SYSTICK_CLKSRC_EXTERNAL                 0u
+#define SYSTICK_CLKSRC_PROCESSOR                1u
+
 typedef enum
 {
 	SYSTICK_FREQ_10HZ         = 100U,
@@ -80,7 +83,7 @@ __STATIC_INLINE void Systick_StartTimeout(uint32 * StartTimeOut, uint32 *Timeout
  * @return  TRUE     Timeout occurs
  *          FALSE    Timeout does not occur
  */
-__STATIC_INLINE boolean Systick_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
+__STATIC_INLINE Bool_Type Systick_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
 {
     uint32 CurrentElapsedTicks = Systick_GetElapsed(StartTime);
     *ElapsedTicks += CurrentElapsedTicks;

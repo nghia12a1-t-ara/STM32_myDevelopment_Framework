@@ -10,7 +10,6 @@
 
 #include "GPIO_Base.h"
 #include "GPIO_Type.h"
-#include "GPIO_HwAccess.h"
 
 /******************************************************************************************
  *								APIs supported by this driver

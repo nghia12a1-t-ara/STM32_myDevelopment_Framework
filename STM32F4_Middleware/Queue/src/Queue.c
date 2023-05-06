@@ -1,98 +1,149 @@
 #include "Queue.h"
+#include <stdlib.h>
 
 /*******************************************************************************
 * Variables
 ******************************************************************************/
+static Queue_State s_QueueState = QUEUE_UNINIT;
+
+static Queue_Types s_Queue = {
+    .QueueArr = NULL_PTR,
+    .Capacity = 0,
+    .Front = -1,
+    .Rear = -1,
+    .Size = 0
+};
 
 /*******************************************************************************
-* Code
+                    *********** PUBLIC API ***********
 ******************************************************************************/
-/* Initialize a Queue */
-// Queue_Types* createQueue(uint8_t Capacity)
-// {
-	// Queue_Types* queue = (Queue_Types*)malloc(sizeof(Queue_Types));
-    // queue->Capacity = Capacity;
-    // queue->Front = queue->Size = 0;
- 
-    // This is important, see the enqueue
-    // queue->Rear = Capacity - 1;
-    // queue->QueueArr = (uint32_t*)malloc(queue->Capacity * sizeof(uint32_t));
-    // return queue;
-// }
-
-
-/* Pop data from queue */
-void Queue_Pop(Queue_Types *Queue)
+/**
+ * @func    Queue_Create
+ * @brief   Initialize a Queue with dynamic size
+ * @param   Capacity    - maximum size of queue
+ * @reval   TRUE        - If create successfull
+ *          FALSE       - If Heap is not enough memory
+ */
+Bool_Type Queue_Create(uint8 Capacity)
 {
-	uint8_t count;
-	if(!Queue_IsEmpty(Queue))
-	{
-		/* Update Possitive Queue Values */
-		for (count = Queue->Front; count <= Queue->Rear; count++)
-		{
-			Queue->QueueArr[(count - Queue->Front)] = Queue->QueueArr[count];
-		}
-		
-		/* Update Front, Rear Values */
-		Queue->Front = 0;
-		Queue->Rear = Queue->Capacity - 1;
-		
-		/* OPTIONAL : Update Nagative Queue Values */
-		for (count = Queue->Capacity; count < Queue->Size; count++)
-		{
-			Queue->QueueArr[count] = 0;
-		}
-	}
+    uint8 count = 0;
+    Bool_Type retval = FALSE;
+    if ( QUEUE_UNINIT == s_QueueState )
+    {
+        s_QueueState = QUEUE_INIT;
+        s_Queue.QueueArr = (uint32 *)malloc(sizeof(uint32)*Capacity);
+    }
+    /* Reset all data in Queue and Reset Queue State */
+    for (count = 0; count < Capacity; count++)
+    {
+        s_Queue.QueueArr[count] = 0;
+    }
+    if ( s_Queue.QueueArr != NULL_PTR )
+    {
+        s_Queue.Capacity    = Capacity;
+        s_Queue.Front       = -1;
+        s_Queue.Rear        = -1;
+        s_Queue.Size        = 0;
+    }
+    return retval;
 }
 
-/* Hadling push data in queue */
-void Queue_PushData(Queue_Types *Queue, uint32_t InputData)
+/**
+ * @func    Queue_PushData
+ * @brief   Push Data to Queue and increase size of Queue
+ * @param   InputData
+ * @reval   TRUE        - Queue is not Full - Data pushed
+ *          FALSE       - Queue is Full - Data cannot be pushed
+ */
+Bool_Type Queue_PushData(uint32 InputData)
 {
-	if(!Queue_IsFull(Queue))
+    Bool_Type Key = FALSE;
+	if ( FALSE == Queue_IsFull() )
 	{
-		Queue->QueueArr[Queue->Rear + 1] = InputData;
-		Queue->Rear++;
-		Queue->Capacity++;
+        /* Push Data to Queue if queue is not full */
+		s_Queue.QueueArr[++s_Queue.Rear] = InputData;
+		s_Queue.Size++;
+        Key = TRUE;
 	}
+    return Key;
 }
 
-/* Handling peek data in queue */
-uint32_t Queue_PeekData(Queue_Types *Queue)
+/**
+ * @func    Queue_PopData
+ * @brief   Get Data From Queue if queue is not empty
+ * @param   None
+ * @reval   PeekData    Data get from queue
+ *          QUEUE_EMPTY_PEEK_VALUE  -   Queue is empty
+ */
+uint32 Queue_PopData(void)
 {
-	uint32_t PeekData = QUEUE_EMPTY_PEEK_VALUE;
+	uint32 PeekData = QUEUE_EMPTY_PEEK_VALUE;
 	
-	if(!Queue_IsEmpty(Queue))
+	if ( FALSE == Queue_IsEmpty() )
 	{
-		PeekData = Queue->QueueArr[Queue->Front];
-		Queue->Front++;
-		Queue->Capacity--;
-	}
-	else
-	{
-		
+        /* Get Data From queue if queue is not empty */
+		PeekData = s_Queue.QueueArr[++s_Queue.Front];
+		s_Queue.Size--;
 	}
 	
 	return PeekData;
 }
 
-/* Check empty of Queue */
-uint8_t Queue_IsEmpty(Queue_Types *Queue)
+/**
+ * @func    Queue_IsEmpty
+ * @brief   Check if queue is empty or not
+ * @param   None
+ * @reval   TRUE        - Queue is Empty
+ *          FALSE       - Queue is not Empty
+ */
+Bool_Type Queue_IsEmpty(void)
 {
-	uint8_t Key = FALSE;
-	if(Queue->Capacity == QUEUE_EMPTY)
+	Bool_Type Key = FALSE;
+	if ( s_Queue.Size == QUEUE_EMPTY )
 	{
 		Key = TRUE;
+    #ifdef C_CIRCULAR_QUEUE_TEST
+        printf("\nQueue is Empty\n");
+    #endif
 	}
 	return Key;
 }
 
-/* Check full of Queue */
-uint8_t Queue_IsFull(Queue_Types *Queue)
+/**
+ * @func    Queue_IsFull
+ * @brief   Check if queue is full or not
+ * @param   None
+ * @reval   TRUE        - Queue is Full
+ *          FALSE       - Queue is not Full
+ */
+Bool_Type Queue_IsFull(void)
 {
-	uint8_t Key = FALSE;
-	if(Queue->Capacity == Queue->Size)
+	Bool_Type Key = FALSE;
+	if ( s_Queue.Size == s_Queue.Capacity )
 	{
 		Key = TRUE;
+    #ifdef C_CIRCULAR_QUEUE_TEST
+        printf("\nQueue is Full\n");
+    #endif
 	}
 	return Key;
 }
+
+#ifdef C_QUEUE_TEST
+void Queue_Print(void)
+{
+    int8 count = 0;
+    if ( TRUE == Queue_IsEmpty() )
+    {
+        printf(">>> Queue is Empty!\n");
+        return;
+    }
+    
+    printf("> Current Queue: ");
+    for (count = s_Queue.Front+1; count <= s_Queue.Rear; count++)
+    {
+        printf("%d ", s_Queue.QueueArr[count]);
+    }
+    printf("\n");
+}
+#endif

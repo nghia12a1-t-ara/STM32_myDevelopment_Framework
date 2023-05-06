@@ -8,7 +8,7 @@
 #include "Std_Type.h"
 
 #define SRAM_START	0x20000000U
-#define	SRAM_SIZE	(128U + 1024U)		//128KB
+#define	SRAM_SIZE	(128U + 1024U)		/* 128KB */
 #define SRAM_END	((SRAM_START) + (SRAM_SIZE))
 
 #define	STACK_START	SRAM_END
@@ -16,16 +16,17 @@
 extern uint32 _etext;
 extern uint32 _sdata;
 extern uint32 _edata;
-extern uint32 _la_data;
-
 extern uint32 _sbss;
 extern uint32 _ebss;
+#ifdef LOAD_TO_FLASH
+    extern uint32 _la_data;
+#endif  /* LOAD_TO_FLASH */
 
 /* function prototypes */
 void main(void);
-//void __libc_init_array(void);
+/* void __libc_init_array(void); */
 
-/* function prototypes of STM32F407x system exception and IRQ handlers */
+/* function prototypes of STM32F4xx system exception and IRQ handlers */
 
 void Reset_Handler(void);
 
@@ -148,6 +149,7 @@ uint32 vectors[] __attribute__((section(".isr_vector"))) = {
 
 void Reset_Handler()
 {
+#ifdef LOAD_TO_FLASH
 	/* Copy .data section to SRAM */
 	uint32 size = (uint32)&_edata - (uint32)&_sdata;
 	
@@ -167,9 +169,14 @@ void Reset_Handler()
 	{
 		*pDst++ = 0;
 	}
-	
+#endif  /* LOAD_TO_FLASH */
+
+#ifdef LOAD_TO_RAM
+    /* Load to RAM - Set Vector Table Offset Address */
+#endif  /* LOAD_TO_RAM */
+
 	/* Call init function of std libarary */
-	//__libc_init_array();
+	/* __libc_init_array(); */
 	
 	/* Call main() function */
 	main();

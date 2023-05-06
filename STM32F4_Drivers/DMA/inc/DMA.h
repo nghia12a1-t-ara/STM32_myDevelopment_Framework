@@ -71,7 +71,7 @@ uint8 DMA_GetStatusFlag(const uint8 Instance, Dma_StreamType Stream);
  *
  * @Note              -
  */
-boolean DMA_CheckStatusFlag(const uint8 Instance, Dma_StreamType Stream, DMA_StatusFlagType FlagType);
+Bool_Type DMA_CheckStatusFlag(const uint8 Instance, Dma_StreamType Stream, DMA_StatusFlagType FlagType);
 
 /*****************************************************************************************/
 /*********************************************************************

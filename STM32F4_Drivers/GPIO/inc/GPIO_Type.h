@@ -16,7 +16,7 @@ typedef enum
 	GPIO_INSTANCE_F				= 5u,
 	GPIO_INSTANCE_G				= 6u,
 	GPIO_INSTANCE_H				= 7u,
-	GPIO_INSTANCE_I				= 8u
+	GPIO_INSTANCE_I				= 8u,
 } GPIO_InstanceType;
 
 /**
@@ -39,7 +39,7 @@ typedef enum
 	GPIO_PIN_NO_12  			= 12u,
 	GPIO_PIN_NO_13 				= 13u,
 	GPIO_PIN_NO_14 				= 14u,
-	GPIO_PIN_NO_15 				= 15u
+	GPIO_PIN_NO_15 				= 15u,
 } GPIO_PinNumberType;
 
 /**
@@ -51,7 +51,7 @@ typedef enum
 	GPIO_MODE_OUTPUT			= 0x01u,
 	GPIO_MODE_ALTERNATE			= 0x02u,
 	GPIO_MODE_ANALOG			= 0x03u,
-	GPIO_MODE_EXTI				= 0x04u
+	GPIO_MODE_EXTI				= 0x04u,
 } GPIO_ModeType;
 
 /**
@@ -60,7 +60,7 @@ typedef enum
 typedef enum 
 {
 	GPIO_OTYPE_PUSHPULL			= 0x00u,
-	GPIO_OTYPE_OPENDRAIN		= 0x01u
+	GPIO_OTYPE_OPENDRAIN		= 0x01u,
 } GPIO_OutputType;
 
 /**
@@ -71,7 +71,7 @@ typedef enum
 	GPIO_OSPEED_LOW				= 0x00u,
 	GPIO_OSPEED_MEDIUM			= 0x01u,
 	GPIO_OSPEED_HIGH			= 0x02u,
-	GPIO_OSPEED_VERYHIGH		= 0x03u
+	GPIO_OSPEED_VERYHIGH		= 0x03u,
 } GPIO_OutSpeedType;
 
 /**
@@ -81,7 +81,7 @@ typedef enum
 {
 	GPIO_INPUT_FLOATING			= 0x00u,
 	GPIO_INPUT_PULLUP			= 0x01u,
-	GPIO_INPUT_PULLDOWN			= 0x02u
+	GPIO_INPUT_PULLDOWN			= 0x02u,
 } GPIO_InputType;
 
 /**
@@ -104,7 +104,7 @@ typedef enum
 	GPIO_ALTERNATE_12  			= 12u,
 	GPIO_ALTERNATE_13 			= 13u,
 	GPIO_ALTERNATE_14 			= 14u,
-	GPIO_ALTERNATE_15 			= 15u
+	GPIO_ALTERNATE_15 			= 15u,
 } GPIO_AlternateType;
 
 /**
@@ -113,8 +113,31 @@ typedef enum
 typedef enum 
 {
 	GPIO_PIN_RESET 				= 0x0u,
-	GPIO_PIN_SET 				= 0x1u
+	GPIO_PIN_SET 				= 0x1u,
 } GPIO_PinValue;
+
+/**
+ * GPIO ALternate Functions for STM32F401
+ */
+typedef enum
+{
+	GPIO_ALTERNATE_SYSTEM				= GPIO_ALTERNATE_0,
+	GPIO_ALTERNATE_TIMER1_2				= GPIO_ALTERNATE_1,
+	GPIO_ALTERNATE_TIMER3_5				= GPIO_ALTERNATE_2,
+	GPIO_ALTERNATE_TIMER9_11			= GPIO_ALTERNATE_3,
+	GPIO_ALTERNATE_I2C1_3				= GPIO_ALTERNATE_4,
+	GPIO_ALTERNATE_SPI1_4				= GPIO_ALTERNATE_5,
+	GPIO_ALTERNATE_SPI3					= GPIO_ALTERNATE_6,
+	GPIO_ALTERNATE_USART1_2				= GPIO_ALTERNATE_7,
+	GPIO_ALTERNATE_USART_6				= GPIO_ALTERNATE_8,
+	GPIO_ALTERNATE_I2C2_3				= GPIO_ALTERNATE_9,
+	GPIO_ALTERNATE_OTG_FS				= GPIO_ALTERNATE_10,
+	GPIO_ALTERNATE_REVERSED1			= GPIO_ALTERNATE_11,
+	GPIO_ALTERNATE_SDIO					= GPIO_ALTERNATE_12,
+	GPIO_ALTERNATE_REVERSED2			= GPIO_ALTERNATE_13,
+	GPIO_ALTERNATE_REVERSED3			= GPIO_ALTERNATE_14,
+	GPIO_ALTERNATE_EVENTOUT				= GPIO_ALTERNATE_15,
+} GPIO_AFSpecType;
 
 /*
  * @EXTI_MODES
@@ -124,7 +147,7 @@ typedef enum {
 	EXTI_DISABLE				= 0x0u,
 	EXTI_FALLING_EDGE			= 0x1u,
 	EXTI_RASING_EDGE			= 0x2u,
-	EXTI_RASING_FALLING			= 0x3u
+	EXTI_RASING_FALLING			= 0x3u,
 } EXTI_ModeType;
 
 /*
@@ -136,10 +159,9 @@ typedef struct
 	GPIO_ModeType				GPIO_PinMode;				/*!< Pin Mode - In/Out or Alternate or Analog >*/ 
 	GPIO_OutSpeedType			GPIO_PinSpeed;				/*!< Pin Output Speed >*/
 	GPIO_InputType				GPIO_PinInputMode;			/*!< Pin Input Mode (Pull up/down) >*/
-	GPIO_OutputType				GPIO_PinOutputMode;			/*!< Pin Output Mode (Pushpull/Opendrain) >*/
+	GPIO_OutputType				GPIO_PinOutputMode;			/*!< Pin Output Mode (Push-pull/Open-drain) >*/
 	GPIO_AlternateType			GPIO_PinAlternate;			/*!< Pin Alternate Function >*/
 	EXTI_ModeType				EXTI_Mode;					/*!< EXTI Mode - Ignore if not support EXTI >*/
 } GPIO_PinConfigType;
-
 
 #endif	/* !(__GPIO_TYPE__) */

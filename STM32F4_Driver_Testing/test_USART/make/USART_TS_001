@@ -1,0 +1,5 @@
+
+TEST_DETAILS = Checking Transmitt and Receive Synchronous functions - Pooling Method
+
+# MODULE LISTS USED
+MODULE_LIST := BASE CLOCK USART GPIO SYSTICK

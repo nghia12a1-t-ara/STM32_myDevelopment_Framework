@@ -11,6 +11,7 @@
 #include "SCB_Base.h"
 #include "NVIC_Base.h"
 #include "NVIC_Type.h"
+#include "stm32f4xx.h"
 
 /**
   \brief   Enable External Interrupt
@@ -85,6 +86,6 @@ uint32 NVIC_GetPriority(IRQn_Type IRQn);
   \param [in]      IRQn  Interrupt number.
   \return          None
  */
-void NVIC_TriggerInterrupt(IRQn_Type IRQn)
+void NVIC_TriggerInterrupt(IRQn_Type IRQn);
 
 #endif 	/* !(__NVIC_H__) */

@@ -117,9 +117,9 @@ typedef struct
 /* @implements     MPU_ConfigType_struct */
 typedef struct
 {
-    boolean bDefaultMapEn;                                           /* Enables the default memory map background region */
-    boolean bEnableRunHFNMI;                                         /* Enables use of the MPU when in the hard fault, non-maskable interrupt, and FAULTMASK escalated handlers  */
-    boolean bEnMemManageInterrupt;                                   /* Enable Memory Manage Fault Exception Handler */
+    Bool_Type bDefaultMapEn;                                           /* Enables the default memory map background region */
+    Bool_Type bEnableRunHFNMI;                                         /* Enables use of the MPU when in the hard fault, non-maskable interrupt, and FAULTMASK escalated handlers  */
+    Bool_Type bEnMemManageInterrupt;                                   /* Enable Memory Manage Fault Exception Handler */
     uint8 u8RegionCnt;                                               /* Region Count */
     const MPU_RegionConfigType * pRegionConfigArr;             		 /* Region configuration array */
 } MPU_ConfigType;

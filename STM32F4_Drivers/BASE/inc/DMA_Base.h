@@ -5,8 +5,8 @@
  * Brief		: Peripheral Access Layer for DMA Driver
  */
 
-#ifndef __DMA_BASE_H
-#define __DMA_BASE_H
+#ifndef __DMA_BASE_H__
+#define __DMA_BASE_H__
 
 #include "stm32f4xx.h"
 #include "Std_Type.h"
@@ -293,6 +293,6 @@ typedef struct DMAStream_Type DMAStream_Type;
  */
 
 
-#endif	/* !(__DMA_BASE_H) */
+#endif	/* !(__DMA_BASE_H__) */
 
 

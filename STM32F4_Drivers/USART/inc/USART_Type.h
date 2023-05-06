@@ -156,8 +156,8 @@ typedef enum
  *
  */
 typedef void (*Usart_CallbackType)(const uint8 HwInstance,
-                                            const Usart_EventType Event,
-                                            void *UserData);
+                                   const Usart_EventType Event,
+                                   void *UserData);
 
 /****************************************************************************************/
 /******************************* Data Structure USART ***********************************/
@@ -172,8 +172,8 @@ typedef struct
     uint8                           * RxBuff;                       /**< @brief The buffer of Received Data.*/
     volatile uint32                 TxSize;                         /**< @brief The remaining number of bytes to be transmitted. */
     volatile uint32                 RxSize;                         /**< @brief The remaining number of bytes to be received. */
-    volatile boolean                IsTxBusy;                       /**< @brief True if there is an active transmit.*/
-    volatile boolean                IsRxBusy;                       /**< @brief True if there is an active receive.*/
+    volatile Bool_Type                IsTxBusy;                       /**< @brief True if there is an active transmit.*/
+    volatile Bool_Type                IsRxBusy;                       /**< @brief True if there is an active receive.*/
     volatile Usart_StatusType       TransmitStatus;                 /**< @brief Status of last driver transmit operation */
     volatile Usart_StatusType       ReceiveStatus;                  /**< @brief Status of last driver receive operation */
 } Usart_StateRuntimeType;

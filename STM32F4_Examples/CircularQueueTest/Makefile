@@ -5,13 +5,14 @@ OBJ_FILES += out/$(PROJ_NAME).o
 LIB_DIRS = ./../../STM32F4_Middleware/CircularQueue
 SRC_DIRS := $(LIB_DIRS)/src
 INC_DIRS := $(LIB_DIRS)/inc
+STD_LIBS = $(LIB_DIRS)/../../STM32F4_Drivers/BASE/inc
 
 all: build
 
 out/main.o:main.c
-	@gcc -c -I./$(INC_DIRS) main.c -o out/main.o
+	@gcc -c -I./$(INC_DIRS) -I$(STD_LIBS) main.c -o out/main.o -DC_CIRCULAR_QUEUE_TEST
 out/$(PROJ_NAME).o:$(SRC_DIRS)/$(PROJ_NAME).c
-	@gcc -c -I./$(INC_DIRS) $(SRC_DIRS)/$(PROJ_NAME).c -o out/$(PROJ_NAME).o
+	@gcc -c -I./$(INC_DIRS) -I$(STD_LIBS) $(SRC_DIRS)/$(PROJ_NAME).c -o out/$(PROJ_NAME).o -DC_CIRCULAR_QUEUE_TEST
 	
 .PHONY: build	
 build:$(OBJ_FILES)
@@ -21,7 +22,7 @@ build:$(OBJ_FILES)
 	
 .PHONY: run	
 run:
-	out/main.exe
+	@out/main.exe
 	
 .PHONY: clean	
 clean:

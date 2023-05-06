@@ -8,7 +8,7 @@
 #define SRCADDR						0x20016000UL
 #define DESTADDR					0x20007F00UL
 
-volatile boolean t_bMpu_ErrorDetected = FALSE;
+volatile Bool_Type t_bMpu_ErrorDetected = FALSE;
 MPU_ErrorDetailsType t_Mpu_FaultDetails;
 
 Dma_UserStreamConfigType DMA_StreamConfig = {
