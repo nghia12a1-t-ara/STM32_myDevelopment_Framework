@@ -7,7 +7,7 @@
 /* FLASH Memory Programming functions *****************************************/   
 void FLASH_Unlock(void);
 void FLASH_Lock(void);
-FLASH_Status FLASH_EraseSector(uint32 FLASH_Sector, uint8 VoltageRange);
+FLASH_Status FLASH_EraseSector(uint32 FLASH_Sector);
 FLASH_Status FLASH_EraseAllSectors(uint8 VoltageRange);
 FLASH_Status FLASH_ProgramDoubleWord(uint32 Address, uint64 Data);
 FLASH_Status FLASH_ProgramWord(uint32 Address, uint32 Data);

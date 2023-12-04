@@ -18,52 +18,56 @@ typedef enum
 } FLASH_Status;
 
 /************* Define FLASH_CR Bits ***************/
-#define FLASH_CR_LOCK_POS			(31)
-#define FLASH_CR_ERRIE_POS			(25)
-#define FLASH_CR_EOPIE_POS			(24)
+#define FLASH_CR_LOCK_SHIFT			(31U)
+#define FLASH_CR_ERRIE_SHIFT        (25U)
+#define FLASH_CR_EOPIE_SHIFT        (24U)
 	
-#define FLASH_CR_LOCK				(1 << 31)
-#define FLASH_CR_ERRIE				(1 << 25)
-#define FLASH_CR_EOPIE				(1 << 24)
+#define FLASH_CR_LOCK_MASK			(1U << 31)
+#define FLASH_CR_ERRIE_MASK			(1U << 25)
+#define FLASH_CR_EOPIE_MASK			(1U << 24)
 
 /** @defgroup FLASH_Program_Parallelism   
   * @{
   */
-#define FLASH_PSIZE_BYTE			((uint32)0x00000000)
-#define FLASH_PSIZE_HALF_WORD		((uint32)0x00000100)
-#define FLASH_PSIZE_WORD			((uint32)0x00000200)
-#define FLASH_PSIZE_DOUBLE_WORD		((uint32)0x00000300)
-#define FLASH_CR_PSIZE_MASK			((uint32)0xFFFFFCFF)
-#define FLASH_CR_SECTOR_MASK		((uint32)0xFFFFFF07)
+#define FLASH_PSIZE_BYTE			((uint32)0x00000000UL)
+#define FLASH_PSIZE_HALF_WORD		((uint32)0x00000100UL)
+#define FLASH_PSIZE_WORD			((uint32)0x00000200UL)
+#define FLASH_PSIZE_DOUBLE_WORD		((uint32)0x00000300UL)
+#define FLASH_CR_PSIZE_MASK			((uint32)0x300UL)
+#define SECTOR_MASK		            ((uint32)0xFFFFFF07UL)
 
-#define FLASH_CR_STRT_POS			(16)
-#define FLASH_CR_MER_POS			(2)
-#define FLASH_CR_SER_POS			(1)
-#define FLASH_CR_PG_POS				(0)
+#define FLASH_CR_STRT_SHIFT			(16U)
+#define FLASH_CR_MER_SHIFT			(2U)
+#define FLASH_CR_SER_SHIFT			(1U)
+#define FLASH_CR_PG_SHIFT           (0U)
+#define FLASH_CR_SNB_SHIFT          (3U)
 
-#define FLASH_CR_STRT				(1 << 16)
-#define FLASH_CR_MER				(1 << 2)
-#define FLASH_CR_SER				(1 << 1)
-#define FLASH_CR_PG					(1 << 0)
+#define FLASH_CR_SNB_MASK           (0x78UL)
+#define FLASH_CR_STRT_MASK			(1U << 16)
+#define FLASH_CR_MER_MASK			(1U << 2)
+#define FLASH_CR_SER_MASK			(1U << 1)
+#define FLASH_CR_PG_MASK			(1U << 0)
+
+#define FLASH_CR_SNB(x)             ((uint32)((uint32)x<<FLASH_CR_SNB_SHIFT)&FLASH_CR_SNB_MASK)
 
 /************* Define FLASH_SR Bits ***************/
-#define FLASH_SR_BSY_POS			(16)
-#define FLASH_SR_RDERR_POS			(8)
-#define FLASH_SR_PGSERR_POS			(7)
-#define FLASH_SR_PGPERR_POS			(6)
-#define FLASH_SR_PGAERR_POS			(5)
-#define FLASH_SR_WRPERR_POS			(4)
-#define FLASH_SR_OPERR_POS			(1)
-#define FLASH_SR_EOP_POS			(0)
+#define FLASH_SR_BSY_SHIFT			(16U)
+#define FLASH_SR_RDERR_SHIFT        (8U)
+#define FLASH_SR_PGSERR_SHIFT		(7U)
+#define FLASH_SR_PGPERR_SHIFT		(6U)
+#define FLASH_SR_PGAERR_SHIFT		(5U)
+#define FLASH_SR_WRPERR_SHIFT		(4U)
+#define FLASH_SR_OPERR_SHIFT		(1U)
+#define FLASH_SR_EOP_SHIFT			(0U)
 
-#define FLASH_SR_BSY				(1 << 16)
-#define FLASH_SR_RDERR				(1 << 8)
-#define FLASH_SR_PGSERR				(1 << 7)
-#define FLASH_SR_PGPERR				(1 << 6)
-#define FLASH_SR_PGAERR				(1 << 5)
-#define FLASH_SR_WRPERR				(1 << 4)
-#define FLASH_SR_OPERR				(1 << 1)
-#define FLASH_SR_EOP				(1 << 0)
+#define FLASH_SR_BSY_MASK   		(1U << 16)
+#define FLASH_SR_RDERR_MASK			(1U << 8)
+#define FLASH_SR_PGSERR_MASK		(1U << 7)
+#define FLASH_SR_PGPERR_MASK		(1U << 6)
+#define FLASH_SR_PGAERR_MASK		(1U << 5)
+#define FLASH_SR_WRPERR_MASK		(1U << 4)
+#define FLASH_SR_OPERR_MASK			(1U << 1)
+#define FLASH_SR_EOP_MASK			(1U << 0)
 
 
 #endif	/* !(__FLASH_TYPE_H__) */

@@ -1,6 +1,6 @@
-#include "USART_TC_001.h"
+//void USART_TC_001(void);
 
 int main()
 {	
-	USART_TC_001();
+	//USART_TC_001();
 }

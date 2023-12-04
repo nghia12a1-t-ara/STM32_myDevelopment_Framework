@@ -7,11 +7,11 @@
 static Queue_State s_QueueState = QUEUE_UNINIT;
 
 static Queue_Types s_Queue = {
-    .QueueArr = NULL_PTR,
-    .Capacity = 0,
-    .Front = -1,
-    .Rear = -1,
-    .Size = 0
+    .QueueArr   =   NULL_PTR,
+    .Capacity   =   0,
+    .Front      =   -1,
+    .Rear       =   -1,
+    .Size       =   0
 };
 
 /*******************************************************************************
@@ -33,13 +33,14 @@ Bool_Type Queue_Create(uint8 Capacity)
         s_QueueState = QUEUE_INIT;
         s_Queue.QueueArr = (uint32 *)malloc(sizeof(uint32)*Capacity);
     }
-    /* Reset all data in Queue and Reset Queue State */
-    for (count = 0; count < Capacity; count++)
-    {
-        s_Queue.QueueArr[count] = 0;
-    }
+    
     if ( s_Queue.QueueArr != NULL_PTR )
     {
+        /* Reset all data in Queue and Reset Queue State */
+        for (count = 0; count < Capacity; count++)
+        {
+            s_Queue.QueueArr[count] = 0;
+        }
         s_Queue.Capacity    = Capacity;
         s_Queue.Front       = -1;
         s_Queue.Rear        = -1;

@@ -18,6 +18,7 @@ DRIVER_DIR := $(PRO_DIR)/../STM32F4_Drivers
 DRV_TEST_DIR := $(PRO_DIR)/../STM32F4_Driver_Testing
 STARTUP_DIR := $(PRO_DIR)/startup
 PYTHON_DIR := $(PRO_DIR)/testing/python
+DEBUGGER_DIR := $(PRO_DIR)/../Debugger
 
 include $(PRO_DIR)/User_Config.mak
 include $(DRV_TEST_DIR)/test_$(MODULE)/make/$(TEST)
@@ -119,9 +120,14 @@ report:
 		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 	fi
 	@$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -rst
-# list all test suite	
+    
+# .PHONY:debug
+# debug:
+    # $(DEBUGGER_DIR)/openocd/bin/openocd.exe -f $(DEBUGGER_DIR)/openocd/scripts/board/st_nucleo_f4.cfg
+
+# list all test suite
 .PHONY:info
-info:	
+info:
 	@ls $(DRV_TEST_DIR)/test_$(MODULE)/make
 	
 print-%:

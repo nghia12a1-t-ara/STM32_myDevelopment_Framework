@@ -67,7 +67,7 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
     for (Index = 0; Index < sizeof(Usart_StateRuntimeType); Index++)
     {
         ClearStructPtr[Index] = 0;
-    }	
+    }
 	
 	/* Implement the code to enable the Clock for given USART peripheral */
 	USART_PeriClockControl(Base, ENABLE);

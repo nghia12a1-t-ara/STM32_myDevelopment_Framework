@@ -3,16 +3,26 @@
 #include <stdlib.h>
 
 /*******************************************************************************
+* Typedef (Struct, Union, Enum)
+******************************************************************************/
+/*** Define Queue Types ***/
+typedef struct {
+    int8    Front, Rear, Size;
+    uint8	Capacity;
+    uint32 *QueueArr;
+} CircularQueue_Types;
+
+/*******************************************************************************
 * Variables
 ******************************************************************************/
 static CircularQueue_State s_QueueState = CIRCULAR_QUEUE_UNINIT;
 
 static CircularQueue_Types s_CircularQueue = {
-    .QueueArr = NULL_PTR,
-    .Capacity = 0,
-    .Front = -1,
-    .Rear = -1,
-    .Size = 0
+    .QueueArr   =   NULL_PTR,
+    .Capacity   =   0,
+    .Front      =   -1,
+    .Rear       =   -1,
+    .Size       =   0
 };
 
 /*******************************************************************************
@@ -34,13 +44,14 @@ Bool_Type CircularQueue_Create(uint8 Capacity)
         s_QueueState = CIRCULAR_QUEUE_INIT;
         s_CircularQueue.QueueArr = (uint32 *)malloc(sizeof(uint32)*Capacity);
     }
-    /* Reset all data in Queue and Reset Queue State */
-    for (count = 0; count < Capacity; count++)
-    {
-        s_CircularQueue.QueueArr[count] = 0;
-    }
+    
     if ( s_CircularQueue.QueueArr != NULL_PTR )
     {
+        /* Reset all data in Queue and Reset Queue State */
+        for (count = 0; count < Capacity; count++)
+        {
+            s_CircularQueue.QueueArr[count] = 0;
+        }
         s_CircularQueue.Capacity    = Capacity;
         s_CircularQueue.Front       = -1;
         s_CircularQueue.Rear        = -1;
