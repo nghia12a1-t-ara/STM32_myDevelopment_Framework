@@ -1,4 +1,4 @@
-/* Priority s_PriorityQueue implementation in C */
+/* Priority s_Queue implementation in C */
 #include "PriorityQueue.h"
 #include <stdlib.h>
 
@@ -9,6 +9,19 @@
 /*******************************************************************************
 * Typedef (Struct, Union, Enum)
 ******************************************************************************/
+#define QUEUE_BACK_INDEX(idx)			((idx==0U)?(s_Queue.Capacity-1):(idx-1))
+#define QUEUE_NEXT_INDEX(idx)			((idx+1)%s_Queue.Capacity)
+
+typedef enum
+{
+	QUEUE_NOT_PUSH  	= 0U,
+	QUEUE_SHIFT_REAR	= 1U,
+	QUEUE_SHIFT_FRONT	= 2U,
+	QUEUE_ADD_FRONT 	= 3U,
+	QUEUE_ADD_HIGHEST	= 4U,
+	QUEUE_ADD_REAR		= 5U
+} CheckShift_t;
+
 typedef struct
 {
     uint32  TaskID;
@@ -27,13 +40,21 @@ typedef struct {
 ******************************************************************************/
 static PriorityQueue_State s_QueueState = PRIORITY_QUEUE_UNINIT;
 
-static PriorityQueue_Types s_PriorityQueue = {
+static PriorityQueue_Types s_Queue = {
     .QueueArr   =   NULL_PTR,
     .Capacity   =   0,
     .Front      =   -1,
     .Rear       =   -1,
     .Size       =   0
 };
+/*******************************************************************************
+                    *********** PRIVATE API ***********
+******************************************************************************/
+/* Check shift right or left all the elements from an index */
+static void Queue_Shift2Rear(uint8 inputIdx, Bool_Type bShiftRear);
+static void Queue_Shift2Front(uint8 inputIdx, Bool_Type bShiftFront);
+/* Find the Exactly Position, Start by Rear Position, idx = 0 */
+static CheckShift_t Queue_FindPosition(uint8 *pPosition, uint8 Priority, Bool_Type bNotFull);
 
 /*******************************************************************************
                     *********** PUBLIC API ***********
@@ -51,21 +72,21 @@ Bool_Type PriorityQueue_Create(uint8 Capacity)
     Bool_Type retval = FALSE;
     if ( PRIORITY_QUEUE_UNINIT == s_QueueState )
     {
-        s_PriorityQueue.QueueArr = (Task_t *)malloc(sizeof(Task_t)*Capacity);
+        s_Queue.QueueArr = (Task_t *)malloc(sizeof(Task_t)*Capacity);
     }
 
-    if ( NULL_PTR != s_PriorityQueue.QueueArr )
+    if ( NULL_PTR != s_Queue.QueueArr )
     {
         /* Reset all data in Queue and Reset Queue State */
         for (count = 0; count < Capacity; count++)
         {
-            s_PriorityQueue.QueueArr[count].TaskID   = 0U;
-            s_PriorityQueue.QueueArr[count].Priority = 0U;
+            s_Queue.QueueArr[count].TaskID   = 0U;
+            s_Queue.QueueArr[count].Priority = 0U;
         }
-        s_PriorityQueue.Capacity    =   Capacity;
-        s_PriorityQueue.Front       =   -1;
-        s_PriorityQueue.Rear        =   -1;
-        s_PriorityQueue.Size        =   0;
+        s_Queue.Capacity    =   Capacity;
+        s_Queue.Front       =   -1;
+        s_Queue.Rear        =   -1;
+        s_Queue.Size        =   0;
         s_QueueState                =   PRIORITY_QUEUE_INIT;
         retval                      =   TRUE;
     }
@@ -81,24 +102,35 @@ Bool_Type PriorityQueue_Create(uint8 Capacity)
  */
 Bool_Type PriorityQueue_PushData(uint32 TaskID, uint32 Priority)
 {
-    Bool_Type   Key             = FALSE;
-    uint8       checkPosition   = s_PriorityQueue.Rear;
-    uint8       shift_idx, idx, shiftPosition, nextPosition, pos;
+    Bool_Type   RetVal = FALSE, Key = FALSE;
+    Bool_Type   bShift          = TRUE;
+	uint8       checkPosition   = s_Queue.Rear;
+    uint8       Position;
+    CheckShift_t status;
     
-	if ( FALSE == PriorityQueue_IsFull() )
+	if ( PriorityQueue_IsEmpty() )
 	{
-		if (s_PriorityQueue.Front == -1) 
-		{
-			s_PriorityQueue.Front = 0;
-		}
-		s_PriorityQueue.Rear = (s_PriorityQueue.Rear + 1) % s_PriorityQueue.Capacity;
-        s_PriorityQueue.Size++;
-        Key = TRUE;         /* Need Re-Sorting */
+		s_Queue.Front 	= 0;
+		s_Queue.Rear	= 0;
+		s_Queue.Size++;
+		s_Queue.QueueArr[0].TaskID 	= TaskID;
+		s_Queue.QueueArr[0].Priority = Priority;
+		RetVal = TRUE;
 	}
-    else if ( Priority > s_PriorityQueue.QueueArr[s_PriorityQueue.Rear].Priority )    /* Queue is Full, check the Priority */
+	else if ( FALSE == PriorityQueue_IsFull() )
+	{
+		if (s_Queue.Front == -1) 
+		{
+			s_Queue.Front = 0;
+		}
+        Key = TRUE;         	/* Need Re-Sorting */
+		s_Queue.Size++;
+	}
+    else if ( Priority > s_Queue.QueueArr[s_Queue.Rear].Priority )    /* Queue is Full, check the Priority */
     {
-        /* Keep the Size */
-        Key = TRUE;         /* Need Re-Sorting */
+        /* If the Input Priority > the lowest Priority -> Keep the Size */
+        bShift 	= FALSE;
+        Key 	= TRUE;         /* Need Re-Sorting */
     }
     else
     {
@@ -107,50 +139,41 @@ Bool_Type PriorityQueue_PushData(uint32 TaskID, uint32 Priority)
     
     /* Re-Sorting the Task with new Priority if Task is Valid */
     if ( TRUE == Key )
-    {
-        checkPosition = s_PriorityQueue.Rear;
+    {	
+		/* Find the Exactly Position, Start by Rear Position, idx = 0 */
+        status = Queue_FindPosition(&Position, Priority, bShift);
         
-        /* Find the Exactly Position, Start by Rear Position, idx = 0 */
-        for (idx = 1U; idx < s_PriorityQueue.Size && s_PriorityQueue.Size > 1U; idx++)
+    	/* Optimize the Speed -> shift to Left or Right when compare the Priority with Center Elements */
+        switch ( status )
         {
-            if ( Priority <= s_PriorityQueue.QueueArr[checkPosition-1].Priority || checkPosition == s_PriorityQueue.Front )
-            {
-                break;
-            }
-        	if ( 0U == checkPosition )
-        	{
-        		checkPosition = s_PriorityQueue.Capacity - 1;
-			}
-			else
-			{
-				checkPosition--;
-			}
-        }
-        
-        /* Shift all the Data with Lower Priority TaskID */
-        for (shift_idx = 0U; shift_idx < idx-1 && s_PriorityQueue.Size > 1; shift_idx++)
-        {
-        	if ( 0U == s_PriorityQueue.Rear )
-        	{
-        		shiftPosition = s_PriorityQueue.Capacity - 1;
-			}
-			else
-			{
-				shiftPosition = s_PriorityQueue.Rear - shift_idx - 1;
-			}
-            nextPosition  = (shiftPosition + 1) % s_PriorityQueue.Capacity;
-            
-            /* Shift Data to next Position */
-            s_PriorityQueue.QueueArr[nextPosition].TaskID   = s_PriorityQueue.QueueArr[shiftPosition].TaskID;
-            s_PriorityQueue.QueueArr[nextPosition].Priority = s_PriorityQueue.QueueArr[shiftPosition].Priority;
-        }
-        
-        /* Update the Pushed Data */
-        s_PriorityQueue.QueueArr[checkPosition].TaskID   = TaskID;
-        s_PriorityQueue.QueueArr[checkPosition].Priority = Priority;
-    }
-    
-    return Key;
+        	case QUEUE_SHIFT_REAR:
+	        	Queue_Shift2Rear(Position, bShift);
+			case QUEUE_ADD_REAR:
+	        	s_Queue.Rear 	= QUEUE_NEXT_INDEX(s_Queue.Rear);
+	        	break;
+			case QUEUE_SHIFT_FRONT:
+	        	Queue_Shift2Front(Position, bShift);
+	        case QUEUE_ADD_FRONT:
+	        	s_Queue.Front 	= QUEUE_BACK_INDEX(s_Queue.Front);
+	        	if( TRUE == bShift )
+	        	break;
+	        case QUEUE_ADD_HIGHEST:
+				s_Queue.Front 	= Position;
+				s_Queue.Rear 	= QUEUE_BACK_INDEX(Position);
+				break;
+	        case QUEUE_NOT_PUSH:
+	        	break;
+		}
+		
+		/* Assign to Position Data */
+		if( QUEUE_NOT_PUSH != status )
+		{
+			s_Queue.QueueArr[Position].TaskID 	= TaskID;
+			s_Queue.QueueArr[Position].Priority = Priority;
+			RetVal = TRUE;
+		}
+	}
+    return RetVal;
 }
 
 /**
@@ -167,20 +190,19 @@ Bool_Type PriorityQueue_PopData(uint32 *pTaskID, uint8 *pPrio)
 
 	if ( FALSE == PriorityQueue_IsEmpty() )
 	{
-		*pTaskID = s_PriorityQueue.QueueArr[s_PriorityQueue.Front].TaskID;
-		*pPrio   = s_PriorityQueue.QueueArr[s_PriorityQueue.Front].Priority;
-		if ( s_PriorityQueue.Front == s_PriorityQueue.Rear )
+		*pTaskID = s_Queue.QueueArr[s_Queue.Front].TaskID;
+		*pPrio   = s_Queue.QueueArr[s_Queue.Front].Priority;
+		if ( s_Queue.Front == s_Queue.Rear )
 		{
-			s_PriorityQueue.Front = -1;
-			s_PriorityQueue.Rear  = -1;
+			s_Queue.Front = -1;
+			s_Queue.Rear  = -1;
 		}
-		/* Q has only one PeekData, so we reset the
-		 * s_PriorityQueue after dequeing it. ? */
+		/* Q has only one PeekData, so we reset the s_Queue after dequeing it. ? */
 		else
 		{
-            s_PriorityQueue.Front = (s_PriorityQueue.Front + 1) % s_PriorityQueue.Capacity;
+            s_Queue.Front = QUEUE_NEXT_INDEX(s_Queue.Front);
 		}
-        s_PriorityQueue.Size--;
+        s_Queue.Size--;
         status = TRUE;
 	}
     else
@@ -202,8 +224,8 @@ Bool_Type PriorityQueue_PopData(uint32 *pTaskID, uint8 *pPrio)
 Bool_Type PriorityQueue_IsFull(void)
 {
 	Bool_Type Key = FALSE;
-	if ( (s_PriorityQueue.Front == s_PriorityQueue.Rear + 1) || \
-         ((s_PriorityQueue.Front == 0) && (s_PriorityQueue.Rear == s_PriorityQueue.Capacity - 1))
+	if ( (s_Queue.Front == s_Queue.Rear + 1) || \
+         ((s_Queue.Front == 0) && (s_Queue.Rear == s_Queue.Capacity - 1))
     ) 
 	{
 		Key = TRUE;
@@ -224,7 +246,7 @@ Bool_Type PriorityQueue_IsFull(void)
 Bool_Type PriorityQueue_IsEmpty(void)
 {
 	Bool_Type Key = FALSE;
-	if ( PRIORITY_QUEUE_EMPTY == s_PriorityQueue.Size )
+	if ( PRIORITY_QUEUE_EMPTY == s_Queue.Size )
 	{
 		Key = TRUE;
     #ifdef C_Priority_QUEUE_TEST
@@ -232,6 +254,113 @@ Bool_Type PriorityQueue_IsEmpty(void)
     #endif
 	}
 	return Key;  
+}
+
+/* Check shift right or left all the elements from an index */
+static void Queue_Shift2Rear(uint8 inputIdx, Bool_Type bShiftRear)
+{
+	uint8 idx = s_Queue.Rear;
+	uint8 nextPosition;
+	
+	/* NOT Shift the Rear Element */
+	if ( FALSE == bShiftRear )
+	{
+		s_Queue.Front = QUEUE_NEXT_INDEX(s_Queue.Front);
+	}
+	
+	/* Shift all element from Rear or Back of Rear to inputIdx */
+	do
+	{
+		nextPosition = QUEUE_NEXT_INDEX(idx);
+		s_Queue.QueueArr[nextPosition] = s_Queue.QueueArr[idx];
+		idx = QUEUE_BACK_INDEX(idx);		/* Update index */
+	} while( nextPosition != inputIdx );
+}
+static void Queue_Shift2Front(uint8 inputIdx, Bool_Type bShiftFront)
+{
+	uint8 idx = s_Queue.Front;
+	uint8 nextPosition;
+	
+	if( FALSE == bShiftFront )
+	{
+		s_Queue.Rear = QUEUE_BACK_INDEX(s_Queue.Rear);
+	}
+	
+	/* Shift all element from Front or Next of Front to inputIdx */
+	do
+	{
+		nextPosition = QUEUE_BACK_INDEX(idx);
+		s_Queue.QueueArr[nextPosition] = s_Queue.QueueArr[idx];
+		idx = QUEUE_NEXT_INDEX(idx);		/* Update index */
+	} while( nextPosition != inputIdx );
+}
+
+/* Find the Exactly Position, Start by Rear Position, idx = 0 */
+static CheckShift_t Queue_FindPosition(uint8 *pPosition, uint8 Priority, Bool_Type bNotFull)
+{
+	uint8 Position = s_Queue.Rear, Count2Rear = 0U;
+	CheckShift_t status;
+	
+	if( Priority > s_Queue.QueueArr[s_Queue.Front].Priority )
+	{
+		/* Need push the highest Priority */
+		if( FALSE == bNotFull )
+		{
+			/* Queue is Full - New Ele will replace the lowest Priority and Update Params */
+			status 			= QUEUE_ADD_HIGHEST;
+			Position 		= s_Queue.Rear;		/* Lowest Priority */
+		}
+		else
+		{
+			/* Queue is Not Full */
+			status 	 = QUEUE_ADD_FRONT;
+			Position = QUEUE_BACK_INDEX(s_Queue.Front);
+		}
+	}
+	else if ( Priority <= s_Queue.QueueArr[s_Queue.Rear].Priority )
+	{
+		if( FALSE == bNotFull )
+		{
+			/* Queue is Full and Can not push */
+			status = QUEUE_NOT_PUSH;
+		}
+		else
+		{
+			/* Queue is Not Full */
+			status 	 = QUEUE_ADD_REAR;
+			Position = QUEUE_NEXT_INDEX(s_Queue.Rear);
+		}
+	}
+	else	/* Scanf Position from Rear to Position */
+	{
+	    while( TRUE )
+	    {
+			if( Priority <= s_Queue.QueueArr[QUEUE_BACK_INDEX(Position)].Priority )
+	    	{
+	    		break;
+			}
+			else
+			{
+				Position = QUEUE_BACK_INDEX(Position);
+				Count2Rear++;
+			}
+	    }
+	    
+	    /* Check if Position is near by Rear or Front than other */
+	    if ( Count2Rear < (s_Queue.Size >> 1) )
+	    {
+	    	status = QUEUE_SHIFT_REAR;
+		}
+		else
+		{
+			status = QUEUE_SHIFT_FRONT;
+			Position = QUEUE_BACK_INDEX(Position);
+		}
+	}
+	
+	*pPosition = Position;
+	
+    return status;
 }
 
 #ifdef PRIORITY_QUEUE_TEST
@@ -245,22 +374,22 @@ void PriorityQueue_Print(void)
     }
     
     printf("> Current Priority Queue: ");
-    if ( s_PriorityQueue.Front <= s_PriorityQueue.Rear )
+    if ( s_Queue.Front <= s_Queue.Rear )
     {
-        for (count = s_PriorityQueue.Front; count <= s_PriorityQueue.Rear; count++)
+        for (count = s_Queue.Front; count <= s_Queue.Rear; count++)
         {
-            printf("%d ", s_PriorityQueue.QueueArr[count]);
+            printf("%d ", s_Queue.QueueArr[count]);
         }
     }
     else
     {
-        for (count = s_PriorityQueue.Front; count < s_PriorityQueue.Capacity; count++)
+        for (count = s_Queue.Front; count < s_Queue.Capacity; count++)
         {
-            printf("%d ", s_PriorityQueue.QueueArr[count]);
+            printf("%d ", s_Queue.QueueArr[count]);
         }
-        for (count = 0; count <= s_PriorityQueue.Rear; count++)
+        for (count = 0; count <= s_Queue.Rear; count++)
         {
-            printf("%d ", s_PriorityQueue.QueueArr[count]);
+            printf("%d ", s_Queue.QueueArr[count]);
         }
     }
     printf("\n");

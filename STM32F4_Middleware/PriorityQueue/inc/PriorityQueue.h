@@ -9,8 +9,7 @@
 /*******************************************************************************
 * Definitions
 ******************************************************************************/
-#define PRIORITY_QUEUE_EMPTY 				(0U)
-#define PRIORITY_QUEUE_EMPTY_PEEK_VALUE		(0xFFFFFFFFU)
+#define PRIORITY_QUEUE_EMPTY                (0U)
 
 /*** Queue State ***/
 typedef enum
