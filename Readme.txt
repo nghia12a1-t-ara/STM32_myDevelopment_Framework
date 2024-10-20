@@ -1,6 +1,6 @@
 I continuously complete makefile project (Endian_Test Project)
 I try to create a project as a common template for driver projects
-** Project have 4 main folders:   
+** Project have 4 main folders:
  - MODULE has source codes of driver modules, for examples: GPIO, FLASH, ...
  - FRAMEWORK contains fixed files, used for any projects of a microcontroller family
  - TEST contains test suites and test cases
