@@ -2,13 +2,13 @@
 	> Author: Nghĩa Taarabt
 	> Blog: https://www.laptrinhdientu.com/
 	> Youtube: https://www.youtube.com/@laptrinhdientu
-### Description
+#### Description
 	+ This project is my personal project to develop a development and testing framework for developing projects with ST microcontrollers.
 	+ Development STM32 Driver follow as AUTOSAR MCAL / Middleware / Tools
 	+ Testing Framework for MCAL Layer and Middleware, Tools for generate HTML/XML reports
 	+ Develop some microcontroller projects base on this Framework
 
-### Project Structure
+#### Project Structure
 | MODULE | source codes of driver modules, for examples: GPIO, FLASH, UART, .etc.v.. |
 | FRAMEWORK | fixed files, used for any projects of a microcontroller family |
 | TEST | test suites and test cases for MCAL Layer |
@@ -40,7 +40,7 @@
 					   |__ csv file (test report)
 ```
 
-# How to use this Framework
+## How to use this Framework
  - open Cygwin and cd to FRAMEWORK folder of project
  - export MODULE (ex: export MODULE=gpio)
  - export TEST_SUITE (ex: export TEST=gpio_TS_001)
