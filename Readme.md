@@ -9,10 +9,12 @@
 	+ Develop some microcontroller projects base on this Framework
 
 #### Project Structure
-| MODULE | source codes of driver modules, for examples: GPIO, FLASH, UART, .etc.v.. |\
-| FRAMEWORK | fixed files, used for any projects of a microcontroller family |\
-| TEST | test suites and test cases for MCAL Layer |\
-| OUTPUT | object files, binary files, test output & report |\
+| Folder  | Description |
+| ------------- |:-------------:|
+| MODULE      | source codes of driver modules, for examples: GPIO, FLASH, UART, .etc.v.. |
+| FRAMEWORK      | fixed files, used for any projects of a microcontroller family |
+| TEST      | test suites and test cases for MCAL Layer |
+| OUTPUT      | object files, binary files, test output & report |
 
 ```
 (P)_____DRIVER__________FLASH_________INC___FLASH.h
