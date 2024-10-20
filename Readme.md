@@ -1,7 +1,7 @@
 ## STM32 Development FRAMEWORK
-	> Author: Nghĩa Taarabt
-	> Blog: https://www.laptrinhdientu.com/
-	> Youtube: https://www.youtube.com/@laptrinhdientu
+	> **Author: Nghĩa Taarabt**
+	> **[Blog: Lập trình - điện tử](https://www.laptrinhdientu.com/)**
+	> **[Youtube: Lập trình - điện tử](https://www.youtube.com/@laptrinhdientu)**
 #### Description
 	+ This project is my personal project to develop a development and testing framework for developing projects with ST microcontrollers.
 	+ Development STM32 Driver follow as AUTOSAR MCAL / Middleware / Tools
