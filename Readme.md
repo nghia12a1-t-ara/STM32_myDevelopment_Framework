@@ -1,11 +1,20 @@
-I continuously complete makefile project (Endian_Test Project)
-I try to create a project as a common template for driver projects
-** Project have 4 main folders:
- - MODULE has source codes of driver modules, for examples: GPIO, FLASH, ...
- - FRAMEWORK contains fixed files, used for any projects of a microcontroller family
- - TEST contains test suites and test cases
- - OUTPUT contains object files, binary files, test output & report
+# STM32 Development FRAMEWORK
+	> Author: Nghĩa Taarabt
+	> Blog: https://www.laptrinhdientu.com/
+	> Youtube: https://www.youtube.com/@laptrinhdientu
+* Description: 
+	+ This project is my personal project to develop a development and testing framework for developing projects with ST microcontrollers.
+	+ Development STM32 Driver follow as AUTOSAR MCAL / Middleware / Tools
+	+ Testing Framework for MCAL Layer and Middleware, Tools for generate HTML/XML reports
+	+ Develop some microcontroller projects base on this Framework
 
+** Project have 4 folders:
+| MODULE | source codes of driver modules, for examples: GPIO, FLASH, UART, .etc.v.. |
+| FRAMEWORK | fixed files, used for any projects of a microcontroller family |
+| TEST | test suites and test cases for MCAL Layer |
+| OUTPUT | object files, binary files, test output & report |
+
+```
 (P)_____DRIVER__________FLASH_________INC___FLASH.h
    |	      	   |	         |____SRC___FLASH.c
    |		   |___ + <other driver modules>
@@ -29,14 +38,11 @@ I try to create a project as a common template for driver projects
     					   |__ elf/hex/bin files
                                            |__ xml file (test suite output)
 					   |__ csv file (test report)
+```
 
-Step by Step: 
+# How to use this Framework
  - open Cygwin and cd to FRAMEWORK folder of project
  - export MODULE (ex: export MODULE=gpio)
  - export TEST_SUITE (ex: export TEST=gpio_TS_001)
  - make clean; make build; make run; make export
  - make py
-
-
-  
-
