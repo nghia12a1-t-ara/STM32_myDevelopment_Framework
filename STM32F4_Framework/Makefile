@@ -94,15 +94,17 @@ vpath %.c $(SRC_DIRS)
 vpath %.h $(INC_DIRS)
 
 # Build output file -elf -hex
-build: $(OJB_FILES) $(LINKER_FILE) $(PATH_OUTPUT)
+.PHONY:build
+build: $(PATH_OUTPUT) compile
+# Rule to create the output directory
+$(PATH_OUTPUT):
+	@echo "DEBUG: PATH_OUTPUT = $(PATH_OUTPUT)"
+	@echo "DEBUG: Running mkdir -p $(PATH_OUTPUT)"
 	mkdir -p "$(PATH_OUTPUT)"
+compile: $(OJB_FILES) $(LINKER_FILE)
 	$(LD) $(LD_OPT) $(PATH_OJBS) -o $(PATH_OUTPUT)/$(PROJ_NAME).elf
 	$(COMPILER_DIR)/arm-none-eabi/bin/objcopy.exe -O ihex "$(PATH_OUTPUT)/$(PROJ_NAME).elf" "$(PATH_OUTPUT)/$(PROJ_NAME).hex"
 	size $(PATH_OUTPUT)/$(PROJ_NAME).elf
-
-# Rule to create the output directory
-$(PATH_OUTPUT):
-	mkdir -p "$(PATH_OUTPUT)"
 	
 %.o: %.c $(INC_FILES)
 	$(CC) $(CC_OPT) -c $< -o $(PATH_OUTPUT)/$@
