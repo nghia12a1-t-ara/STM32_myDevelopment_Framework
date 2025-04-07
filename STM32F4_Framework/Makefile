@@ -1,10 +1,16 @@
+
+ifeq ($(PROJECT),)
+	PROJECT		:=	TESTING
+endif
+
 # Warning with empty module
+ifneq ($(PROJECT), USER)
 ifeq ($(MODULE),)
 	$(error export MODULE before starting tests: example export MODULE=FLASH ...)
-endif	
-
+endif
 ifeq ($(TEST),)
 	$(error export TEST before starting tests: example export TEST=FLASH_TS_001 ...)
+endif
 endif
 
 # Load to FLASH or RAM - Default Load to FLASH
@@ -12,35 +18,45 @@ ifeq ($(LOAD_TO),)
     LOAD_TO=FLASH
 endif
 
-PRO_DIR := .
-PROJ_NAME := $(TEST)
-DRIVER_DIR := $(PRO_DIR)/../STM32F4_Drivers
-DRV_TEST_DIR := $(PRO_DIR)/../STM32F4_Driver_Testing
-STARTUP_DIR := $(PRO_DIR)/startup
-PYTHON_DIR := $(PRO_DIR)/testing/python
-DEBUGGER_DIR := $(PRO_DIR)/../Debugger
+ifeq ($(PROJECT), USER)
+	# PROJECT_DIR	:= 
+	# FRAMEWORK_DIR	:=	
+	PATH_OUTPUT		:=	$(PROJECT_DIR)/output
+else
+	PROJECT			:=	TESTING
+	FRAMEWORK_DIR 	:=	.
+	PROJ_NAME 		:=	$(TEST)
+	DRV_TEST_DIR 	:=	$(FRAMEWORK_DIR)/../STM32F4_Driver_Testing
+	PATH_OUTPUT 	 =	$(DRV_TEST_DIR)/output
+	include $(DRV_TEST_DIR)/test_$(MODULE)/make/$(TEST)
+endif
 
-include $(PRO_DIR)/User_Config.mak
-include $(DRV_TEST_DIR)/test_$(MODULE)/make/$(TEST)
+# General Path on Framework
+DRIVER_DIR 		:=	$(FRAMEWORK_DIR)/../STM32F4_Drivers
+STARTUP_DIR 	:=	$(FRAMEWORK_DIR)/startup
+SCRIPT_DIR 		:=	$(FRAMEWORK_DIR)/testing/python
+DEBUGGER_DIR 	:=	$(FRAMEWORK_DIR)/../Debugger
+include $(FRAMEWORK_DIR)/User_Config.mak
 
 # Warning empty MODULE_LIST
+ifeq ($(PROJECT), TESTING)
 ifeq ($(MODULE_LIST),)
 	$(error Need add MODULE_LIST in make test)
 endif
-
 # include make and source test suite
 SRC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_suite/src
 SRC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_case/src
 INC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_suite/inc
 INC_DIRS += $(DRV_TEST_DIR)/test_$(MODULE)/$(TEST)/test_case/inc
+endif
+
+# Startup Directory
 SRC_DIRS += $(STARTUP_DIR)
 INC_DIRS += $(STARTUP_DIR)
 
-PATH_OUTPUT = $(DRV_TEST_DIR)/output
-
 # Testing source framework
-INC_DIRS += $(PRO_DIR)/testing/TestCUnit/inc
-SRC_DIRS += $(PRO_DIR)/testing/TestCUnit/src
+INC_DIRS += $(FRAMEWORK_DIR)/testing/TestCUnit/inc
+SRC_DIRS += $(FRAMEWORK_DIR)/testing/TestCUnit/src
 
 ############### Add source/header file to build ###############
 find_files_inc = $(DRIVER_DIR)/$(MODULES)/inc
@@ -58,7 +74,7 @@ SRC_DIRS += $(GEN_SRC_DIRS)
 
 SRC_FILES := $(foreach SRC_DIRS, $(SRC_DIRS),$(wildcard $(SRC_DIRS)/*))
 INC_FILES := $(foreach INC_DIRS, $(INC_DIRS),$(wildcard $(INC_DIRS)/*))
-LINKER_FILE := $(PRO_DIR)/linker/stm32f4xx_linker_$(LOAD_TO).ld
+LINKER_FILE := $(FRAMEWORK_DIR)/linker/stm32f4xx_linker_$(LOAD_TO).ld
 
 # Compiler and linker flags
 CC := $(COMPILER_DIR)/bin/arm-none-eabi-gcc
@@ -78,10 +94,15 @@ vpath %.c $(SRC_DIRS)
 vpath %.h $(INC_DIRS)
 
 # Build output file -elf -hex
-build: $(OJB_FILES) $(LINKER_FILE)
+build: $(OJB_FILES) $(LINKER_FILE) $(PATH_OUTPUT)
+	mkdir -p "$(PATH_OUTPUT)"
 	$(LD) $(LD_OPT) $(PATH_OJBS) -o $(PATH_OUTPUT)/$(PROJ_NAME).elf
 	$(COMPILER_DIR)/arm-none-eabi/bin/objcopy.exe -O ihex "$(PATH_OUTPUT)/$(PROJ_NAME).elf" "$(PATH_OUTPUT)/$(PROJ_NAME).hex"
 	size $(PATH_OUTPUT)/$(PROJ_NAME).elf
+
+# Rule to create the output directory
+$(PATH_OUTPUT):
+	mkdir -p "$(PATH_OUTPUT)"
 	
 %.o: %.c $(INC_FILES)
 	$(CC) $(CC_OPT) -c $< -o $(PATH_OUTPUT)/$@
@@ -98,28 +119,28 @@ run:
 	rm -fr $(PATH_OUTPUT)/$(TEST).xml
 	rm -fr $(PATH_OUTPUT)/result.log
     
-	$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -ME
-	$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -p "$(PATH_OUTPUT)/$(PROJ_NAME).hex" 0x08000000
-	$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -rst
+	$(FRAMEWORK_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -ME
+	$(FRAMEWORK_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -p "$(PATH_OUTPUT)/$(PROJ_NAME).hex" 0x08000000
+	$(FRAMEWORK_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -rst
 	
 	# read data from <TEST> address to check test case -> export result to log file
-	@$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -r32 0x20000000 4 | grep -i 00000000 > $(PATH_OUTPUT)/result.log
+	@$(FRAMEWORK_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -r32 0x20000000 4 | grep -i 00000000 > $(PATH_OUTPUT)/result.log
 	
 # Export report
 .PHONY:report
 report:
 	if [[ -s $(PATH_OUTPUT)/result.log ]]; then \
 		echo "Test $(TEST) is PASSED "; \
-		cp $(PRO_DIR)/testing/Report_Template/Pass/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
+		cp $(FRAMEWORK_DIR)/testing/Report_Template/Pass/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_NAME/$(TEST)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 	else \
 		echo "Test $(TEST) is FAILED "; \
-		cp $(PRO_DIR)/testing/Report_Template/Fail/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
+		cp $(FRAMEWORK_DIR)/testing/Report_Template/Fail/Template.xml $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_NAME/$(TEST)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 		sed -i 's/TEST_DISCRIPTION/$(TEST_DETAILS)/g' $(PATH_OUTPUT)/$(TEST).xml; \
 	fi
-	@$(PRO_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -rst
+	@$(FRAMEWORK_DIR)/debug/ST-LINKUtility/ST-LINK_CLI.exe -rst
     
 # .PHONY:debug
 # debug:
@@ -133,5 +154,5 @@ info:
 print-%:
 	@echo $($(subst print-,,$@))
 
-py: $(PYTHON_DIR)/xmldata.py
+py: $(SCRIPT_DIR)/xmldata.py
 	python $<

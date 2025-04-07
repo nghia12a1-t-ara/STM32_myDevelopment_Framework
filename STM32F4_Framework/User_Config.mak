@@ -1,2 +1,2 @@
-COMPILER_DIR    := C:/GNU_Toolchain/GCC_NEW
+COMPILER_DIR    := C:/ARM_GCC_TOOLCHAIN
 CYGWIN_DIR      := C:/cygwin64
