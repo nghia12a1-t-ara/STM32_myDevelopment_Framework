@@ -4,6 +4,26 @@
 #include "GPIO_Base.h"
 
 /**
+ * GPIO Error Codes
+ */
+typedef enum 
+{
+	GPIO_OK							= 0x00u,
+	GPIO_ERROR_INVALID_INSTANCE		= 0x01u,
+	GPIO_ERROR_INVALID_PIN			= 0x02u,
+	GPIO_ERROR_INVALID_CONFIG		= 0x03u,
+	GPIO_ERROR_NULL_POINTER			= 0x04u,
+	GPIO_ERROR_EXTI_CONFIG			= 0x05u,
+} GPIO_ErrorType;
+
+/**
+ * GPIO Constants
+ */
+#define GPIO_MAX_PIN_NUMBER			15u
+#define GPIO_PORT_MASK				0xFFFFu
+#define GPIO_BSRR_RESET_OFFSET		16u
+
+/**
  * GPIO ALternate Functions for STM32F401
  */
 typedef enum 

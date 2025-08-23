@@ -13,6 +13,16 @@
 #include "GPIO_Type.h"
 #include "CLOCK.h"
 
+#define RCC_AHB1ENR_GPIOAEN_Pos		0u
+#define RCC_AHB1ENR_GPIOBEN_Pos		1u
+#define RCC_AHB1ENR_GPIOCEN_Pos		2u
+#define RCC_AHB1ENR_GPIODEN_Pos		3u
+#define RCC_AHB1ENR_GPIOEEN_Pos		4u
+#define RCC_AHB1ENR_GPIOHEN_Pos		7u
+
+#define GPIO_BSRR_RESET_OFFSET		16u
+#define GPIO_PORT_MASK				0xFFFFu
+
 /*
  * @func	GPIO_PeriClockControl
  * @brief	Enable/Disable Peripheral GPIO Clock
@@ -26,32 +36,55 @@ __STATIC_INLINE void GPIO_PeriClockControl(GPIO_Type *pGPIOx, uint8 EnorDi)
 	{
 		if (pGPIOx == GPIOA)
 		{
-			RCC->AHB1ENR |= (1 << 0);
+			RCC->AHB1ENR |= (1 << RCC_AHB1ENR_GPIOAEN_Pos);
 		}
 		else if (pGPIOx == GPIOB)
 		{
-			RCC->AHB1ENR |= (1 << 1);
+			RCC->AHB1ENR |= (1 << RCC_AHB1ENR_GPIOBEN_Pos);
 		}
 		else if (pGPIOx == GPIOC)
 		{
-			RCC->AHB1ENR |= (1 << 2);
+			RCC->AHB1ENR |= (1 << RCC_AHB1ENR_GPIOCEN_Pos);
 		}
 		else if (pGPIOx == GPIOD)
 		{
-			RCC->AHB1ENR |= (1 << 3);
+			RCC->AHB1ENR |= (1 << RCC_AHB1ENR_GPIODEN_Pos);
 		}
 		else if (pGPIOx == GPIOE)
 		{
-			RCC->AHB1ENR |= (1 << 4);
+			RCC->AHB1ENR |= (1 << RCC_AHB1ENR_GPIOEEN_Pos);
 		}
 		else if (pGPIOx == GPIOH)
 		{
-			RCC->AHB1ENR |= (1 << 7);
+			RCC->AHB1ENR |= (1 << RCC_AHB1ENR_GPIOHEN_Pos);
 		}
 	}
 	else
 	{
-		/* TODO */
+		if (pGPIOx == GPIOA)
+		{
+			RCC->AHB1ENR &= ~(1 << RCC_AHB1ENR_GPIOAEN_Pos);
+		}
+		else if (pGPIOx == GPIOB)
+		{
+			RCC->AHB1ENR &= ~(1 << RCC_AHB1ENR_GPIOBEN_Pos);
+		}
+		else if (pGPIOx == GPIOC)
+		{
+			RCC->AHB1ENR &= ~(1 << RCC_AHB1ENR_GPIOCEN_Pos);
+		}
+		else if (pGPIOx == GPIOD)
+		{
+			RCC->AHB1ENR &= ~(1 << RCC_AHB1ENR_GPIODEN_Pos);
+		}
+		else if (pGPIOx == GPIOE)
+		{
+			RCC->AHB1ENR &= ~(1 << RCC_AHB1ENR_GPIOEEN_Pos);
+		}
+		else if (pGPIOx == GPIOH)
+		{
+			RCC->AHB1ENR &= ~(1 << RCC_AHB1ENR_GPIOHEN_Pos);
+		}
 	}
 }
 
@@ -133,7 +166,7 @@ __STATIC_INLINE uint16 GPIO_ReadPort(GPIO_Type * Base)
 
 /**
  * @fn 		GPIO_WritePin
- * @brief 	GPIO Read a Pin Number
+ * @brief 	GPIO Write a Pin Number
  */
 __STATIC_INLINE void GPIO_WritePin(GPIO_Type * Base, GPIO_PinNumberType PinNum, GPIO_PinValue PinValue)
 {
@@ -146,7 +179,7 @@ __STATIC_INLINE void GPIO_WritePin(GPIO_Type * Base, GPIO_PinNumberType PinNum, 
 	/* Set PinNum again if Pin Reset */
 	if (PinValue == GPIO_PIN_RESET)
 	{
-		GPIO_BSRR_PinShift = PinNum + 16;
+		GPIO_BSRR_PinShift = PinNum + GPIO_BSRR_RESET_OFFSET;
 	}
 	Base->BSRR |= (1 << GPIO_BSRR_PinShift);
 }
@@ -157,22 +190,39 @@ __STATIC_INLINE void GPIO_WritePin(GPIO_Type * Base, GPIO_PinNumberType PinNum, 
  */
 __STATIC_INLINE void GPIO_SetPort(GPIO_Type * Base)
 {
-	Base->ODR |= 0xFFFF;
+	Base->ODR |= GPIO_PORT_MASK;
 }
 
 /**
  * @fn 		GPIO_ClearPort
- * @brief 	GPIO Set all Pins in a Port
+ * @brief 	GPIO Clear all Pins in a Port
  */
 __STATIC_INLINE void GPIO_ClearPort(GPIO_Type * Base)
 {
-	Base->ODR &= ~0xFFFF;
+	Base->ODR &= ~GPIO_PORT_MASK;
+}
+
+/*
+ * @func	GPIO_ResetPort
+ * @brief	Reset all GPIO port registers to default values
+ * @param	Base - GPIO base address
+ * @reval	none
+ */
+__STATIC_INLINE void GPIO_ResetPort(GPIO_Type *Base)
+{
+	/* Reset all configuration registers to default values */
+	Base->MODER = 0x00000000;		/* All pins as input */
+	Base->OTYPER = 0x00000000;		/* All pins push-pull */
+	Base->OSPEEDR = 0x00000000;		/* All pins low speed */
+	Base->PUPDR = 0x00000000;		/* All pins floating */
+	Base->AFR[0] = 0x00000000;		/* Clear alternate function low */
+	Base->AFR[1] = 0x00000000;		/* Clear alternate function high */
 }
 
 /**
- *******************************************************************************************
- **************************** External Interrupt Hardware Access ***************************
- *******************************************************************************************
+ ******************************************************************************************* 
+ **************************** External Interrupt Hardware Access *************************** 
+ ******************************************************************************************* 
  */
 
 /**
