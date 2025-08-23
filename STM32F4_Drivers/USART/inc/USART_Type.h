@@ -146,8 +146,11 @@ typedef enum
     USART_STATUS_RX_OVERRUN                 = 0x05U,        /**< @brief RX overrun error */
     USART_STATUS_FRAMING_ERROR              = 0x06U,        /**< @brief Frame error */
     USART_STATUS_PARITY_ERROR               = 0x07U,        /**< @brief Parity error */
-    USART_STATUS_NOISE_ERROR               	= 0x07U,        /**< @brief Noise error */
-    USART_STATUS_DMA_ERROR                  = 0x10U         /**< @brief DMA error */
+    USART_STATUS_NOISE_ERROR                = 0x08U,        /**< @brief Noise error */
+    USART_STATUS_DMA_ERROR                  = 0x10U,        /**< @brief DMA error */
+    USART_STATUS_INVALID_PARAM              = 0x11U,        /**< @brief Invalid parameter */
+    USART_STATUS_NOT_INITIALIZED            = 0x12U,        /**< @brief Driver not initialized */
+    USART_STATUS_INVALID_INSTANCE           = 0x13U         /**< @brief Invalid instance number */
 } Usart_StatusType;
 
 /**
@@ -199,5 +202,16 @@ typedef struct
 #endif
     Usart_StateRuntimeType          * StateStruct;
 } Usart_UserConfigType;
+
+#define USART_INSTANCE_COUNT                3U
+#define USART_MAX_INSTANCE                  2U
+#define USART_BAUDRATE_CALCULATION_FACTOR   25U
+#define USART_OVER8_DIVISOR                 2U
+#define USART_OVER16_DIVISOR                4U
+#define USART_FRACTION_MULTIPLIER           100U
+#define USART_FRACTION_ROUNDING             50U
+#define USART_OVER8_FRACTION_MASK           0x07U
+#define USART_OVER16_FRACTION_MASK          0x0FU
+#define USART_MANTISSA_SHIFT                4U
 
 #endif  /* !(__USART_TYPE_H__) */

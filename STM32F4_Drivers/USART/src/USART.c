@@ -20,6 +20,49 @@ static USART_Type * const Usart_Base_Pointer[USART_INSTANCE_COUNT] = USART_BASE_
 
 /*****************************************************************************************/
 /************************************ Private Functions **********************************/
+static Usart_StatusType Usart_ValidateInstance(const uint8 Instance)
+{
+    if (Instance > USART_MAX_INSTANCE)
+    {
+        return USART_STATUS_INVALID_INSTANCE;
+    }
+    
+    if (Usart_StateRuntime_Pointer[Instance] == NULL_PTR)
+    {
+        return USART_STATUS_NOT_INITIALIZED;
+    }
+    
+    return USART_STATUS_SUCCESS;
+}
+
+static Usart_StatusType Usart_ValidateParameters(const uint8 Instance, 
+                                                 const void* Buffer, 
+                                                 const uint32 Size)
+{
+    Usart_StatusType status;
+    
+    /* Validate instance */
+    status = Usart_ValidateInstance(Instance);
+    if (status != USART_STATUS_SUCCESS)
+    {
+        return status;
+    }
+    
+    /* Validate buffer pointer */
+    if (Buffer == NULL_PTR)
+    {
+        return USART_STATUS_INVALID_PARAM;
+    }
+    
+    /* Validate size */
+    if (Size == 0U)
+    {
+        return USART_STATUS_INVALID_PARAM;
+    }
+    
+    return USART_STATUS_SUCCESS;
+}
+
 static Usart_StatusType Usart_StartSendDataINT(const uint8 Instance, const uint8 *TxBuff, const uint32 TxSize);
 static Usart_StatusType Usart_StartReceiveDataINT(const uint8 Instance, uint8 * RxBuff, const uint32 RxSize);
 static void Usart_PutData(const uint8 Instance);
@@ -46,12 +89,27 @@ static Usart_StatusType Usart_StartReceiveDataINT(const uint8 Instance, uint8 * 
  * @param[in]         - Instance 	- USART Hardware Instance
  * @param[in]         - UserConfig 	- USART User Configuration
  *
- * @return            -
+ * @return            - Usart_StatusType - Status of initialization
  *
- * @Note              -
+ * @Note              - Added return status and input validation
  */
-void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
+Usart_StatusType USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 {
+    if (Instance > USART_MAX_INSTANCE)
+    {
+        return USART_STATUS_INVALID_INSTANCE;
+    }
+    
+    if (UserConfig == NULL_PTR)
+    {
+        return USART_STATUS_INVALID_PARAM;
+    }
+    
+    if (UserConfig->StateStruct == NULL_PTR)
+    {
+        return USART_STATUS_INVALID_PARAM;
+    }
+
 	USART_Type * Base = Usart_Base_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr;
 	uint8 * ClearStructPtr;
@@ -88,7 +146,11 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 	USART_SetHWFlowControl(Base, UserConfig->USART_HWFlowControl);
 	
 	/* ---------------- Setup Baud-rate for USART Instance ---------------- */
-	Usart_SetBaudRate(Instance, UserConfig->USART_Baud);
+	Usart_StatusType baudStatus = Usart_SetBaudRate(Instance, UserConfig->USART_Baud);
+	if (baudStatus != USART_STATUS_SUCCESS)
+	{
+		return baudStatus;
+	}
 	
     /* Initialize last driver operation status */
 	UartStatePtr->IsTxBusy 			= FALSE;
@@ -105,6 +167,8 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
 
 	/* ---------------- Enable USART Instance ---------------- */
 	USART_PeripheralControl(Base, ENABLE);
+	
+	return USART_STATUS_SUCCESS;
 }
 
 /*********************************************************************
@@ -119,13 +183,19 @@ void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig)
  *
  * @return            - Usart_StatusType
  *
- * @Note              -
+ * @Note              - Added input validation
  */
 Usart_StatusType Usart_SyncSendData(const uint8 Instance,
 									const uint8 *TxBuff,
 									const uint32 TxSize,
 									const uint32 Timeout)
 {
+    Usart_StatusType status = Usart_ValidateParameters(Instance, TxBuff, TxSize);
+    if (status != USART_STATUS_SUCCESS)
+    {
+        return status;
+    }
+
 	USART_Type * Base = Usart_Base_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
@@ -187,7 +257,6 @@ Usart_StatusType Usart_SyncSendData(const uint8 Instance,
     return RetVal;
 }
 
-
 /*********************************************************************
  * @fn      		  - Usart_AsyncSendData
  *
@@ -199,12 +268,18 @@ Usart_StatusType Usart_SyncSendData(const uint8 Instance,
  *
  * @return            - Usart_StatusType
  *
- * @Note              -
+ * @Note              - Added input validation
  */
 Usart_StatusType Usart_AsyncSendData(const uint8 Instance,
 									const uint8 *TxBuff,
 									const uint32 TxSize)
 {
+    Usart_StatusType status = Usart_ValidateParameters(Instance, TxBuff, TxSize);
+    if (status != USART_STATUS_SUCCESS)
+    {
+        return status;
+    }
+
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 	const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
@@ -247,13 +322,19 @@ Usart_StatusType Usart_AsyncSendData(const uint8 Instance,
  *
  * @return            - Usart_StatusType
  *
- * @Note              -
+ * @Note              - Added input validation
  */
 Usart_StatusType Usart_SyncReceiveData(const uint8 Instance,
                                        uint8 *RxBuff,
                                        const uint32 RxSize,
                                        const uint32 Timeout)
 {
+    Usart_StatusType status = Usart_ValidateParameters(Instance, RxBuff, RxSize);
+    if (status != USART_STATUS_SUCCESS)
+    {
+        return status;
+    }
+
 	USART_Type * Base = Usart_Base_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
@@ -316,7 +397,6 @@ Usart_StatusType Usart_SyncReceiveData(const uint8 Instance,
     return RetVal;
 }
 
-
 /*********************************************************************
  * @fn      		  - Usart_AsyncReceiveData
  *
@@ -328,12 +408,18 @@ Usart_StatusType Usart_SyncReceiveData(const uint8 Instance,
  *
  * @return            - Usart_StatusType
  *
- * @Note              -
+ * @Note              - Added input validation
  */
 Usart_StatusType Usart_AsyncReceiveData(const uint8 Instance,
                                         uint8 * RxBuff,
                                         const uint32 RxSize)
 {
+    Usart_StatusType status = Usart_ValidateParameters(Instance, RxBuff, RxSize);
+    if (status != USART_STATUS_SUCCESS)
+    {
+        return status;
+    }
+
 	const Usart_UserConfigType * UartUserCfg = Usart_UserConfig_Pointer[Instance];
 	Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];	
 	Usart_StatusType RetVal = USART_STATUS_SUCCESS;
@@ -373,12 +459,22 @@ Usart_StatusType Usart_AsyncReceiveData(const uint8 Instance,
  * @param[in]         - Instance - number of Hardware Instance
  * @param[in]         - BaudRate
  *
- * @return            -
+ * @return            - Usart_StatusType - Status of operation
  *
- * @Note              -
+ * @Note              - Added return status and input validation, replaced magic numbers
  */
-void Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate)
+Usart_StatusType Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate)
 {
+    if (Instance > USART_MAX_INSTANCE)
+    {
+        return USART_STATUS_INVALID_INSTANCE;
+    }
+    
+    if (BaudRate == 0U)
+    {
+        return USART_STATUS_INVALID_PARAM;
+    }
+
 	USART_Type * Base = Usart_Base_Pointer[Instance];
 	
 	/* Variable to hold the APB clock */
@@ -390,38 +486,43 @@ void Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate)
 	uint32 tempreg = 0;
 
 	PCLKx = RCC_GetClockValue(Base);
+	
+	if (PCLKx == 0U)
+	{
+		return USART_STATUS_ERROR;
+	}
 
 	/* Check for OVER8 configuration bit */
 	if ( Base->CR1 & USART_CR1_OVER8_MASK )
 	{
 		/* OVER8 = 1 , over sampling by 8 */
-		usartdiv = ((25 * PCLKx) / (2 * (uint32)BaudRate));
+		usartdiv = ((USART_BAUDRATE_CALCULATION_FACTOR * PCLKx) / (USART_OVER8_DIVISOR * (uint32)BaudRate));
 	}
 	else
 	{
 		/* Over sampling by 16 */
-		usartdiv = ((25 * PCLKx) / (4 * (uint32)BaudRate));
+		usartdiv = ((USART_BAUDRATE_CALCULATION_FACTOR * PCLKx) / (USART_OVER16_DIVISOR * (uint32)BaudRate));
 	}
 
 	/* Calculate the Mantissa part */
-	M_part = usartdiv/100;
+	M_part = usartdiv / USART_FRACTION_MULTIPLIER;
 
 	/* Place the Mantissa part in appropriate bit position . refer USART_BRR */
-	tempreg |= M_part << 4;
+	tempreg |= M_part << USART_MANTISSA_SHIFT;
 
 	/* Extract the fraction part */
-	F_part = (usartdiv - (M_part * 100));
+	F_part = (usartdiv - (M_part * USART_FRACTION_MULTIPLIER));
 
 	/* Calculate the final fractional */
 	if ( Base->CR1 & USART_CR1_OVER8_MASK )
 	{
 		/* OVER8 = 1 , over sampling by 8 */
-		F_part = ((( F_part * 8)+ 50) / 100) & ((uint8)0x07);
-
-	}else
+		F_part = (((F_part * 8) + USART_FRACTION_ROUNDING) / USART_FRACTION_MULTIPLIER) & USART_OVER8_FRACTION_MASK;
+	}
+	else
 	{
 		/* Over sampling by 16 */
-		F_part = ((( F_part * 16)+ 50) / 100) & ((uint8)0x0F);
+		F_part = (((F_part * 16) + USART_FRACTION_ROUNDING) / USART_FRACTION_MULTIPLIER) & USART_OVER16_FRACTION_MASK;
 	}
 
 	/* Place the fractional part in appropriate bit position . refer USART_BRR */
@@ -429,6 +530,8 @@ void Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate)
 
 	/* Copy the value of tempreg in to BRR register */
 	Base->BRR = tempreg;
+	
+	return USART_STATUS_SUCCESS;
 }
 
 /*******************************************************************************
@@ -442,6 +545,11 @@ void Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate)
  *****************************************************************************/
 void Usart_IrqHandler(const uint8 Instance)
 {
+    if (Instance > USART_MAX_INSTANCE)
+    {
+        return;
+    }
+
     USART_Type * Base = Usart_Base_Pointer[Instance];
 	const Usart_StateRuntimeType * UartStatePtr = Usart_StateRuntime_Pointer[Instance];	
     Bool_Type IsReturn = FALSE;
@@ -454,51 +562,50 @@ void Usart_IrqHandler(const uint8 Instance)
         /* Clear all the error flags */
         Usart_ClearErrorFlags(Base);
         /* Transmit flags can not be cleared, return to exit */
+        return;
     }
-    else
+    
+    Usart_ErrIrqHandler(Instance);
+    /* Handle receive data full interrupt */
+    if (Usart_GetStatusFlag(Base, USART_FLAG_RX_DATA_REG_FULL))
     {
-        Usart_ErrIrqHandler(Instance);
-        /* Handle receive data full interrupt */
-        if (Usart_GetStatusFlag(Base, USART_FLAG_RX_DATA_REG_FULL))
+        if (Usart_GetIntMode(Base, USART_INT_RX_DATA_REG_FULL))
         {
-            if (Usart_GetIntMode(Base, USART_INT_RX_DATA_REG_FULL))
-            {
-                Usart_RxIrqHandler(Instance);
-            }
-            /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
-            else
-            {
-                /* Read dummy to clear RDRF flag */
-                (void)Usart_Getchar(Base);
-            }
+            Usart_RxIrqHandler(Instance);
+        }
+        /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
+        else
+        {
+            /* Read dummy to clear RDRF flag */
+            (void)Usart_Getchar(Base);
+        }
+        IsReturn = TRUE;
+    }
+    /* Handle transmitter data register empty interrupt */
+    if (Usart_GetStatusFlag(Base, USART_FLAG_TX_DATA_REG_EMPTY) && (FALSE == IsReturn))
+    {
+        if (Usart_GetIntMode(Base, USART_INT_TX_DATA_REG_EMPTY))
+        {
+            Usart_TxEmptyIrqHandler(Instance);
             IsReturn = TRUE;
         }
-        /* Handle transmitter data register empty interrupt */
-        if (Usart_GetStatusFlag(Base, USART_FLAG_TX_DATA_REG_EMPTY) && (FALSE == IsReturn))
+        /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
+        else
         {
-            if (Usart_GetIntMode(Base, USART_INT_TX_DATA_REG_EMPTY))
-            {
-                Usart_TxEmptyIrqHandler(Instance);
-                IsReturn = TRUE;
-            }
-            /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
-            else
-            {
-                /* Do nothing, because TDRE can not clear without affecting to normal operation*/
-            }
+            /* Do nothing, because TDRE can not clear without affecting to normal operation*/
         }
-        /* Handle transmission complete interrupt */
-        if (Usart_GetStatusFlag(Base, USART_FLAG_TX_COMPLETE) && (FALSE == IsReturn))
+    }
+    /* Handle transmission complete interrupt */
+    if (Usart_GetStatusFlag(Base, USART_FLAG_TX_COMPLETE) && (FALSE == IsReturn))
+    {
+        if (Usart_GetIntMode(Base, USART_INT_TX_COMPLETE))
         {
-            if (Usart_GetIntMode(Base, USART_INT_TX_COMPLETE))
-            {
-                Usart_TxCompleteIrqHandler(Instance);
-            }
-            /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
-            else
-            {
-                /* Do nothing, because TC can not clear without affecting to normal operation*/
-            }
+            Usart_TxCompleteIrqHandler(Instance);
+        }
+        /* Case of spurious interrupt when the interrupt enable flag is not set and respective interrupt status flag is set */
+        else
+        {
+            /* Do nothing, because TC can not clear without affecting to normal operation*/
         }
     }
 }

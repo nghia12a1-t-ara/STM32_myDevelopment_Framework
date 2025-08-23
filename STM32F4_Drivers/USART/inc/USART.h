@@ -23,11 +23,11 @@
  * @param[in]         - Instance    - USART Hardware Instance
  * @param[in]         - UserConfig  - USART User Configuration
  *
- * @return            -
+ * @return            - Usart_StatusType - Status of initialization
  *
- * @Note              -
+ * @Note              - Added return status for better error handling
  */
-void USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig);
+Usart_StatusType USART_Init(const uint8 Instance, const Usart_UserConfigType * UserConfig);
 
 /*********************************************************************
  * @fn                - Usart_SyncSendData
@@ -102,18 +102,31 @@ Usart_StatusType Usart_AsyncReceiveData(const uint8 Instance,
                                         const uint32 RxSize);
 
 /*********************************************************************
- * @fn                - USART_SetBaudRate
+ * @fn                - Usart_SetBaudRate
  *
  * @brief             - Setting Baudrate for USART Driver
  *
  * @param[in]         - Instance - number of Hardware Instance
  * @param[in]         - BaudRate
  *
- * @return            -
+ * @return            - Usart_StatusType - Status of operation
  *
- * @Note              -
+ * @Note              - Added return status for better error handling
  */
-void Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate);
+Usart_StatusType Usart_SetBaudRate(const uint8 Instance, Usart_BaudrateType BaudRate);
+
+/*********************************************************************
+ * @fn                - Usart_ValidateInstance
+ *
+ * @brief             - Validate USART instance number
+ *
+ * @param[in]         - Instance - USART Hardware Instance
+ *
+ * @return            - Usart_StatusType - Validation result
+ *
+ * @Note              - Internal validation function
+ */
+Usart_StatusType Usart_ValidateInstance(const uint8 Instance);
 
 /*******************************************************************************
  *

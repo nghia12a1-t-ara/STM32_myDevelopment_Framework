@@ -8,7 +8,6 @@
 #ifndef _DMA_H_
 #define _DMA_H_
 
-#include "DMA_Base.h"
 #include "DMA_Type.h"
 
 /**
@@ -23,11 +22,25 @@
  * @param[in]         - Instance 	- DMA Hardware Instance
  * @param[in]         - UserConfig 	- DMA User Configuration
  *
- * @return            -
+ * @return            - DMA_StatusType - Operation status
  *
- * @Note              -
+ * @Note              - 
  */
-void DMA_Init(const uint8 Instance, const Dma_UserConfigType * UserConfig);
+DMA_StatusType DMA_Init(DMA_InstanceType Instance, const DMA_UserConfigType * UserConfig);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_DeInit
+ *
+ * @brief             - Deinitialize DMA Driver
+ *
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ *
+ * @return            - DMA_StatusType - Operation status
+ *
+ * @Note              - 
+ */
+DMA_StatusType DMA_DeInit(DMA_InstanceType Instance);
 
 /*****************************************************************************************/
 /*********************************************************************
@@ -35,13 +48,57 @@ void DMA_Init(const uint8 Instance, const Dma_UserConfigType * UserConfig);
  *
  * @brief             - Configure Source/Destination to transfer
  *
- * @param[in]         - UserTransferConfig 	- DMA Hardware Instance
+ * @param[in]         - UserTransferConfig 	- DMA Transfer Configuration
  *
- * @return            -
+ * @return            - DMA_StatusType - Operation status
  *
- * @Note              -
+ * @Note              - 
  */
-void DMA_TransferConfig(const Dma_UserTransferType * UserTransferConfig);
+DMA_StatusType DMA_TransferConfig(const DMA_UserTransferType * UserTransferConfig);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_SyncStartTransfer
+ *
+ * @brief             - Start DMA Transfer Synchronously
+ *
+ * @param[in]         - UserTransferConfig 	- DMA Transfer Configuration
+ * @param[in]         - Timeout 			- Timeout for transfer completion
+ * 
+ * @return            - DMA_StatusType - DMA Transfer Status
+ *
+ * @Note              - 
+ */
+DMA_StatusType DMA_SyncStartTransfer(const DMA_UserTransferType * UserTransferConfig, uint32_t Timeout);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_AsyncStartTransfer
+ *
+ * @brief             - Configure Parameters and Start DMA Transfer Asynchronously (Interrupt Method)
+ *
+ * @param[in]         - UserTransferConfig 	- DMA Transfer Configuration
+ * 
+ * @return            - DMA_StatusType - DMA Transfer Status
+ *
+ * @Note              - 
+ */
+DMA_StatusType DMA_AsyncStartTransfer(const DMA_UserTransferType * UserTransferConfig);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_Stop
+ *
+ * @brief             - Stop DMA Transfer
+ *
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ * @param[in]         - Stream    - DMA Stream
+ *
+ * @return            - DMA_StatusType - Operation status
+ *
+ * @Note              - 
+ */
+DMA_StatusType DMA_Stop(DMA_InstanceType Instance, DMA_StreamType Stream);
 
 /*****************************************************************************************/
 /*********************************************************************
@@ -50,60 +107,107 @@ void DMA_TransferConfig(const Dma_UserTransferType * UserTransferConfig);
  * @brief             - Get Status Flag from interrupt status registers
  *
  * @param[in]         - Instance 	- DMA Hardware Instance
- * @param[in]         - Streamx 	- DMA Hardware Stream
+ * @param[in]         - Stream 	- DMA Hardware Stream
  *
- * @return            -
+ * @return            - uint32_t - Status flags
  *
- * @Note              -
+ * @Note              - 
  */
-uint8 DMA_GetStatusFlag(const uint8 Instance, Dma_StreamType Stream);
+uint32_t DMA_GetStatusFlag(DMA_InstanceType Instance, DMA_StreamType Stream);
 
 /*****************************************************************************************/
 /*********************************************************************
  * @fn      		  - DMA_CheckStatusFlag
  *
- * @brief             - Get Status Flag from interrupt status registers
+ * @brief             - Check specific Status Flag from interrupt status registers
  *
  * @param[in]         - Instance 	- DMA Hardware Instance
- * @param[in]         - Streamx 	- DMA Hardware Stream
+ * @param[in]         - Stream 	- DMA Hardware Stream
+ * @param[in]         - FlagType  - Flag type to check
  *
- * @return            -
+ * @return            - uint8_t - Flag status (0 or 1)
  *
- * @Note              -
+ * @Note              - 
  */
-Bool_Type DMA_CheckStatusFlag(const uint8 Instance, Dma_StreamType Stream, DMA_StatusFlagType FlagType);
+uint8_t DMA_CheckStatusFlag(DMA_InstanceType Instance, DMA_StreamType Stream, DMA_StatusFlagType FlagType);
 
 /*****************************************************************************************/
 /*********************************************************************
- * @fn      		  - DMA_SyncStartTransfer
+ * @fn      		  - DMA_ClearFlags
  *
- * @brief             - Get Status Flag from interrupt status registers
+ * @brief             - Clear DMA Status Flags
  *
- * @param[in]         - UserTransferConfig 	- DMA Hardware Instance
- * @param[in]         - Timeout 			- Timeout if data cannot transmit
- * 
- * @param[out]        - Dma_StatusType 		- Dma Transfer Status (SUCCESS or TIMEOUT)
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ * @param[in]         - Stream    - DMA Stream
+ * @param[in]         - FlagType  - Flag type to clear
  *
- * @return            -
+ * @return            - DMA_StatusType - Operation status
  *
- * @Note              -
+ * @Note              - 
  */
-Dma_StatusType DMA_SyncStartTransfer(const Dma_UserTransferType * UserTransferConfig, const uint32 Timeout);
+DMA_StatusType DMA_ClearFlags(DMA_InstanceType Instance, DMA_StreamType Stream, DMA_StatusFlagType FlagType);
 
 /*****************************************************************************************/
 /*********************************************************************
- * @fn      		  - DMA_AsyncStartTransfer
+ * @fn      		  - DMA_GetTransferCount
  *
- * @brief             - Configure Param and Start Transfer (Interrupt Method)
+ * @brief             - Get Remaining Transfer Count
  *
- * @param[in]         - UserTransferConfig 	- DMA Hardware Instance
- * 
- * @param[out]        - Dma_StatusType 		- Dma Transfer Status (SUCCESS or TIMEOUT)
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ * @param[in]         - Stream    - DMA Stream
  *
- * @return            -
+ * @return            - uint16_t - Remaining transfer count
  *
- * @Note              -
+ * @Note              - 
  */
-Dma_StatusType DMA_AsyncStartTransfer(const Dma_UserTransferType * UserTransferConfig);
+uint16_t DMA_GetTransferCount(DMA_InstanceType Instance, DMA_StreamType Stream);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_EnableInterrupt
+ *
+ * @brief             - Enable DMA Stream Interrupt
+ *
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ * @param[in]         - Stream    - DMA Stream
+ * @param[in]         - InterruptType - Type of interrupt to enable
+ *
+ * @return            - DMA_StatusType - Operation status
+ *
+ * @Note              - 
+ */
+DMA_StatusType DMA_EnableInterrupt(DMA_InstanceType Instance, DMA_StreamType Stream, DMA_InterruptType InterruptType);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_DisableInterrupt
+ *
+ * @brief             - Disable DMA Stream Interrupt
+ *
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ * @param[in]         - Stream    - DMA Stream
+ * @param[in]         - InterruptType - Type of interrupt to disable
+ *
+ * @return            - DMA_StatusType - Operation status
+ *
+ * @Note              - 
+ */
+DMA_StatusType DMA_DisableInterrupt(DMA_InstanceType Instance, DMA_StreamType Stream, DMA_InterruptType InterruptType);
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - DMA_RegisterCallback
+ *
+ * @brief             - Register callback function for DMA events
+ *
+ * @param[in]         - Instance 	- DMA Hardware Instance
+ * @param[in]         - Stream    - DMA Stream
+ * @param[in]         - Callback  - Callback function pointer
+ *
+ * @return            - DMA_StatusType - Operation status
+ *
+ * @Note              - 
+ */
+DMA_StatusType DMA_RegisterCallback(DMA_InstanceType Instance, DMA_StreamType Stream, DMA_CallbackType Callback);
 
 #endif	/* !(_DMA_H_) */

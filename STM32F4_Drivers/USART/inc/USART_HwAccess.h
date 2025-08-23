@@ -192,7 +192,7 @@ __STATIC_INLINE void USART_SetWordLength(USART_Type *pUSARTx, Usart_WordLenType 
 }
 
 /*********************************************************************
- * @fn                - Setting Parity for USART Instance (8 or 9)
+ * @fn                - Setting Parity for USART Instance
  *
  */
 __STATIC_INLINE void USART_SetParity(USART_Type *pUSARTx, Usart_ParityType Parity)
@@ -206,19 +206,19 @@ __STATIC_INLINE void USART_SetParity(USART_Type *pUSARTx, Usart_ParityType Parit
         /* Set enable parity by PCE bit, default even by PS = 0 */
         pUSARTx->CR1 |= USART_CR1_PCE(BIT_SET);
     }
-    else if ( Parity == USART_PARITY_EN_EVEN )
+    else if ( Parity == USART_PARITY_EN_ODD )
     {
         pUSARTx->CR1 |= USART_CR1_PCE(BIT_SET);
         pUSARTx->CR1 |= USART_CR1_PS(BIT_SET);
     }
     else
     {
-        /* TODO */
+        /* Parity disabled - do nothing */
     }
 }
 
 /*********************************************************************
- * @fn            - Setting Number of Stop Bits for USART Instance
+ * @fn                - Setting Number of Stop Bits for USART Instance
  *
  */
 __STATIC_INLINE void USART_SetStopBits(USART_Type *pUSARTx, Usart_StopBitsType StopBits)
@@ -300,13 +300,10 @@ __STATIC_INLINE void Usart_Putchar(USART_Type * pUSARTx, uint8 Data)
  */
 __STATIC_INLINE void Usart_Putchar9(USART_Type * pUSARTx, uint16 Data)
 {
-    uint8 NinthDataBit;
     volatile uint8 * DataRegBytes = (volatile uint8 *)(&(pUSARTx->DR));
-
-    NinthDataBit = (uint8)((Data >> 8U) & 0x1U);
-
-    /* write 8-bits to the data register*/
-    DataRegBytes[0] = (uint8)NinthDataBit;
+    
+    /* Write complete 9-bit data to data register */
+    pUSARTx->DR = Data & USART_9BITS_DATA_MASK;
 }
 
 /*********************************************************************
@@ -324,12 +321,7 @@ __STATIC_INLINE uint8 Usart_Getchar(const USART_Type * pUSARTx)
  */
 __STATIC_INLINE uint16 Usart_Getchar9(const USART_Type * pUSARTx)
 {
-    uint16 ReadData;
-
-    /* get ninth bit from lpuart data register - @TODO */
-    ReadData = (uint16)(((pUSARTx->DR) & 1U) << 8);
-
-    return ReadData;
+    return (uint16)(pUSARTx->DR & USART_9BITS_DATA_MASK);
 }
 
 /**
@@ -346,24 +338,6 @@ __STATIC_INLINE Bool_Type Usart_GetStatusFlag(const USART_Type * pUSARTx, Usart_
 
 
 /**
- * @brief  Clears the error flags treated by the driver
- *
- * This function clears the error flags treated by the driver.
- * *
- * @param Base USART Base pointer
- */
-static inline void Usart_ClearErrorFlags(USART_Type * pUSARTx)
-{
-    uint32 Mask = USART_SR_PE_MASK | \
-                  USART_SR_FE_MASK | \
-                  USART_SR_NE_MASK | \
-                  USART_SR_ORE_MASK;
-
-    pUSARTx->SR &= ~USART_SR_REG_FLAGS_MASK;
-    pUSARTx->SR |= Mask;
-}
-
-/**
  * @brief USART clears an individual status flag.
  *
  * This function clears an individual status flag
@@ -374,24 +348,22 @@ static inline void Usart_ClearErrorFlags(USART_Type * pUSARTx)
  */
 static inline void Usart_ClearStatusFlag(USART_Type * pUSARTx, Usart_StatusFlagType StatusFlag)
 {
-    pUSARTx->SR &= ~USART_SR_REG_FLAGS_MASK;
-
     switch(StatusFlag)
     {
         case USART_FLAG_RX_OVERRUN:
-            pUSARTx->SR |= USART_SR_ORE_MASK;
+            pUSARTx->SR &= ~USART_SR_ORE_MASK;
             break;
 
         case USART_FLAG_NOISE_DETECT:
-            pUSARTx->SR |= USART_SR_NE_MASK;
+            pUSARTx->SR &= ~USART_SR_NE_MASK;
             break;
 
         case USART_FLAG_FRAME_ERR:
-            pUSARTx->SR |= USART_SR_FE_MASK;
+            pUSARTx->SR &= ~USART_SR_FE_MASK;
             break;
 
         case USART_FLAG_PARITY_ERR:
-            pUSARTx->SR |= USART_SR_PE_MASK;
+            pUSARTx->SR &= ~USART_SR_PE_MASK;
             break;
         default:
             /* Dummy code */

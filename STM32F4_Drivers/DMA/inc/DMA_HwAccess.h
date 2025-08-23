@@ -8,213 +8,232 @@
 #ifndef __DMA_HWACCESS_H__
 #define __DMA_HWACCESS_H__
 
-#include "DMA_Base.h"
 #include "DMA_Type.h"
-#include "Systick.h"
-#include "CLOCK.h"
 
-#define DMA_FLAG_STREAM_0_SHIFT			0u
-#define DMA_FLAG_STREAM_1_SHIFT			6u
-#define DMA_FLAG_STREAM_2_SHIFT			16u
-#define DMA_FLAG_STREAM_3_SHIFT			22u
+#define DMA_FLAG_STREAM_0_SHIFT			0U
+#define DMA_FLAG_STREAM_1_SHIFT			6U
+#define DMA_FLAG_STREAM_2_SHIFT			16U
+#define DMA_FLAG_STREAM_3_SHIFT			22U
 
-#define DMA_FLAG_STREAM_0_MASK			0x3Du
-#define DMA_FLAG_STREAM_1_MASK			0xF40u
-#define DMA_FLAG_STREAM_2_MASK			0x3D0000u
-#define DMA_FLAG_STREAM_3_MASK			0xF400000u
+#define DMA_FLAG_STREAM_0_MASK			0x3DU
+#define DMA_FLAG_STREAM_1_MASK			0xF40U
+#define DMA_FLAG_STREAM_2_MASK			0x3D0000U
+#define DMA_FLAG_STREAM_3_MASK			0xF400000U
 
-#define DMA_FLAG_FIFO_ERROR_MASK				0x01u
-#define DMA_FLAG_DIRECT_MODE_ERROR_MASK			0x04u
-#define DMA_FLAG_TRANSFER_ERROR_MASK			0x08u
-#define DMA_FLAG_HALF_TRANSFER_MASK				0x10u
-#define DMA_FLAG_TRANSFER_COMPLETE_MASK			0x20u
+#define DMA_FLAG_FEIF_MASK				0x01U	/**< FIFO Error Interrupt Flag */
+#define DMA_FLAG_DMEIF_MASK				0x04U	/**< Direct Mode Error Interrupt Flag */
+#define DMA_FLAG_TEIF_MASK				0x08U	/**< Transfer Error Interrupt Flag */
+#define DMA_FLAG_HTIF_MASK				0x10U	/**< Half Transfer Interrupt Flag */
+#define DMA_FLAG_TCIF_MASK				0x20U	/**< Transfer Complete Interrupt Flag */
+
+#define DMA_SxCR_EN						0x00000001U
+#define DMA_SxCR_DMEIE					0x00000002U
+#define DMA_SxCR_TEIE					0x00000004U
+#define DMA_SxCR_HTIE					0x00000008U
+#define DMA_SxCR_TCIE					0x00000010U
+#define DMA_SxCR_PFCTRL					0x00000020U
+#define DMA_SxCR_DIR_Pos				6U
+#define DMA_SxCR_DIR_Msk				0x000000C0U
+#define DMA_SxCR_CIRC					0x00000100U
+#define DMA_SxCR_PINC					0x00000200U
+#define DMA_SxCR_MINC					0x00000400U
+#define DMA_SxCR_PSIZE_Pos				11U
+#define DMA_SxCR_PSIZE_Msk				0x00001800U
+#define DMA_SxCR_MSIZE_Pos				13U
+#define DMA_SxCR_MSIZE_Msk				0x00006000U
+#define DMA_SxCR_PINCOS					0x00008000U
+#define DMA_SxCR_PL_Pos					16U
+#define DMA_SxCR_PL_Msk					0x00030000U
+#define DMA_SxCR_DBM					0x00040000U
+#define DMA_SxCR_CT						0x00080000U
+#define DMA_SxCR_PBURST_Pos				21U
+#define DMA_SxCR_PBURST_Msk				0x00600000U
+#define DMA_SxCR_MBURST_Pos				23U
+#define DMA_SxCR_MBURST_Msk				0x01800000U
+#define DMA_SxCR_CHSEL_Pos				25U
+#define DMA_SxCR_CHSEL_Msk				0x0E000000U
+
+#define DMA_SxFCR_FEIE					0x00000080U
 
 /********************************************************************************
- * 							Funtion to access hardware							*
+ * 							Function to access hardware						*
  ********************************************************************************/
 
-/*********************************************************************
- * @fn      		  - Peripheral Clock Control
- *
- */
-__STATIC_INLINE void DMA_PeriClockControl(DMA_Type *pDMAx, uint8 EnorDi)
+__STATIC_INLINE DMA_StatusType DMA_PeriClockControl(DMA_TypeDef *pDMAx, uint8_t EnorDi)
 {
+	if (pDMAx == NULL)
+	{
+		return DMA_STATUS_ERROR;
+	}
+	
 	if (EnorDi == ENABLE)
 	{
 		if (pDMAx == DMA1)
 		{
-			DMA1_PCLK_EN();
+			RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
 		}
 		else if (pDMAx == DMA2)
 		{
-			DMA2_PCLK_EN();
+			RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
 		}
 		else
 		{
-			/* Do Nothing */
+			return DMA_STATUS_INVALID_PARAM;
 		}
 	}
 	else
 	{
-		//TODO
+		if (pDMAx == DMA1)
+		{
+			RCC->AHB1ENR &= ~RCC_AHB1ENR_DMA1EN;
+		}
+		else if (pDMAx == DMA2)
+		{
+			RCC->AHB1ENR &= ~RCC_AHB1ENR_DMA2EN;
+		}
+		else
+		{
+			return DMA_STATUS_INVALID_PARAM;
+		}
 	}
+	
+	return DMA_STATUS_OK;
 }
 
-/**
- * DMA Set Transfer Direction 
- *		DMA_PERIPHERAL_TO_MEMORY
- *		DMA_MEMORY_TO_PERIPHERAL
- *		DMA_MEMORY_TO_MEMORY
- */
-__STATIC_INLINE void DMA_SetTransferDirection(DMAStream_Type * pDMAStreamx, Dma_TransferDicrectionType eDirection)
+__STATIC_INLINE void DMA_SetTransferDirection(DMA_Stream_TypeDef * pDMAStreamx, DMA_TransferDirectionType eDirection)
 {
-	pDMAStreamx->CR &= ~DMA_CR_DIR_MASK;
-	pDMAStreamx->CR |= DMA_CR_DIR(eDirection);
+	pDMAStreamx->CR &= ~DMA_SxCR_DIR_Msk;
+	pDMAStreamx->CR |= ((uint32_t)eDirection << DMA_SxCR_DIR_Pos);
 }
 
-/**
- * DMA Set Data Size to transfer
- */
-__STATIC_INLINE void DMA_SetNumberOfData(DMAStream_Type * pDMAStreamx, uint16 datasize) 
+__STATIC_INLINE void DMA_SetNumberOfData(DMA_Stream_TypeDef * pDMAStreamx, uint16_t datasize) 
 {
-	pDMAStreamx->NDTR &= ~DMA_NDTR_NDT_MASK;
-	pDMAStreamx->NDTR |= DMA_NDTR_NDT(datasize);
+	pDMAStreamx->NDTR = datasize;
 }
 
-/**
- * DMA Get Data Size to transfer
- */
-__STATIC_INLINE uint16 DMA_GetNumberOfData(DMAStream_Type * pDMAStreamx) 
+__STATIC_INLINE uint16_t DMA_GetNumberOfData(DMA_Stream_TypeDef * pDMAStreamx) 
 {
-	return (pDMAStreamx->NDTR & DMA_NDTR_NDT_MASK);
+	return (uint16_t)(pDMAStreamx->NDTR & 0xFFFFU);
 }
 
-/**
- * DMA Set Memory Data Width to transfer
- */
-__STATIC_INLINE void DMA_SetMemoryDataWidth(DMAStream_Type * pDMAStreamx, Dma_DataWidthType datawidth) 
+__STATIC_INLINE void DMA_SetMemoryDataWidth(DMA_Stream_TypeDef * pDMAStreamx, DMA_DataWidthType datawidth) 
 {
-	pDMAStreamx->CR &= ~DMA_CR_MSIZE_MASK;
-	pDMAStreamx->CR |= DMA_CR_MSIZE(datawidth);
+	pDMAStreamx->CR &= ~DMA_SxCR_MSIZE_Msk;
+	pDMAStreamx->CR |= ((uint32_t)datawidth << DMA_SxCR_MSIZE_Pos);
 }
 
-/**
- * DMA Set Peripheral Data Width to transfer
- */
-__STATIC_INLINE void DMA_SetPeripheralDataWidth(DMAStream_Type * pDMAStreamx, Dma_DataWidthType datawidth) 
+__STATIC_INLINE void DMA_SetPeripheralDataWidth(DMA_Stream_TypeDef * pDMAStreamx, DMA_DataWidthType datawidth) 
 {
-	pDMAStreamx->CR &= ~DMA_CR_PSIZE_MASK;
-	pDMAStreamx->CR |= DMA_CR_PSIZE(datawidth);
+	pDMAStreamx->CR &= ~DMA_SxCR_PSIZE_Msk;
+	pDMAStreamx->CR |= ((uint32_t)datawidth << DMA_SxCR_PSIZE_Pos);
 }
 
-/**
- * DMA Set Select Channel Number
- */
-__STATIC_INLINE void DMA_SelectChannel(DMAStream_Type * pDMAStreamx, Dma_ChannelType channel) 
+__STATIC_INLINE void DMA_SelectChannel(DMA_Stream_TypeDef * pDMAStreamx, DMA_ChannelType channel) 
 {
-	pDMAStreamx->CR &= ~DMA_CR_CHSEL_MASK;
-	pDMAStreamx->CR |= DMA_CR_CHSEL(channel);
+	pDMAStreamx->CR &= ~DMA_SxCR_CHSEL_Msk;
+	pDMAStreamx->CR |= ((uint32_t)channel << DMA_SxCR_CHSEL_Pos);
 }
 
-/**
- * DMA Set Peripheral Address
- */
-__STATIC_INLINE void DMA_SetPeripheralAddress(DMAStream_Type * pDMAStreamx, uint32 address) 
+__STATIC_INLINE void DMA_SetPeripheralAddress(DMA_Stream_TypeDef * pDMAStreamx, uint32_t address) 
 {
-	pDMAStreamx->PAR &= ~DMA_PAR_PAR_MASK;
-	pDMAStreamx->PAR |= DMA_PAR_PAR(address);
+	pDMAStreamx->PAR = address;
 }
 
-/**
- * DMA Set Memory 0 Address
- */
-__STATIC_INLINE void DMA_SetMemory0Address(DMAStream_Type * pDMAStreamx, uint32 address) 
+__STATIC_INLINE void DMA_SetMemory0Address(DMA_Stream_TypeDef * pDMAStreamx, uint32_t address) 
 {
-	pDMAStreamx->M0AR &= ~DMA_M0AR_M0A_MASK;
-	pDMAStreamx->M0AR |= DMA_M0AR_M0A(address);
+	pDMAStreamx->M0AR = address;
 }
 
-/**
- * DMA Set Memory 1 Address
- */
-__STATIC_INLINE void DMA_SetMemory1Address(DMAStream_Type * pDMAStreamx, uint32 address) 
+__STATIC_INLINE void DMA_SetMemory1Address(DMA_Stream_TypeDef * pDMAStreamx, uint32_t address) 
 {
-	pDMAStreamx->M1AR &= ~DMA_M1AR_M1A_MASK;
-	pDMAStreamx->M1AR |= DMA_M1AR_M1A(address);
+	pDMAStreamx->M1AR = address;
 }
 
-/**
- * DMA Set Memory Increment Mode
- */
-__STATIC_INLINE void DMA_SetMemIncMode(DMAStream_Type * pDMAStreamx, Dma_IncrementModeType EnorDi)
+__STATIC_INLINE void DMA_SetMemIncMode(DMA_Stream_TypeDef * pDMAStreamx, DMA_IncrementModeType EnorDi)
 {
-	pDMAStreamx->CR &= ~DMA_CR_MINC_MASK;
 	if (DMA_INCREMENT_MODE_ENABLE == EnorDi)
 	{
-		pDMAStreamx->CR |= DMA_CR_MINC(BIT_SET);
+		pDMAStreamx->CR |= DMA_SxCR_MINC;
+	}
+	else
+	{
+		pDMAStreamx->CR &= ~DMA_SxCR_MINC;
 	}
 }
 
-/**
- * DMA Set Peripheral Increment Mode
- */
-__STATIC_INLINE void DMA_SetPerIncMode(DMAStream_Type * pDMAStreamx, Dma_IncrementModeType EnorDi)
+__STATIC_INLINE void DMA_SetPerIncMode(DMA_Stream_TypeDef * pDMAStreamx, DMA_IncrementModeType EnorDi)
 {
-	pDMAStreamx->CR &= ~DMA_CR_PINC_MASK;
 	if (DMA_INCREMENT_MODE_ENABLE == EnorDi)
 	{
-		pDMAStreamx->CR |= DMA_CR_PINC(BIT_SET);
+		pDMAStreamx->CR |= DMA_SxCR_PINC;
+	}
+	else
+	{
+		pDMAStreamx->CR &= ~DMA_SxCR_PINC;
 	}
 }
 
-/**
- * DMA Set DMA Priority
- */
-__STATIC_INLINE void DMA_SetPriority(DMAStream_Type * pDMAStreamx, Dma_PrioLevelType PrioLevel)
+__STATIC_INLINE void DMA_SetPriority(DMA_Stream_TypeDef * pDMAStreamx, DMA_PrioLevelType PrioLevel)
 {
-	pDMAStreamx->CR &= ~DMA_CR_PL_MASK;
-	pDMAStreamx->CR |= DMA_CR_PL(PrioLevel);
+	pDMAStreamx->CR &= ~DMA_SxCR_PL_Msk;
+	pDMAStreamx->CR |= ((uint32_t)PrioLevel << DMA_SxCR_PL_Pos);
 }
 
-/**
- * DMA Start Transfer
- */
-__STATIC_INLINE void DMA_HwStartTransfer(DMAStream_Type * pDMAStreamx)
+__STATIC_INLINE void DMA_SetTransferMode(DMA_Stream_TypeDef * pDMAStreamx, DMA_TransferModeType mode)
 {
-	pDMAStreamx->CR |= DMA_CR_EN(BIT_SET);
+	if (mode == DMA_TRANSFER_CIRCULAR)
+	{
+		pDMAStreamx->CR |= DMA_SxCR_CIRC;
+	}
+	else
+	{
+		pDMAStreamx->CR &= ~DMA_SxCR_CIRC;
+	}
 }
 
-/**
- * DMA Get Status Flags
- */
-__STATIC_INLINE uint8 DMA_GetStreamStatus(DMA_Type * pDMAx, Dma_StreamType Stream)
+__STATIC_INLINE void DMA_HwStartTransfer(DMA_Stream_TypeDef * pDMAStreamx)
 {
-	uint32 	readReg = 0u;
-	uint8	Status  = 0u;
+	pDMAStreamx->CR |= DMA_SxCR_EN;
+}
+
+__STATIC_INLINE void DMA_HwStopTransfer(DMA_Stream_TypeDef * pDMAStreamx)
+{
+	pDMAStreamx->CR &= ~DMA_SxCR_EN;
+}
+
+__STATIC_INLINE uint8_t DMA_IsStreamEnabled(DMA_Stream_TypeDef * pDMAStreamx)
+{
+	return ((pDMAStreamx->CR & DMA_SxCR_EN) != 0U) ? 1U : 0U;
+}
+
+__STATIC_INLINE uint32_t DMA_GetStreamStatus(DMA_TypeDef * pDMAx, DMA_StreamType Stream)
+{
+	uint32_t readReg = 0U;
+	uint32_t Status = 0U;
 	
 	/* if Stream = 0..3 => Use LISR register */
-	if ( ((uint8)Stream >= 0) && ((uint8)Stream <= 3) )
+	if (Stream <= DMA_STREAM_3)
 	{
 		readReg = pDMAx->LISR;
 	}
-	else	/* if Stream = 4..7 => Use LISR register */
+	else	/* if Stream = 4..7 => Use HISR register */
 	{
 		readReg = pDMAx->HISR;
 	}
 	
-	switch (Stream % 4)
+	switch (Stream % 4U)
 	{
-		case 0u:
-			Status = (readReg << DMA_FLAG_STREAM_0_SHIFT) & DMA_FLAG_STREAM_0_MASK;
+		case 0U:
+			Status = (readReg >> DMA_FLAG_STREAM_0_SHIFT) & 0x3DU;
 			break;
-		case 1u:
-			Status = (readReg << DMA_FLAG_STREAM_1_SHIFT) & DMA_FLAG_STREAM_1_MASK;
+		case 1U:
+			Status = (readReg >> DMA_FLAG_STREAM_1_SHIFT) & 0x3DU;
 			break;
-		case 2u:
-			Status = (readReg << DMA_FLAG_STREAM_2_SHIFT) & DMA_FLAG_STREAM_2_MASK;
+		case 2U:
+			Status = (readReg >> DMA_FLAG_STREAM_2_SHIFT) & 0x3DU;
 			break;
-		case 3u:
-			Status = (readReg << DMA_FLAG_STREAM_3_SHIFT) & DMA_FLAG_STREAM_3_MASK;
+		case 3U:
+			Status = (readReg >> DMA_FLAG_STREAM_3_SHIFT) & 0x3DU;
 			break;
 		default:
 			break;
@@ -223,31 +242,60 @@ __STATIC_INLINE uint8 DMA_GetStreamStatus(DMA_Type * pDMAx, Dma_StreamType Strea
 	return Status;
 }
 
-
-/******************************************************************************/
-/****************************** TIMEOUT FUNCTIONS *****************************/
-/**
- * @brief   : Prepare for timeout checking
- * @
- * @return  : None
- */
-__STATIC_INLINE void Systick_StartTimeout(uint32 * StartTimeOut, uint32 *TimeoutTicksOut, uint32 TimeoutUs)
+__STATIC_INLINE void DMA_ClearStreamFlags(DMA_TypeDef * pDMAx, DMA_StreamType Stream, uint32_t FlagMask)
 {
-    *StartTimeOut    = Systick_GetCounter();
-    *TimeoutTicksOut = Systick_MicrosToTicks(TimeoutUs);
+	uint32_t clearMask = 0U;
+	
+	switch (Stream % 4U)
+	{
+		case 0U:
+			clearMask = FlagMask << DMA_FLAG_STREAM_0_SHIFT;
+			break;
+		case 1U:
+			clearMask = FlagMask << DMA_FLAG_STREAM_1_SHIFT;
+			break;
+		case 2U:
+			clearMask = FlagMask << DMA_FLAG_STREAM_2_SHIFT;
+			break;
+		case 3U:
+			clearMask = FlagMask << DMA_FLAG_STREAM_3_SHIFT;
+			break;
+		default:
+			return;
+	}
+	
+	if (Stream <= DMA_STREAM_3)
+	{
+		pDMAx->LIFCR = clearMask;
+	}
+	else
+	{
+		pDMAx->HIFCR = clearMask;
+	}
 }
 
-/**
- * @brief   : Checks for timeout condition
- * @
- * @return  TRUE     Timeout occurs
- *          FALSE    Timeout does not occur
- */
-__STATIC_INLINE Bool_Type Systick_CheckTimeout(uint32 * StartTime, uint32 * ElapsedTicks, uint32 TimeoutTicks)
+__STATIC_INLINE DMA_TypeDef* DMA_GetInstance(DMA_InstanceType Instance)
 {
-    uint32 CurrentElapsedTicks = Systick_GetElapsed(StartTime);
-    *ElapsedTicks += CurrentElapsedTicks;
-    return ((*ElapsedTicks >= TimeoutTicks) ? TRUE : FALSE);
+	switch (Instance)
+	{
+		case DMA_INSTANCE_1:
+			return DMA1;
+		case DMA_INSTANCE_2:
+			return DMA2;
+		default:
+			return NULL;
+	}
+}
+
+__STATIC_INLINE DMA_Stream_TypeDef* DMA_GetStreamInstance(DMA_InstanceType Instance, DMA_StreamType Stream)
+{
+	DMA_TypeDef* dmaBase = DMA_GetInstance(Instance);
+	if (dmaBase == NULL || Stream >= DMA_STREAM_MAX)
+	{
+		return NULL;
+	}
+	
+	return &(dmaBase->Stream[Stream]);
 }
 
 #endif 	/* !(__DMA_HWACCESS_H__) */
