@@ -12,6 +12,26 @@
 #include "RCC_Base.h"
 
 /** @fn
+ * @{   Clock Error Codes
+ */
+typedef enum
+{
+    CLOCK_OK                        = 0u,
+    CLOCK_ERROR_INVALID_FREQ        = 1u,
+    CLOCK_ERROR_PLL_CONFIG          = 2u,
+    CLOCK_ERROR_TIMEOUT             = 3u,
+    CLOCK_ERROR_INVALID_PARAM       = 4u,
+    CLOCK_ERROR_PRESCALER           = 5u,
+} ClockErrorType;
+
+/** @fn
+ * @{   Timeout and Constants Definitions
+ */
+#define CLOCK_PLL_TIMEOUT_VALUE     (5000u)    /* PLL lock timeout in loops */
+#define CLOCK_FREQ_TOLERANCE        (100000u)  /* Frequency tolerance in Hz */
+#define CLOCK_FREQ_DIVIDER          (1000000UL) /* Frequency divider constant */
+
+/** @fn
  * @{   Source Clock for SYSCLK 
  */
 typedef enum
@@ -66,6 +86,15 @@ typedef struct
   uint32 PCLK1_FREQ;     /*!<  PCLK1 clock frequency expressed in Hz  */
   uint32 PCLK2_FREQ;     /*!<  PCLK2 clock frequency expressed in Hz  */
 } ClockSourceType;
+
+typedef struct
+{
+    ClockErrorType error;
+    uint32 actualFreq;
+    uint32 PLLM;
+    uint32 PLLN;
+    uint32 PLLP;
+} ClockPLLConfigResult;
 
 /**************************************************************************/
 /************************ Clock for Peripherals ***************************/

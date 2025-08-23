@@ -14,6 +14,8 @@ static uint32 Clock_GetSYSCLKFrequency(void);
 static uint32 Clock_GetAHBFrequency(void);
 static uint32 Clock_GetAPB1Frequency(void);
 static uint32 Clock_GetAPB2Frequency(void);
+static ClockErrorType Clock_ValidateFrequency(uint32 frequency);
+static ClockErrorType Clock_ValidatePrescaler(uint32 prescaler);
 
 /*****************************************************************************************/
 /********************************* PRIVATE VARIABLES *************************************/
@@ -54,18 +56,25 @@ static ClockSourceType s_ClockFreq = {
  * @brief             - Enable/Disable Peripheral Clock
  * @param[in]         - ClkPer 	 - CLOCK_<PERIPHERAL_NAME>
  * @param[in]         - EnorDi   - Enable/Disable
- * @return            - None
+ * @return            - ClockErrorType
  * @Note              -
  */
-void Clock_PeripheralControl(ClockPeripheralType ClkPer, Bool_Type EnorDi)
+ClockErrorType Clock_PeripheralControl(ClockPeripheralType ClkPer, Bool_Type EnorDi)
 {
     ClockPeripheralBusType BusType;
+    
+    if (ClkPer >= CLOCK_TIM11 + 1)
+    {
+        return CLOCK_ERROR_INVALID_PARAM;
+    }
     
     /* Get Clock Peripheral Bus Type From ClkPer */
     BusType = Check_PeripheralBus(ClkPer);
     
     /* Set Enable/Disable Peripheral Clock */
     (*Set_PeripheralClock[BusType])(ClkPer, EnorDi);
+    
+    return CLOCK_OK;
 }
 
 /*****************************************************************************************/
@@ -73,51 +82,62 @@ void Clock_PeripheralControl(ClockPeripheralType ClkPer, Bool_Type EnorDi)
  * @fn      		  - Clock_SetSYSCLKFreq
  * @brief             - Set System Clock Frequency
  * @param[in]         - ExpectFreq      - Expected Frequency (x.000.000 MHz)
- * @return            - Output Frequency (It may be different from Expected Frequency)
+ * @param[out]        - pActualFreq     - Pointer to store actual frequency
+ * @return            - ClockErrorType
  * @Note              -
  */
-uint32 Clock_SetSYSCLKFreq(uint32 ExpectFreq)
+ClockErrorType Clock_SetSYSCLKFreq(uint32 ExpectFreq, uint32* pActualFreq)
 {
-    uint32 PLLM, m, PLLN, PLLP;
+    ClockPLLConfigResult pllResult;
+    ClockErrorType error;
     uint32 OutSysClk = CLOCK_INVALID_FREQUENCY;
     
-    if ( (0 == (ExpectFreq % 1000000UL)) &&
-         (ExpectFreq <= CLOCK_MAX_FREQUENCY) )
+    if (pActualFreq == NULL)
     {
-        /* Need use PLL to multiple the frequency - input = HSI
-         * SYSCLK = (HSI_VALUE) / PLLM * PLLN / PLLP
-         */
-        Set_SYSCLKSource(CLOCK_SYSCLK_SOURCE_PLL);
-        
-        /* ExpectFreq/1000000 = 20 = SYSCLK = (16) / PLLM * 400 / 8
-         * Freq * PLLM / 2 = PLLN
-         */
-        ExpectFreq /= 1000000UL;
-        PLLP = CLOCK_PLLP_MAX;
-        for (m = CLOCK_PLLM_MIN; m <= CLOCK_PLLM_MAX; m+=2)
-        {
-            if ( ((ExpectFreq * (m / 2)) >= (uint32)CLOCK_PLLN_MIN) &&
-                 ((ExpectFreq * (m / 2)) <= (uint32)CLOCK_PLLN_MAX) )
-            {
-                PLLN = ExpectFreq * (m / 2);
-                PLLM = m;
-                break;
-            }
-        }
-        
-        Set_PLLConfig(CLOCK_PLL_SOURCE_HSI, PLLM, PLLN, PLLP, CLOCK_PLLQ_MIN);
-        
-        /* Get & Verify current SYSCLK Frequency */
-        OutSysClk = Get_PLLFrequency();
-        /* Get all clock source frequency to private Variable */
-        s_ClockFreq = Get_AllClockfromSYSCLK(OutSysClk);
-    }
-    else
-    {
-        OutSysClk = CLOCK_INVALID_FREQUENCY;
+        return CLOCK_ERROR_INVALID_PARAM;
     }
     
-    return OutSysClk;
+    error = Clock_ValidateFrequency(ExpectFreq);
+    if (error != CLOCK_OK)
+    {
+        *pActualFreq = CLOCK_INVALID_FREQUENCY;
+        return error;
+    }
+    
+    error = Clock_CalculateOptimalPLL(ExpectFreq, &pllResult);
+    if (error != CLOCK_OK)
+    {
+        *pActualFreq = CLOCK_INVALID_FREQUENCY;
+        return error;
+    }
+    
+    /* Need use PLL to multiple the frequency - input = HSI */
+    Set_SYSCLKSource(CLOCK_SYSCLK_SOURCE_PLL);
+    
+    Set_PLLConfig(CLOCK_PLL_SOURCE_HSI, pllResult.PLLM, pllResult.PLLN, pllResult.PLLP, CLOCK_PLLQ_MIN);
+    
+    error = Clock_WaitPLLReady(CLOCK_PLL_TIMEOUT_VALUE);
+    if (error != CLOCK_OK)
+    {
+        *pActualFreq = CLOCK_INVALID_FREQUENCY;
+        return error;
+    }
+    
+    /* Get & Verify current SYSCLK Frequency */
+    OutSysClk = Get_PLLFrequency();
+    
+    if (OutSysClk > (ExpectFreq + CLOCK_FREQ_TOLERANCE) || 
+        OutSysClk < (ExpectFreq - CLOCK_FREQ_TOLERANCE))
+    {
+        *pActualFreq = OutSysClk;
+        return CLOCK_ERROR_PLL_CONFIG;
+    }
+    
+    /* Get all clock source frequency to private Variable */
+    s_ClockFreq = Get_AllClockfromSYSCLK(OutSysClk);
+    
+    *pActualFreq = OutSysClk;
+    return CLOCK_OK;
 }
 
 /*****************************************************************************************/
@@ -126,47 +146,53 @@ uint32 Clock_SetSYSCLKFreq(uint32 ExpectFreq)
  * @brief             - Set Clock Frequency for Peripheral
  * @param[in]         - ClkPer 	 - CLOCK_<PERIPHERAL_NAME>
  * @param[in]         - ExpectFreq      - Expected Frequency (x.000.000 MHz)
- * @return            - Output Frequency (It may be different from Expected Frequency)
+ * @param[out]        - pActualFreq     - Pointer to store actual frequency
+ * @return            - ClockErrorType
  * @Note              -
  */
-uint32 Clock_SetPeripheralFreq(ClockPeripheralType ClkPer, uint32 ExpectFreq)
+ClockErrorType Clock_SetPeripheralFreq(ClockPeripheralType ClkPer, uint32 ExpectFreq, uint32* pActualFreq)
 {
     ClockPeripheralBusType BusType;
     uint32 SysClock = Clock_GetSYSCLKFrequency();
     uint8 AHBDiv, APBDiv;
     uint32 AHBFreq;
     uint32 OutPerFreq = CLOCK_INVALID_FREQUENCY;
+    ClockErrorType error;
+    
+    if (pActualFreq == NULL)
+    {
+        return CLOCK_ERROR_INVALID_PARAM;
+    }
     
     /* Check Invalid Parameter - Expected Frequency too big */
     if ( ExpectFreq > SysClock )
     {
-        return CLOCK_INVALID_FREQUENCY;
+        *pActualFreq = CLOCK_INVALID_FREQUENCY;
+        return CLOCK_ERROR_INVALID_FREQ;
     }
-    else
-    {
-        /* Calculate Prescaler for AHB Bus */
-        AHBDiv = SysClock / ExpectFreq;
-    }
+    
+    /* Calculate Prescaler for AHB Bus */
+    AHBDiv = SysClock / ExpectFreq;
     
     /* Get Clock Peripheral Bus Type From ClkPer */
     BusType = Check_PeripheralBus(ClkPer);
     
-    /* Check if prescaler is not power of 2 */
-    if ( 0 != (AHBDiv & (AHBDiv - 1)) )
+    error = Clock_ValidatePrescaler(AHBDiv);
+    if (error != CLOCK_OK)
     {
-        return CLOCK_INVALID_FREQUENCY;
-    }
-    else
-    {
-        /* Calculate Prescaler for APB Bus */
-        AHBFreq = Clock_GetAHBFrequency();
-        APBDiv = AHBFreq / ExpectFreq;
+        *pActualFreq = CLOCK_INVALID_FREQUENCY;
+        return error;
     }
     
-    /* Check if prescaler is not power of 2 */
-    if ( 0 != (APBDiv & (APBDiv - 1)) )
+    /* Calculate Prescaler for APB Bus */
+    AHBFreq = Clock_GetAHBFrequency();
+    APBDiv = AHBFreq / ExpectFreq;
+    
+    error = Clock_ValidatePrescaler(APBDiv);
+    if (error != CLOCK_OK)
     {
-        return CLOCK_INVALID_FREQUENCY;
+        *pActualFreq = CLOCK_INVALID_FREQUENCY;
+        return error;
     }
     
     /* Setting Prescaler for calculate Frequency */
@@ -189,10 +215,12 @@ uint32 Clock_SetPeripheralFreq(ClockPeripheralType ClkPer, uint32 ExpectFreq)
             s_ClockFreq.PCLK2_FREQ = OutPerFreq;
             break;
         default:
-            break;
+            *pActualFreq = CLOCK_INVALID_FREQUENCY;
+            return CLOCK_ERROR_INVALID_PARAM;
     }
 
-    return OutPerFreq;
+    *pActualFreq = OutPerFreq;
+    return CLOCK_OK;
 }
 
 /*****************************************************************************************/
@@ -200,21 +228,137 @@ uint32 Clock_SetPeripheralFreq(ClockPeripheralType ClkPer, uint32 ExpectFreq)
  * @fn      		  - Clock_GetPeripheralFreq
  * @brief             - Get Clock Frequency from Peripheral
  * @param[in]         - ClkPer 	 - CLOCK_<PERIPHERAL_NAME>
- * @return            - Output Frequency (It may be different from Expected Frequency)
+ * @param[out]        - pFreq          - Pointer to store frequency
+ * @return            - ClockErrorType
  * @Note              -
  */
-uint32 Clock_GetPeripheralFreq(ClockPeripheralType ClkPer)
+ClockErrorType Clock_GetPeripheralFreq(ClockPeripheralType ClkPer, uint32* pFreq)
 {
     ClockPeripheralBusType BusType;
-    uint32 OutPerFreq = CLOCK_INVALID_FREQUENCY;
+    
+    if (pFreq == NULL)
+    {
+        return CLOCK_ERROR_INVALID_PARAM;
+    }
+    
+    if (ClkPer >= CLOCK_TIM11 + 1)
+    {
+        *pFreq = CLOCK_INVALID_FREQUENCY;
+        return CLOCK_ERROR_INVALID_PARAM;
+    }
     
     /* Get Clock Peripheral Bus Type From ClkPer */
     BusType = Check_PeripheralBus(ClkPer);
     
     /* Get Frequency from each Bus */
-    OutPerFreq = (*Clock_GetBusFreq[BusType])();
+    *pFreq = (*Clock_GetBusFreq[BusType])();
     
-    return OutPerFreq;
+    return CLOCK_OK;
+}
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - Clock_CalculateOptimalPLL
+ * @brief             - Calculate optimal PLL parameters for target frequency
+ * @param[in]         - targetFreq     - Target frequency in Hz
+ * @param[out]        - pResult        - Pointer to PLL configuration result
+ * @return            - ClockErrorType
+ * @Note              -
+ */
+ClockErrorType Clock_CalculateOptimalPLL(uint32 targetFreq, ClockPLLConfigResult* pResult)
+{
+    uint32 m, targetMHz;
+    
+    if (pResult == NULL)
+    {
+        return CLOCK_ERROR_INVALID_PARAM;
+    }
+    
+    if ((0 != (targetFreq % CLOCK_FREQ_DIVIDER)) || (targetFreq > CLOCK_MAX_FREQUENCY))
+    {
+        pResult->error = CLOCK_ERROR_INVALID_FREQ;
+        return CLOCK_ERROR_INVALID_FREQ;
+    }
+    
+    targetMHz = targetFreq / CLOCK_FREQ_DIVIDER;
+    pResult->PLLP = CLOCK_PLLP_MAX;
+    
+    for (m = CLOCK_PLLM_MIN; m <= CLOCK_PLLM_MAX; m += 2)
+    {
+        uint32 plln_candidate = targetMHz * (m / 2);
+        
+        if ((plln_candidate >= (uint32)CLOCK_PLLN_MIN) && 
+            (plln_candidate <= (uint32)CLOCK_PLLN_MAX))
+        {
+            pResult->PLLN = plln_candidate;
+            pResult->PLLM = m;
+            pResult->actualFreq = targetFreq;
+            pResult->error = CLOCK_OK;
+            return CLOCK_OK;
+        }
+    }
+    
+    pResult->error = CLOCK_ERROR_PLL_CONFIG;
+    return CLOCK_ERROR_PLL_CONFIG;
+}
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - Clock_WaitPLLReady
+ * @brief             - Wait for PLL to be ready with timeout
+ * @param[in]         - timeout        - Timeout value in loops
+ * @return            - ClockErrorType
+ * @Note              -
+ */
+ClockErrorType Clock_WaitPLLReady(uint32 timeout)
+{
+    uint32 timeoutCounter = timeout;
+    
+    while (!(RCC->CR & RCC_CR_PLLRDY) && timeoutCounter > 0)
+    {
+        timeoutCounter--;
+    }
+    
+    if (timeoutCounter == 0)
+    {
+        return CLOCK_ERROR_TIMEOUT;
+    }
+    
+    return CLOCK_OK;
+}
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - Clock_ValidateFrequency
+ * @brief             - Validate input frequency
+ * @param[in]         - frequency      - Frequency to validate
+ * @return            - ClockErrorType
+ * @Note              - @Private Function
+ */
+static ClockErrorType Clock_ValidateFrequency(uint32 frequency)
+{
+    if ((0 != (frequency % CLOCK_FREQ_DIVIDER)) || (frequency > CLOCK_MAX_FREQUENCY))
+    {
+        return CLOCK_ERROR_INVALID_FREQ;
+    }
+    return CLOCK_OK;
+}
+
+/*****************************************************************************************/
+/*********************************************************************
+ * @fn      		  - Clock_ValidatePrescaler
+ * @brief             - Validate prescaler value (must be power of 2)
+ * @param[in]         - prescaler      - Prescaler to validate
+ * @return            - ClockErrorType
+ * @Note              - @Private Function
+ */
+static ClockErrorType Clock_ValidatePrescaler(uint32 prescaler)
+{
+    if (0 != (prescaler & (prescaler - 1)))
+    {
+        return CLOCK_ERROR_PRESCALER;
+    }
+    return CLOCK_OK;
 }
 
 /*****************************************************************************************/
@@ -258,7 +402,7 @@ static uint32 Clock_GetSYSCLKFrequency(void)
 
 /*****************************************************************************************/
 /*********************************************************************
- * @fn      		  - Clock_GetAHB1Frequency
+ * @fn      		  - Clock_GetAHBFrequency
  * @brief             - Get AHB Clock Frequency
  * @param[in]         - N/A
  * @return            - AHB Bus Frequency
